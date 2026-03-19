@@ -73,27 +73,45 @@ jobs:
       - name: Pull Odoo image
         run: docker pull ${{ env.ODOO_IMAGE }}
 
+      - name: Initialize Odoo database
+        run: |
+          docker run --rm \
+            --network host \
+            -v "${{ github.workspace }}/odoo/addons:/mnt/extra-addons" \
+            -e HOST=localhost -e PORT=5432 \
+            -e USER=${{ env.POSTGRES_USER }} \
+            -e PASSWORD=${{ env.POSTGRES_PASSWORD }} \
+            ${{ env.ODOO_IMAGE }} \
+            odoo \
+              --db_host=localhost --db_port=5432 \
+              --db_user=${{ env.POSTGRES_USER }} \
+              --db_password=${{ env.POSTGRES_PASSWORD }} \
+              -d ${{ env.POSTGRES_DB }} \
+              --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons \
+              -i base \
+              --stop-after-init \
+              --without-demo=True
+
       - name: Run Odoo tests
         run: |
           docker run --rm \
             --network host \
             -v "${{ github.workspace }}/odoo/addons:/mnt/extra-addons" \
-            -e HOST=localhost \
-            -e PORT=5432 \
+            -e HOST=localhost -e PORT=5432 \
             -e USER=${{ env.POSTGRES_USER }} \
             -e PASSWORD=${{ env.POSTGRES_PASSWORD }} \
             ${{ env.ODOO_IMAGE }} \
             odoo \
-              --db_host=localhost \
-              --db_port=5432 \
+              --db_host=localhost --db_port=5432 \
               --db_user=${{ env.POSTGRES_USER }} \
               --db_password=${{ env.POSTGRES_PASSWORD }} \
               -d ${{ env.POSTGRES_DB }} \
               --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons \
+              -i "${{ steps.modules.outputs.list }}" \
               --test-tags "${{ steps.modules.outputs.list }}" \
               --stop-after-init \
               --log-level=test \
-              --without-demo=all
+              --without-demo=True
 
   # ── 3. Build Docker image (on push to main/develop only) ────────────────────
   build:
