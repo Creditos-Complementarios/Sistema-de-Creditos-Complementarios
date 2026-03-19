@@ -1,0 +1,18 @@
+# ============================================================
+#  docker-compose.override.yml.example
+#  Copiar a docker-compose.override.yml para overrides locales.
+#  Este archivo está en .gitignore — no se versiona.
+# ============================================================
+
+# version: "3.8"
+
+# services:
+#   odoo:
+#     ports:
+#       - "8070:8069"   # Cambiar puerto local si 8069 está ocupado
+#     environment:
+#       - PYTHONDONTWRITEBYTECODE=1
+#
+#   db:
+#     ports:
+#       - "5433:5432"   # Cambiar si el 5432 local está en uso

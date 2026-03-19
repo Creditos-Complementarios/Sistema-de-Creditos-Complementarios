@@ -1,0 +1,31 @@
+[options]
+; ============================================================
+;  odoo.conf.example — Plantilla de configuración de Odoo
+;  Copiar a odoo.conf y completar con valores reales.
+;  NUNCA subir odoo.conf al repositorio (está en .gitignore).
+; ============================================================
+
+; --- Base de datos -------------------------------------------
+db_host = db
+db_port = 5432
+db_user = odoo
+db_password = odoo
+db_name = odoo_dev
+
+; --- Servidor ------------------------------------------------
+http_port = 8069
+longpolling_port = 8072
+workers = 0          ; 0 = modo mono-proceso (desarrollo). En producción: 2–4+.
+
+; --- Seguridad -----------------------------------------------
+admin_passwd = changeme_local    ; Contraseña maestra del gestor de bases de datos
+
+; --- Módulos -------------------------------------------------
+addons_path = /mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons
+
+; --- Logs ----------------------------------------------------
+log_level = info
+; log_handler = :DEBUG   ; Descomentar para debug detallado
+
+; --- Opciones de desarrollo (NO usar en producción) ----------
+; dev_mode = all

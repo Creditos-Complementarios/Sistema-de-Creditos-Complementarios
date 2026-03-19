@@ -1,0 +1,8 @@
+# Extra Python dependencies required by custom addons.
+# Add one package per line. These are installed into the Odoo Docker image
+# at build time (see Dockerfile).
+#
+# Examples:
+# zeep==4.2.1        # SOAP client
+# requests==2.31.0
+# python-barcode==0.15.1

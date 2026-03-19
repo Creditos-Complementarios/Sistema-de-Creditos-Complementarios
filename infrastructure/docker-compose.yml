@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16
+    container_name: odoo19_db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+    volumes:
+      - odoo_pgdata:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-odoo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  odoo:
+    # For development: use the upstream image directly.
+    # For production (custom image): replace with `build: .` or your registry image.
+    image: odoo:19.0
+    container_name: odoo19_app
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${ODOO_PORT:-8069}:8069"
+      - "${ODOO_LONGPOLL_PORT:-8072}:8072"   # longpolling / live chat
+    environment:
+      HOST: db
+      PORT: 5432
+      USER: ${POSTGRES_USER:-odoo}
+      PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+    volumes:
+      # Custom addons — mount your modules here during development
+      - ./addons:/mnt/extra-addons
+      # Persistent filestore (attachments, uploads)
+      - odoo_filestore:/var/lib/odoo
+      # Odoo runtime config
+      - ./config/odoo.conf:/etc/odoo/odoo.conf
+    restart: unless-stopped
+    command: odoo --dev=all
+
+volumes:
+  odoo_pgdata:
+  odoo_filestore:
