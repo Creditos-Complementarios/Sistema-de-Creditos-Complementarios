@@ -12,6 +12,7 @@
     """,
     'author': 'Desarrollo Institucional',
     'category': 'Education',
+    'license': 'LGPL-3',
     'depends': ['base', 'mail', 'hr'],
     'data': [
         'security/actividades_security.xml',
@@ -27,10 +28,9 @@
         'views/wizard_views.xml',
         'views/menu_views.xml',
     ],
-    'installable': True,
-    'application': True,
-    'license': 'LGPL-3',
     'demo': [
         'data/demo_data.xml',
     ],
+    'installable': True,
+    'application': True,
 }
