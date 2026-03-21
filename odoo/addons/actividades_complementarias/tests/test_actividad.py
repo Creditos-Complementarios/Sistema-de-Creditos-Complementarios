@@ -8,26 +8,30 @@ from odoo.tests.common import TransactionCase
 
 @tagged('actividades_complementarias', '-standard')
 class TestActividad(TransactionCase):
-    """Tests para el modelo actividad.complementaria."""
+    """Tests para el modelo actividad.complementaria.
+
+    Los registros de estado y tipo se obtienen via env.ref() porque el módulo
+    los carga desde sus archivos de datos XML durante la instalación. No se
+    crean duplicados en los tests.
+    """
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        # Estado mínimo necesario para operar
-        cls.tipo = cls.env['actividad.tipo'].create({'name': 'Conferencia'})
-        cls.estado_aprobada = cls.env['actividad.estado'].create({
-            'name': 'Aprobada',
-            'code': 'aprobada',
-        })
-        cls.estado_finalizada = cls.env['actividad.estado'].create({
-            'name': 'Finalizada',
-            'code': 'finalizada',
-        })
+        # Estados cargados por el módulo — se acceden por su xmlid
+        cls.estado_aprobada = cls.env.ref(
+            'actividades_complementarias.estado_aprobada'
+        )
+        cls.estado_finalizada = cls.env.ref(
+            'actividades_complementarias.estado_finalizada'
+        )
 
-        cls.hoy = date.today()
-        cls.manana = cls.hoy + timedelta(days=1)
-        cls.pasado_manana = cls.hoy + timedelta(days=2)
+        # tipo_actividad no tiene datos XML predefinidos, se crea en el test
+        cls.tipo = cls.env['actividad.tipo'].create({'name': 'Conferencia Test'})
+
+        cls.manana = date.today() + timedelta(days=1)
+        cls.pasado_manana = date.today() + timedelta(days=2)
 
     def _make_actividad(self, **kwargs):
         """Helper: crea una actividad con valores mínimos válidos."""
@@ -49,7 +53,7 @@ class TestActividad(TransactionCase):
     def test_fecha_inicio_pasada_falla(self):
         """No se debe poder crear una actividad con fecha de inicio en el pasado."""
         with self.assertRaises(ValidationError):
-            self._make_actividad(fecha_inicio=self.hoy - timedelta(days=1))
+            self._make_actividad(fecha_inicio=date.today() - timedelta(days=1))
 
     def test_fecha_fin_antes_de_inicio_falla(self):
         """La fecha de fin debe ser posterior a la fecha de inicio."""
@@ -68,7 +72,6 @@ class TestActividad(TransactionCase):
 
     def test_cupo_ilimitado_omite_validacion_cupos(self):
         """Con cupo_ilimitado=True no se validan min/max."""
-        # No debe lanzar excepción aunque cupo_min=0 y cupo_max=0
         actividad = self._make_actividad(cupo_ilimitado=True, cupo_min=0, cupo_max=0)
         self.assertTrue(actividad.cupo_ilimitado)
 
@@ -81,14 +84,13 @@ class TestActividad(TransactionCase):
     def test_nombre_duplicado_diferente_periodo_ok(self):
         """El mismo nombre en diferente periodo sí es válido."""
         self._make_actividad(name='Actividad Repetida', periodo='2025-A')
-        # No debe lanzar excepción
         actividad2 = self._make_actividad(name='Actividad Repetida', periodo='2025-B')
         self.assertTrue(actividad2.id)
 
     # ── Business logic ───────────────────────────────────────────────────────
 
     def test_action_enviar_catalogo_estado_invalido_falla(self):
-        """No se puede enviar al catálogo una actividad que no está aprobada."""
+        """No se puede enviar al catálogo una actividad sin estado aprobado."""
         actividad = self._make_actividad()  # sin estado
         with self.assertRaises(ValidationError):
             actividad.action_enviar_catalogo()

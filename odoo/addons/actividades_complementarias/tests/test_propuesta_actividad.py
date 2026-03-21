@@ -8,30 +8,37 @@ from odoo.tests.common import TransactionCase
 
 @tagged('actividades_complementarias', '-standard')
 class TestPropuestaActividad(TransactionCase):
-    """Tests para el modelo actividad.propuesta."""
+    """Tests para el modelo actividad.propuesta.
+
+    Todos los estados se obtienen con env.ref() usando los xmlids definidos
+    en los archivos de datos del módulo. Nunca se crean entradas en
+    ir.model.data manualmente — el módulo ya las carga al instalarse.
+    """
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        cls.tipo = cls.env['actividad.tipo'].create({'name': 'Taller'})
+        # Estados de solicitud — definidos en estado_solicitud_data.xml
+        cls.estado_sol_en_revision = cls.env.ref(
+            'actividades_complementarias.estado_solicitud_en_revision'
+        )
+        cls.estado_sol_aprobada = cls.env.ref(
+            'actividades_complementarias.estado_solicitud_aprobada'
+        )
+        cls.estado_sol_rechazada = cls.env.ref(
+            'actividades_complementarias.estado_solicitud_rechazada'
+        )
 
-        cls.estado_aprobada = cls.env['actividad.estado'].create({
-            'name': 'Aprobada', 'code': 'aprobada',
-        })
-        cls.estado_rechazada = cls.env['actividad.estado'].create({
-            'name': 'Rechazada', 'code': 'rechazada',
-        })
+        # Estados de actividad — definidos en estado_actividad_data.xml
+        cls.estado_aprobada = cls.env.ref(
+            'actividades_complementarias.estado_aprobada'
+        )
+        cls.estado_rechazada = cls.env.ref(
+            'actividades_complementarias.estado_rechazada'
+        )
 
-        cls.estado_sol_en_revision = cls.env['actividad.estado.solicitud'].create({
-            'name': 'En Revisión', 'code': 'en_revision',
-        })
-        cls.estado_sol_aprobada = cls.env['actividad.estado.solicitud'].create({
-            'name': 'Aprobada', 'code': 'aprobada',
-        })
-        cls.estado_sol_rechazada = cls.env['actividad.estado.solicitud'].create({
-            'name': 'Rechazada', 'code': 'rechazada',
-        })
+        cls.tipo = cls.env['actividad.tipo'].create({'name': 'Taller Test'})
 
         hoy = date.today()
         cls.actividad = cls.env['actividad.complementaria'].create({
@@ -44,6 +51,7 @@ class TestPropuestaActividad(TransactionCase):
         })
 
     def _make_propuesta(self, **kwargs):
+        """Helper: crea una propuesta con valores mínimos válidos."""
         vals = {
             'actividad_id': self.actividad.id,
             'estado_solicitud_id': self.estado_sol_en_revision.id,
@@ -67,23 +75,8 @@ class TestPropuestaActividad(TransactionCase):
     # ── Business logic ───────────────────────────────────────────────────────
 
     def test_action_aprobar_cambia_estados(self):
-        """Aprobar una propuesta debe actualizar estado de propuesta y actividad."""
+        """Aprobar una propuesta debe actualizar el estado de la propuesta y la actividad."""
         propuesta = self._make_propuesta()
-        # Patch env.ref to return our test records
-        self.env['ir.model.data'].create([
-            {
-                'name': 'estado_solicitud_aprobada',
-                'module': 'actividades_complementarias',
-                'model': 'actividad.estado.solicitud',
-                'res_id': self.estado_sol_aprobada.id,
-            },
-            {
-                'name': 'estado_aprobada',
-                'module': 'actividades_complementarias',
-                'model': 'actividad.estado',
-                'res_id': self.estado_aprobada.id,
-            },
-        ])
         propuesta.action_aprobar()
         self.assertEqual(propuesta.estado_solicitud_id, self.estado_sol_aprobada)
         self.assertEqual(propuesta.actividad_id.estado_id, self.estado_aprobada)
@@ -95,22 +88,8 @@ class TestPropuestaActividad(TransactionCase):
             propuesta.action_rechazar()
 
     def test_action_rechazar_con_motivo_ok(self):
-        """Rechazar con motivo debe actualizar los estados correctamente."""
+        """Rechazar con motivo debe actualizar los estados de propuesta y actividad."""
         propuesta = self._make_propuesta()
-        self.env['ir.model.data'].create([
-            {
-                'name': 'estado_solicitud_rechazada',
-                'module': 'actividades_complementarias',
-                'model': 'actividad.estado.solicitud',
-                'res_id': self.estado_sol_rechazada.id,
-            },
-            {
-                'name': 'estado_rechazada',
-                'module': 'actividades_complementarias',
-                'model': 'actividad.estado',
-                'res_id': self.estado_rechazada.id,
-            },
-        ])
         propuesta.write({'motivo_rechazo': 'No cumple los requisitos mínimos.'})
         propuesta.action_rechazar()
         self.assertEqual(propuesta.estado_solicitud_id, self.estado_sol_rechazada)
