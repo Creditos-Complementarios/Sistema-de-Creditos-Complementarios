@@ -4,7 +4,7 @@ USER root
 
 # Install extra Python dependencies for custom addons (if any)
 COPY requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+RUN pip install --no-cache-dir --break-system-packages -r /tmp/requirements.txt
 
 # Custom addons — path relative to repo root (build context)
 RUN mkdir -p /mnt/extra-addons
