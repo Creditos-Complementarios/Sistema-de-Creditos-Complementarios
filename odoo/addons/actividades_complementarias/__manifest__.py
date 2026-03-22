@@ -34,7 +34,6 @@
             'actividades_complementarias/static/src/scss/style.scss',
         ],
     },
-    
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
