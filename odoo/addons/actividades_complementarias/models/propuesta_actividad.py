@@ -54,7 +54,7 @@ class PropuestaActividadComplementaria(models.Model):
     actividad_tipo = fields.Many2one(related='actividad_id.tipo_actividad_id', string='Tipo', readonly=True)
     actividad_jefe = fields.Many2one(related='actividad_id.jefe_departamento_id', string='Jefe', readonly=True)
     actividad_departamento = fields.Many2one(related='actividad_id.departamento_id', 
-        string='Departamento', readonly=True)
+    string='Departamento', readonly=True)
     actividad_periodo = fields.Many2one(related='actividad_id.periodo', string='Periodo', readonly=True)
     actividad_fecha_inicio = fields.Date(related='actividad_id.fecha_inicio', string='Fecha Inicio', readonly=True)
     actividad_fecha_fin = fields.Date(related='actividad_id.fecha_fin', string='Fecha Fin', readonly=True)
