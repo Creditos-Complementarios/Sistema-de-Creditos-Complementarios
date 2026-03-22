@@ -32,7 +32,6 @@
             'actividades_complementarias/static/src/scss/style.scss',
         ],
     },
-    
     'demo': [
         'data/demo_data.xml',
     ],
