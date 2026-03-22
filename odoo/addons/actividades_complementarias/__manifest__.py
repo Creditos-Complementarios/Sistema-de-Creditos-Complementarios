@@ -27,9 +27,16 @@
         'views/wizard_views.xml',
         'views/menu_views.xml',
     ],
+     'assets': {
+        'web.assets_backend': [
+            'actividades_complementarias/static/src/scss/style.scss',
+        ],
+    },
+    
     'demo': [
         'data/demo_data.xml',
     ],
     'installable': True,
     'application': True,
+    'license': 'LGPL-3',
 }

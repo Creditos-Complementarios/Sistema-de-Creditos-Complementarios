@@ -1,0 +1,31 @@
+/* Navbar naranja SOLO cuando estás dentro de Actividades Complementarias */
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .o_main_navbar {
+    background-color: #2c3a4f!important;
+}
+
+/* Botones primarios naranja */
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .btn-primary {
+    background-color: #2c3a4f !important;
+    border-color: #2c3a4f !important;
+}
+
+
+
+/* Contenedor del lado derecho */
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .o_menu_systray {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Logo dentro del navbar */
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .o_menu_systray::before {
+    content: "";
+    display: inline-block;
+
+    width: 32px;
+    height: 32px;
+
+    background: url('/actividades_complementarias/static/src/img/ITCH.png') no-repeat center;
+    background-size: contain;
+}
