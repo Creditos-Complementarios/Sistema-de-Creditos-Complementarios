@@ -34,11 +34,10 @@ services:
       USER: ${POSTGRES_USER:-odoo}
       PASSWORD: ${POSTGRES_PASSWORD:-odoo}
     volumes:
-      # Paths are relative to this file's location (infrastructure/).
-      # ../odoo/addons climbs up to repo root, then into odoo/addons.
-      - ../odoo/addons:/mnt/extra-addons
+      # All paths are relative to the repo root (where this file lives).
+      - ./odoo/addons:/mnt/extra-addons
       - odoo_filestore:/var/lib/odoo
-      - ./config/odoo.conf:/etc/odoo/odoo.conf
+      - ./infrastructure/config/odoo.conf:/etc/odoo/odoo.conf
     restart: unless-stopped
     command: odoo --dev=all
 
