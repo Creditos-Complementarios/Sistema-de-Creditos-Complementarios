@@ -5,6 +5,7 @@
     <menuitem id="menu_actividades_root"
               name="Actividades Complementarias"
               sequence="50"
+              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_comite_academico,actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades"
               web_icon="actividades_complementarias,static/description/icon.png"/>
 
     <!-- ── Jefe de Departamento ──────────────────────────────────────────── -->
@@ -12,105 +13,105 @@
               name="Jefe de Departamento"
               parent="menu_actividades_root"
               sequence="10"
-              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_mis_actividades"
               name="Mis Actividades"
               parent="menu_jefe_depto"
               action="action_actividad_complementaria"
               sequence="10"
-              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_catalogo"
               name="Catálogo de Actividades"
               parent="menu_jefe_depto"
               action="action_actividad_catalogo"
               sequence="20"
-              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_mis_propuestas"
               name="Mis Propuestas al Comité"
               parent="menu_jefe_depto"
               action="action_propuesta"
               sequence="30"
-              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_gestion_personal"
               name="Gestión de Personal"
               parent="menu_jefe_depto"
               action="action_empleado_permiso"
               sequence="40"
-              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
 
     <!-- ── Personal de Departamento ──────────────────────────────────────── -->
     <menuitem id="menu_personal_depto"
               name="Personal de Departamento"
               parent="menu_actividades_root"
               sequence="30"
-              groups="actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_personal_mis_actividades"
               name="Mis Actividades"
               parent="menu_personal_depto"
               action="action_actividad_complementaria"
               sequence="10"
-              groups="actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_personal_catalogo"
               name="Catálogo de Actividades"
               parent="menu_personal_depto"
               action="action_actividad_catalogo"
               sequence="20"
-              groups="actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades"/>
 
     <!-- ── Comité Académico ───────────────────────────────────────────────── -->
     <menuitem id="menu_comite"
               name="Comité Académico"
               parent="menu_actividades_root"
               sequence="20"
-              groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_propuestas_pendientes"
               name="Propuestas Pendientes"
               parent="menu_comite"
               action="action_propuesta_pendiente"
               sequence="10"
-              groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_todas_propuestas"
               name="Todas las Propuestas"
               parent="menu_comite"
               action="action_propuesta_todas"
               sequence="20"
-              groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_catalogo_comite"
               name="Catálogo de Actividades"
               parent="menu_comite"
               action="action_catalogo_comite"
               sequence="30"
-              groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades"/>
 
     <!-- ── Configuración ─────────────────────────────────────────────────── -->
     <menuitem id="menu_configuracion"
               name="Configuración"
               parent="menu_actividades_root"
               sequence="90"
-              groups="actividades_complementarias.group_admin_actividades,actividades_complementarias.group_jefe_departamento,base.group_system"/>
+              groups="actividades_complementarias.group_admin_actividades,actividades_complementarias.group_jefe_departamento"/>
 
     <menuitem id="menu_tipos_actividad"
               name="Tipos de Actividad"
               parent="menu_configuracion"
               action="action_tipo_actividad"
               sequence="10"
-              groups="actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_periodos"
               name="Periodos Escolares"
               parent="menu_configuracion"
               action="action_periodo"
               sequence="20"
-              groups="actividades_complementarias.group_admin_actividades,actividades_complementarias.group_jefe_departamento,base.group_system"/>
+              groups="actividades_complementarias.group_admin_actividades,actividades_complementarias.group_jefe_departamento"/>
 
     <!-- ── Admin: todas las actividades sin filtro ───────────────────────── -->
     <menuitem id="menu_admin_todas_actividades"
@@ -118,6 +119,6 @@
               parent="menu_configuracion"
               action="action_actividad_todas"
               sequence="5"
-              groups="actividades_complementarias.group_admin_actividades,base.group_system"/>
+              groups="actividades_complementarias.group_admin_actividades"/>
 
 </odoo>

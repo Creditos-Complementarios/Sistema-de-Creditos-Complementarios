@@ -125,9 +125,7 @@ class WizardNuevaActividad(models.TransientModel):
         }
 
         if es_predefinida:
-            vals['responsable_actividad_id'] = (
-                self.responsable_actividad_id.id if self.responsable_actividad_id else False
-            )
+            vals['responsable_actividad_id'] = self.responsable_actividad_id.id if self.responsable_actividad_id else False
             vals['creditos'] = self.creditos
             vals['en_catalogo'] = False  # JD decide luego cuándo publicar
 

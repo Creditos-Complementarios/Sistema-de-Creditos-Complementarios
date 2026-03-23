@@ -3,12 +3,13 @@
     'name': 'Actividades Complementarias',
     'version': '19.0.1.0.0',
     'summary': 'Gestión de actividades complementarias para el Jefe de Departamento',
-    'description': (
-        'Módulo para la gestión de actividades complementarias. '
-        'Permite al Jefe de Departamento crear y proponer actividades '
-        'al Comité Académico, gestionar su ciclo de vida (aprobación, '
-        'asignación, difusión, firma) y delegar permisos a su personal.'
-    ),
+    'description': """
+        Módulo para la gestión de actividades complementarias.
+        Permite al Jefe de Departamento:
+        - Crear y proponer actividades complementarias al Comité Académico.
+        - Gestionar el ciclo de vida de las actividades (aprobación, asignación, difusión, firma).
+        - Delegar permisos a su personal de departamento.
+    """,
     'author': 'Desarrollo Institucional',
     'category': 'Education',
     'depends': ['base', 'mail', 'hr'],
@@ -28,15 +29,17 @@
         'views/wizard_views.xml',
         'views/menu_views.xml',
     ],
+
     'assets': {
         'web.assets_backend': [
             'actividades_complementarias/static/src/scss/style.scss',
         ],
     },
-    'demo': [
-        'data/demo_data.xml',
-    ],
+    
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
+    'demo': [
+        'data/demo_data.xml',
+    ],
 }
