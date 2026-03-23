@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     image: postgres:16
@@ -34,10 +32,12 @@ services:
       USER: ${POSTGRES_USER:-odoo}
       PASSWORD: ${POSTGRES_PASSWORD:-odoo}
     volumes:
-      # All paths are relative to the repo root (where this file lives).
-      - ./odoo/addons:/mnt/extra-addons
+      # Paths are relative to this file's location: infrastructure/
+      # ../odoo/addons  → goes up one level to repo root, then into odoo/addons
+      # ./config/...    → infrastructure/config/odoo.conf
+      - ../odoo/addons:/mnt/extra-addons
       - odoo_filestore:/var/lib/odoo
-      - ./infrastructure/config/odoo.conf:/etc/odoo/odoo.conf
+      - ./config/odoo.conf:/etc/odoo/odoo.conf
     restart: unless-stopped
     command: odoo --dev=all
 

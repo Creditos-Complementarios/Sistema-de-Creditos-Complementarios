@@ -102,7 +102,13 @@ odoo-data/
 db-data/
 
 # Override para desarrollo local (puede tener puertos, bind mounts personales)
-infra/docker-compose.override.yml
+infrastructure/docker-compose.override.yml
+
+# Directorios creados automáticamente por Docker cuando un bind-mount
+# no existe en el host — Docker los crea vacíos, no deben versionarse.
+infrastructure/infrastructure/
+infrastructure/odoo/
+infrastructure/addons/
 
 
 # ------------------------------------------------------------
