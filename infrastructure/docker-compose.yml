@@ -20,8 +20,6 @@ services:
       retries: 5
 
   odoo:
-    # For development: use the upstream image directly.
-    # For production (custom image): replace with `build: .` or your registry image.
     image: odoo:19.0
     container_name: odoo19_app
     depends_on:
@@ -29,18 +27,17 @@ services:
         condition: service_healthy
     ports:
       - "${ODOO_PORT:-8069}:8069"
-      - "${ODOO_LONGPOLL_PORT:-8072}:8072"   # longpolling / live chat
+      - "${ODOO_LONGPOLL_PORT:-8072}:8072"
     environment:
       HOST: db
       PORT: 5432
       USER: ${POSTGRES_USER:-odoo}
       PASSWORD: ${POSTGRES_PASSWORD:-odoo}
     volumes:
-      # Custom addons — mount your modules here during development
-      - ./addons:/mnt/extra-addons
-      # Persistent filestore (attachments, uploads)
+      # Paths are relative to this file's location (infrastructure/).
+      # ../odoo/addons climbs up to repo root, then into odoo/addons.
+      - ../odoo/addons:/mnt/extra-addons
       - odoo_filestore:/var/lib/odoo
-      # Odoo runtime config
       - ./config/odoo.conf:/etc/odoo/odoo.conf
     restart: unless-stopped
     command: odoo --dev=all
