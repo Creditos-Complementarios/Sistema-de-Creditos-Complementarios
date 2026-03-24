@@ -1,0 +1,10 @@
+<templates xml:space="preserve">
+    <t t-name="actividades_complementarias.DarkModeToggle" owl="1">
+        <div class="o_systray_item">
+            <label class="dark-switch">
+                <input type="checkbox" t-ref="checkbox" t-on-change="toggleDarkMode"/>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </t>
+</templates>

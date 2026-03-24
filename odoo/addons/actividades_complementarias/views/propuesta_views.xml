@@ -92,12 +92,27 @@
         <field name="domain">[('actividad_id.jefe_departamento_id', '=', uid)]</field>
     </record>
 
+    <record id="action_propuesta_pendiente" model="ir.actions.act_window">
+        <field name="name">Propuestas Pendientes</field>
+        <field name="res_model">actividad.propuesta</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('estado_code','=','en_revision')]</field>
+    </record>
 
+    <record id="action_propuesta_todas" model="ir.actions.act_window">
+        <field name="name">Todas las Propuestas</field>
+        <field name="res_model">actividad.propuesta</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-
-
-
-
+    <record id="action_catalogo_comite" model="ir.actions.act_window">
+        <field name="name">Catalogo de Actividades Aprobadas</field>
+        <field name="res_model">actividad.complementaria</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('estado_code', 'in', ['aprobada','pendiente_inicio','en_curso','finalizada'])]</field>
+        <field name="context">{'search_default_filter_catalogo': 0}</field>
+    </record>
+     <!-- Acción para cambiar el texto de propuestas pendientes -->
     <record id="action_propuesta_pendiente" model="ir.actions.act_window">
     <field name="name">Propuestas Pendientes</field>
     <field name="res_model">actividad.propuesta</field>
@@ -110,7 +125,7 @@
         <p>Las propuestas enviadas por los Jefes de Departamento aparecerán aquí.</p>
     </field>
 </record>
-
+<!-- Acción para cambiar el texto de todas las propuestas -->
 <record id="action_propuesta_todas" model="ir.actions.act_window">
     <field name="name">Todas las Propuestas</field>
     <field name="res_model">actividad.propuesta</field>
@@ -123,7 +138,7 @@
     </field>
 </record>
 
-
+   <!-- Acción para cambiar el texto de catalogo de actividades -->
    <record id="action_catalogo_comite" model="ir.actions.act_window">
     <field name="name">Catálogo de Actividades Aprobadas</field>
     <field name="res_model">actividad.complementaria</field>
