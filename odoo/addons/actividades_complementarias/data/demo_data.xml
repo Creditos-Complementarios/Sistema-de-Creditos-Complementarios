@@ -179,6 +179,11 @@
     <!--  DEPARTAMENTOS                                                      -->
     <!-- ================================================================== -->
 
+    <record id="depto_directivos" model="actividad.departamento">
+        <field name="name">Directivos</field>
+        <field name="jefe_id" ref="base.user_admin"/>
+    </record>
+
     <record id="depto_sistemas" model="actividad.departamento">
         <field name="name">Ingeniería en Sistemas Computacionales</field>
         <field name="jefe_id" ref="user_jefe_sistemas"/>
