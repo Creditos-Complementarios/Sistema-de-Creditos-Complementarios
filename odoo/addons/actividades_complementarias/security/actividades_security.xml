@@ -32,7 +32,15 @@
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
     </record>
 
-    <!-- Nuevos grupos -->
+    <!--
+        Departamento de Extraescolares (DE-01SC, DE-02SC, DE-03SC).
+        Grupo stub — añadir a DEPT_MAP en empleado_permiso.py al implementar este actor.
+    -->
+    <record id="group_personal_departamento_extraescolar" model="res.groups">
+        <field name="name">Personal de Departamento Extraescolar</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
     <record id="group_alumno" model="res.groups">
         <field name="name">Alumno</field>
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
@@ -41,6 +49,55 @@
     <record id="group_responsable_actividad" model="res.groups">
         <field name="name">Responsable de Actividad</field>
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!--
+        Servicios Escolares (SE-01SC..SE-04SC).
+        Grupo stub — añadir rows en ir.model.access.csv al implementar este actor.
+    -->
+    <record id="group_servicios_escolares" model="res.groups">
+        <field name="name">Servicios Escolares</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!--
+        División de Estudios Profesionales / Coordinador (DEP-C-01SC, DEP-C-02SC).
+        Grupo stub — puede difundir actividades y consultar expedientes de estudiantes.
+    -->
+    <record id="group_division_estudios" model="res.groups">
+        <field name="name">División de Estudios Profesionales / Coordinador</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         Record rules
+         Alumno     — solo ve actividades en catálogo (en_catalogo = True).
+         Responsable — solo ve actividades donde está asignado como responsable.
+         JD y Comité — el filtrado por departamento se gestiona en Python
+                       (_search override); no requieren record rules adicionales
+                       a menos que se necesite aislamiento multi-empresa.
+    ════════════════════════════════════════════════════════════════════ -->
+
+    <record id="rule_actividad_alumno" model="ir.rule">
+        <field name="name">Alumno: solo actividades en catálogo</field>
+        <field name="model_id" ref="model_actividad_complementaria"/>
+        <field name="domain_force">[('en_catalogo', '=', True)]</field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_actividad_responsable" model="ir.rule">
+        <field name="name">Responsable: solo sus actividades asignadas</field>
+        <field name="model_id" ref="model_actividad_complementaria"/>
+        <field name="domain_force">[('responsable_actividad_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
     </record>
 
 </odoo>
