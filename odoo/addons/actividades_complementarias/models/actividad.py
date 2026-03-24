@@ -67,6 +67,8 @@ class Actividad(models.Model):
     creditos = fields.Selection([
         ('0.5', '0.5 créditos'),
         ('1.0', '1 crédito'),
+        ('1.5', '1.5 créditos'),
+        ('2.0', '2 créditos'),
     ], string='Cantidad de Créditos')
     horario = fields.Text(string='Horario por Día (si aplica)')
 
@@ -110,7 +112,15 @@ class Actividad(models.Model):
 
     # ── Flags de control ─────────────────────────────────────────────────────
     en_catalogo = fields.Boolean(string='En Catálogo', default=False, tracking=True)
-    constancias_firmadas = fields.Boolean(string='Constancias Firmadas', default=False)
+    # Dual-signature: both JD and Responsable must sign before constancias reach students
+    jd_firmo = fields.Boolean(string='Firmado por Jefe de Departamento', default=False, tracking=True)
+    responsable_firmo = fields.Boolean(string='Firmado por Responsable de Actividad', default=False, tracking=True)
+    constancias_firmadas = fields.Boolean(
+        string='Constancias Firmadas',
+        compute='_compute_constancias_firmadas',
+        store=True,
+        help='True solo cuando tanto el JD como el Responsable de Actividad han firmado.',
+    )
     tiene_propuesta_activa = fields.Boolean(
         string='Tiene Propuesta Activa',
         compute='_compute_tiene_propuesta_activa',
@@ -203,6 +213,11 @@ class Actividad(models.Model):
                 )
                 rec.departamento_id = emp.departamento_id if emp else False
 
+    @api.depends('jd_firmo', 'responsable_firmo')
+    def _compute_constancias_firmadas(self):
+        for rec in self:
+            rec.constancias_firmadas = rec.jd_firmo and rec.responsable_firmo
+
     @api.depends('alumno_ids')
     def _compute_alumno_count(self):
         for rec in self:
@@ -227,13 +242,13 @@ class Actividad(models.Model):
         for rec in self:
             domain = [
                 ('name', '=ilike', rec.name),
-                ('periodo', '=', rec.periodo),
+                ('periodo', '=', rec.periodo.id),
                 ('id', '!=', rec.id),
                 ('estado_code', 'not in', ['rechazada', 'finalizada']),
             ]
             if self.search_count(domain):
                 raise ValidationError(
-                    f'Ya existe una actividad activa con el nombre "{rec.name}" en el periodo {rec.periodo}.'
+                    f'Ya existe una actividad activa con el nombre "{rec.name}" en el periodo {rec.periodo.name}.'
                 )
 
     @api.constrains('cupo_min', 'cupo_max', 'cupo_ilimitado')
@@ -328,12 +343,17 @@ class Actividad(models.Model):
         self.message_post(body='Actividad finalizada. Removida del catálogo automáticamente.')
 
     def action_firmar_constancias(self):
-        """Replica la firma del JD a todas las constancias de la actividad."""
+        """El JD firma su parte. Las constancias solo se liberan cuando ambos firmen."""
         self.ensure_one()
         if self.estado_code != 'finalizada':
             raise ValidationError('Solo se pueden firmar constancias de actividades finalizadas.')
-        self.write({'constancias_firmadas': True})
-        self.message_post(body='Constancias firmadas por el Jefe de Departamento.')
+        if self.jd_firmo:
+            raise ValidationError('El Jefe de Departamento ya firmó las constancias de esta actividad.')
+        self.write({'jd_firmo': True})
+        if self.constancias_firmadas:
+            self.message_post(body='Constancias firmadas por el Jefe de Departamento. Ambas firmas completas — constancias liberadas a expedientes.')
+        else:
+            self.message_post(body='Constancias firmadas por el Jefe de Departamento. Pendiente firma del Responsable de Actividad.')
 
     def _actualizar_estado_por_fecha(self):
         """Cron: actualiza estados según fechas."""
