@@ -145,11 +145,30 @@ class TestActividad(TransactionCase):
         with self.assertRaises(ValidationError):
             actividad.action_firmar_constancias()
 
-    def test_firmar_constancias_finalizada_ok(self):
-        """Una actividad finalizada puede tener constancias firmadas."""
+    def test_firmar_constancias_jd_ok(self):
+        """El JD puede firmar su parte en una actividad finalizada."""
         actividad = self._make_actividad(estado_id=self.estado_finalizada.id)
         actividad.action_firmar_constancias()
+        self.assertTrue(actividad.jd_firmo)
+
+    def test_constancias_firmadas_solo_con_ambas_firmas(self):
+        """constancias_firmadas es True solo cuando JD Y Responsable han firmado."""
+        actividad = self._make_actividad(estado_id=self.estado_finalizada.id)
+        # Solo JD firma
+        actividad.action_firmar_constancias()
+        self.assertTrue(actividad.jd_firmo)
+        self.assertFalse(actividad.responsable_firmo)
+        self.assertFalse(actividad.constancias_firmadas)
+        # Responsable firma también
+        actividad.write({'responsable_firmo': True})
         self.assertTrue(actividad.constancias_firmadas)
+
+    def test_jd_no_puede_firmar_dos_veces(self):
+        """El JD no puede firmar las constancias más de una vez."""
+        actividad = self._make_actividad(estado_id=self.estado_finalizada.id)
+        actividad.action_firmar_constancias()
+        with self.assertRaises(ValidationError):
+            actividad.action_firmar_constancias()
 
     # ── Computes ─────────────────────────────────────────────────────────────
 
