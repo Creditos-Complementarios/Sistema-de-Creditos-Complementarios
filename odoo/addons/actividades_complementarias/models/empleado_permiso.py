@@ -3,6 +3,17 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from datetime import date, timedelta
 
+# Mapping: keyword found in departamento.name → (rama_key, group_xmlid)
+# Add new departments here — nowhere else in this file needs to change.
+DEPT_MAP = [
+    ('sistem',   'sistemas',  'actividades_complementarias.group_personal_departamento_sistemas'),
+    ('electr',   'electrica', 'actividades_complementarias.group_personal_departamento_electrica'),
+    ('biol',     'biologia',  'actividades_complementarias.group_personal_departamento_biologia'),
+    ('extraesc', 'extraescolar', 'actividades_complementarias.group_personal_departamento_extraescolar'),
+]
+# Reverse lookup: rama_key → group_xmlid
+RAMA_TO_GROUP = {rama: xmlid for _, rama, xmlid in DEPT_MAP}
+
 
 class EmpleadoPermiso(models.Model):
     _name = 'actividad.empleado.permiso'
@@ -91,13 +102,6 @@ class EmpleadoPermiso(models.Model):
         if self.env.user.has_group('actividades_complementarias.group_admin_actividades'):
             return []  # Admin ve todos los usuarios
 
-        # Mapeo: palabras clave en nombre de departamento → group xmlid
-        DEPT_GROUP_MAP = [
-            ('sistem',   'actividades_complementarias.group_personal_departamento_sistemas'),
-            ('electr',   'actividades_complementarias.group_personal_departamento_electrica'),
-            ('biol',     'actividades_complementarias.group_personal_departamento_biologia'),
-        ]
-
         # 1. Buscar el departamento donde el usuario en sesión es Jefe
         self.env.cr.execute(
             "SELECT name FROM actividad_departamento WHERE jefe_id = %s LIMIT 1",
@@ -108,34 +112,28 @@ class EmpleadoPermiso(models.Model):
         grupo_xmlid = None
         if row:
             dept_name = row[0].lower()
-            for keyword, xmlid in DEPT_GROUP_MAP:
+            for keyword, _rama, xmlid in DEPT_MAP:
                 if keyword in dept_name:
                     grupo_xmlid = xmlid
                     break
 
         # 2. Fallback: buscar por departamento_grupo en actividad_empleado_permiso
         if not grupo_xmlid:
-            GROUP_MAP = {
-                'sistemas':  'actividades_complementarias.group_personal_departamento_sistemas',
-                'electrica': 'actividades_complementarias.group_personal_departamento_electrica',
-                'biologia':  'actividades_complementarias.group_personal_departamento_biologia',
-            }
             self.env.cr.execute(
                 "SELECT departamento_grupo FROM actividad_empleado_permiso WHERE user_id = %s LIMIT 1",
                 (self.env.user.id,)
             )
             row2 = self.env.cr.fetchone()
-            if row2 and row2[0] in GROUP_MAP:
-                grupo_xmlid = GROUP_MAP[row2[0]]
+            if row2 and row2[0] in RAMA_TO_GROUP:
+                grupo_xmlid = RAMA_TO_GROUP[row2[0]]
 
         if not grupo_xmlid:
-            return [('id', '=', False)]  # No se pudo determinar el departamento
+            return [('id', '=', False)]
 
         grupo = self.env.ref(grupo_xmlid, raise_if_not_found=False)
         if not grupo:
             return [('id', '=', False)]
 
-        # Odoo 19: usar SQL para obtener usuarios del grupo
         self.env.cr.execute(
             "SELECT uid FROM res_groups_users_rel WHERE gid = %s",
             (grupo.id,)
@@ -164,12 +162,6 @@ class EmpleadoPermiso(models.Model):
         if self.env.user.has_group('actividades_complementarias.group_admin_actividades'):
             return
 
-        # Detectar rama del JD: primero en actividad_departamento (como jefe_id)
-        DEPT_GROUP_MAP = [
-            ('sistem',  'sistemas'),
-            ('electr',  'electrica'),
-            ('biol',    'biologia'),
-        ]
         self.env.cr.execute(
             "SELECT name FROM actividad_departamento WHERE jefe_id = %s LIMIT 1",
             (self.env.user.id,)
@@ -177,11 +169,10 @@ class EmpleadoPermiso(models.Model):
         row_dept = self.env.cr.fetchone()
         rama_jefe = None
         if row_dept:
-            for keyword, rama in DEPT_GROUP_MAP:
+            for keyword, rama, _xmlid in DEPT_MAP:
                 if keyword in row_dept[0].lower():
                     rama_jefe = rama
                     break
-        # Fallback: buscar en actividad_empleado_permiso
         if not rama_jefe:
             self.env.cr.execute(
                 "SELECT departamento_grupo FROM actividad_empleado_permiso WHERE user_id = %s LIMIT 1",
@@ -192,18 +183,13 @@ class EmpleadoPermiso(models.Model):
                 rama_jefe = row[0]
         if not rama_jefe:
             return
+        nombres = {rama: rama.capitalize() for _, rama, _ in DEPT_MAP}
         for rec in self:
-            if rec.departamento_grupo and rama_jefe:
-                if rec.departamento_grupo != rama_jefe:
-                    nombres = {
-                        'sistemas':  'Sistemas',
-                        'electrica': 'Eléctrica',
-                        'biologia':  'Biología',
-                    }
-                    raise ValidationError(
-                        f'Solo puede asignar empleados de su misma rama de departamento '
-                        f'({nombres.get(rama_jefe, rama_jefe)}).'
-                    )
+            if rec.departamento_grupo and rec.departamento_grupo != rama_jefe:
+                raise ValidationError(
+                    f'Solo puede asignar empleados de su misma rama de departamento '
+                    f'({nombres.get(rama_jefe, rama_jefe)}).'
+                )
 
     # ────────────────────────────────────────────────────────────────────────
     # ORM overrides — filtrado automático por rama en la lista
@@ -213,40 +199,28 @@ class EmpleadoPermiso(models.Model):
     def _search(self, domain, offset=0, limit=None, order=None, **kwargs):
         """
         Restringe la lista a registros del mismo departamento para el JD.
-        Usa SQL directo para obtener la rama y asi evitar recursion.
+        Usa SQL directo para obtener la rama y así evitar recursión.
         """
         if not self.env.user.has_group('actividades_complementarias.group_admin_actividades'):
-            DEPT_GROUP_MAP_SEARCH = [
-                ('sistem',  'actividades_complementarias.group_personal_departamento_sistemas'),
-                ('electr',  'actividades_complementarias.group_personal_departamento_electrica'),
-                ('biol',    'actividades_complementarias.group_personal_departamento_biologia'),
-            ]
-            RAMA_GROUP_MAP = {
-                'sistemas':  'actividades_complementarias.group_personal_departamento_sistemas',
-                'electrica': 'actividades_complementarias.group_personal_departamento_electrica',
-                'biologia':  'actividades_complementarias.group_personal_departamento_biologia',
-            }
             grupo_xmlid = None
-            # Try actividad_departamento first (JD lookup)
             self.env.cr.execute(
                 "SELECT name FROM actividad_departamento WHERE jefe_id = %s LIMIT 1",
                 (self.env.user.id,)
             )
             row_dept = self.env.cr.fetchone()
             if row_dept:
-                for keyword, xmlid in DEPT_GROUP_MAP_SEARCH:
+                for keyword, _rama, xmlid in DEPT_MAP:
                     if keyword in row_dept[0].lower():
                         grupo_xmlid = xmlid
                         break
-            # Fallback
             if not grupo_xmlid:
                 self.env.cr.execute(
                     "SELECT departamento_grupo FROM actividad_empleado_permiso WHERE user_id = %s LIMIT 1",
                     (self.env.user.id,)
                 )
                 row2 = self.env.cr.fetchone()
-                if row2 and row2[0] in RAMA_GROUP_MAP:
-                    grupo_xmlid = RAMA_GROUP_MAP[row2[0]]
+                if row2 and row2[0] in RAMA_TO_GROUP:
+                    grupo_xmlid = RAMA_TO_GROUP[row2[0]]
             if grupo_xmlid:
                 grupo = self.env.ref(grupo_xmlid, raise_if_not_found=False)
                 if grupo:
@@ -268,19 +242,13 @@ class EmpleadoPermiso(models.Model):
     def sincronizar_personal_departamento(self):
         """
         Crea registros de EmpleadoPermiso para todos los usuarios que pertenezcan
-        al grupo de seguridad del departamento del JD en sesion, si aun no existen.
+        al grupo de seguridad del departamento del JD en sesión, si aún no existen.
         Excluye al propio Jefe de Departamento.
         """
         if self.env.user.has_group('actividades_complementarias.group_admin_actividades'):
             return  # El admin no necesita auto-sync
 
-        DEPT_GROUP_MAP = [
-            ('sistem',   'sistemas',  'actividades_complementarias.group_personal_departamento_sistemas'),
-            ('electr',   'electrica', 'actividades_complementarias.group_personal_departamento_electrica'),
-            ('biol',     'biologia',  'actividades_complementarias.group_personal_departamento_biologia'),
-        ]
-
-        # 1. Detectar departamento del JD en sesion
+        # 1. Detectar departamento del JD en sesión
         self.env.cr.execute(
             "SELECT id, name FROM actividad_departamento WHERE jefe_id = %s LIMIT 1",
             (self.env.user.id,)
@@ -294,7 +262,7 @@ class EmpleadoPermiso(models.Model):
 
         rama = None
         grupo_xmlid = None
-        for keyword, rama_key, xmlid in DEPT_GROUP_MAP:
+        for keyword, rama_key, xmlid in DEPT_MAP:
             if keyword in dept_name_lower:
                 rama = rama_key
                 grupo_xmlid = xmlid
