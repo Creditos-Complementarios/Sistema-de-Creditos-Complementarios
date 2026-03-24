@@ -351,9 +351,13 @@ class Actividad(models.Model):
             raise ValidationError('El Jefe de Departamento ya firmó las constancias de esta actividad.')
         self.write({'jd_firmo': True})
         if self.constancias_firmadas:
-            self.message_post(body='Constancias firmadas por el Jefe de Departamento. Ambas firmas completas — constancias liberadas a expedientes.')
+            self.message_post(
+                body='Constancias firmadas por el Jefe de Departamento. Ambas firmas completas — constancias liberadas a expedientes.'
+                )
         else:
-            self.message_post(body='Constancias firmadas por el Jefe de Departamento. Pendiente firma del Responsable de Actividad.')
+            self.message_post(
+                body='Constancias firmadas por el Jefe de Departamento. Pendiente firma del Responsable de Actividad.'
+                )
 
     def _actualizar_estado_por_fecha(self):
         """Cron: actualiza estados según fechas."""
