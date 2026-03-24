@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Actividades Complementarias',
-    'version': '19.0.1.0.0',
-    'summary': 'Gestión de actividades complementarias para el Jefe de Departamento',
+    'version': '19.0.1.1.0',
+    'summary': 'Sistema de Créditos Complementarios — ITCH',
     'description': (
-        'Módulo para la gestión de actividades complementarias. '
-        'Permite al Jefe de Departamento crear y proponer actividades '
-        'al Comité Académico, gestionar su ciclo de vida (aprobación, '
-        'asignación, difusión, firma) y delegar permisos a su personal.'
+        'Gestión integral del ciclo de créditos complementarios del '
+        'Instituto Tecnológico de Chetumal. Cubre: propuesta y aprobación '
+        'de actividades (JD / Comité Académico), inscripción y seguimiento '
+        'de estudiantes, asistencia y evidencias (Responsable de Actividad), '
+        'generación y firma dual de constancias, y liberación de créditos '
+        '(Servicios Escolares).'
     ),
     'author': 'Desarrollo Institucional',
     'category': 'Education',
