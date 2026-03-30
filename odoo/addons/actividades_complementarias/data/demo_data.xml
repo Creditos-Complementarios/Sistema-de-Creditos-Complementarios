@@ -4,6 +4,23 @@
 
     <!-- ================================================================== -->
     <!--  USUARIOS DE PRUEBA  (contraseña: Admin1234!)                      -->
+    <!--                                                                    -->
+    <!--  Jefes de Departamento                                             -->
+    <!--    jefe.sistemas@ittech.edu.mx      Dr. Carlos Mendoza             -->
+    <!--    jefe.electronica@ittech.edu.mx   Dra. Patricia Ruiz             -->
+    <!--    jefe.biologia@ittech.edu.mx      Dr. Ernesto Vargas             -->
+    <!--  Comité Académico                                                  -->
+    <!--    comite1@ittech.edu.mx            M.C. Roberto Sánchez           -->
+    <!--    comite2@ittech.edu.mx            Dra. Ana Flores                -->
+    <!--  Responsables de Actividad                                         -->
+    <!--    responsable1@ittech.edu.mx       Prof. María González           -->
+    <!--    responsable2@ittech.edu.mx       Prof. Héctor Fuentes           -->
+    <!--    responsable3@ittech.edu.mx       Prof. Lucía Mora               -->
+    <!--  Personal de Departamento                                          -->
+    <!--    personal.sistemas@ittech.edu.mx  Ing. Luis Torres               -->
+    <!--    personal.electrica@ittech.edu.mx Ing. Sofía Ramírez             -->
+    <!--  Alumnos                                                           -->
+    <!--    alumno1..alumno8@ittech.edu.mx                                  -->
     <!-- ================================================================== -->
 
     <record id="user_jefe_sistemas" model="res.users">
@@ -17,6 +34,14 @@
     <record id="user_jefe_electronica" model="res.users">
         <field name="name">Dra. Patricia Ruiz</field>
         <field name="login">jefe.electronica@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_jefe_departamento'))]"/>
+    </record>
+
+    <record id="user_jefe_biologia" model="res.users">
+        <field name="name">Dr. Ernesto Vargas</field>
+        <field name="login">jefe.biologia@ittech.edu.mx</field>
         <field name="password">Admin1234!</field>
         <field name="company_id" ref="base.main_company"/>
         <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_jefe_departamento'))]"/>
@@ -38,25 +63,6 @@
         <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_comite_academico'))]"/>
     </record>
 
-    <!-- Personal de Sistemas -->
-    <record id="user_personal_sistemas" model="res.users">
-        <field name="name">Ing. Luis Torres</field>
-        <field name="login">personal.sistemas@ittech.edu.mx</field>
-        <field name="password">Admin1234!</field>
-        <field name="company_id" ref="base.main_company"/>
-        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_sistemas'))]"/>
-    </record>
-
-    <!-- Personal de Eléctrica -->
-    <record id="user_personal_electrica" model="res.users">
-        <field name="name">Ing. Sofía Ramírez</field>
-        <field name="login">personal.electrica@ittech.edu.mx</field>
-        <field name="password">Admin1234!</field>
-        <field name="company_id" ref="base.main_company"/>
-        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_electrica'))]"/>
-    </record>
-
-    <!-- Responsable de Actividad -->
     <record id="user_responsable_1" model="res.users">
         <field name="name">Prof. María González</field>
         <field name="login">responsable1@ittech.edu.mx</field>
@@ -65,16 +71,102 @@
         <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
     </record>
 
-    <!-- Alumno de prueba -->
+    <record id="user_responsable_2" model="res.users">
+        <field name="name">Prof. Héctor Fuentes</field>
+        <field name="login">responsable2@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+
+    <record id="user_responsable_3" model="res.users">
+        <field name="name">Prof. Lucía Mora</field>
+        <field name="login">responsable3@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+
+    <record id="user_personal_sistemas" model="res.users">
+        <field name="name">Ing. Luis Torres</field>
+        <field name="login">personal.sistemas@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_sistemas'))]"/>
+    </record>
+
+    <record id="user_personal_electrica" model="res.users">
+        <field name="name">Ing. Sofía Ramírez</field>
+        <field name="login">personal.electrica@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_electrica'))]"/>
+    </record>
+
     <record id="user_alumno_1" model="res.users">
-        <field name="name">Alum. Jorge Pérez</field>
+        <field name="name">Jorge Pérez Castillo</field>
         <field name="login">alumno1@ittech.edu.mx</field>
         <field name="password">Admin1234!</field>
         <field name="company_id" ref="base.main_company"/>
         <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
     </record>
 
-    <!-- Superusuario (admin) con acceso completo al módulo -->
+    <record id="user_alumno_2" model="res.users">
+        <field name="name">Andrea López Méndez</field>
+        <field name="login">alumno2@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+
+    <record id="user_alumno_3" model="res.users">
+        <field name="name">Miguel Ángel Herrera</field>
+        <field name="login">alumno3@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+
+    <record id="user_alumno_4" model="res.users">
+        <field name="name">Daniela Reyes Ortega</field>
+        <field name="login">alumno4@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+
+    <record id="user_alumno_5" model="res.users">
+        <field name="name">Fernando Gómez Ruiz</field>
+        <field name="login">alumno5@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+
+    <record id="user_alumno_6" model="res.users">
+        <field name="name">Valeria Cruz Jiménez</field>
+        <field name="login">alumno6@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+
+    <record id="user_alumno_7" model="res.users">
+        <field name="name">Rodrigo Núñez Soto</field>
+        <field name="login">alumno7@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+
+    <record id="user_alumno_8" model="res.users">
+        <field name="name">Camila Morales Vega</field>
+        <field name="login">alumno8@ittech.edu.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+
     <record id="base.user_admin" model="res.users">
         <field name="group_ids" eval="[
             (4, ref('actividades_complementarias.group_admin_actividades')),
@@ -87,6 +179,11 @@
     <!--  DEPARTAMENTOS                                                      -->
     <!-- ================================================================== -->
 
+    <record id="depto_directivos" model="actividad.departamento">
+        <field name="name">Directivos</field>
+        <field name="jefe_id" ref="base.user_admin"/>
+    </record>
+
     <record id="depto_sistemas" model="actividad.departamento">
         <field name="name">Ingeniería en Sistemas Computacionales</field>
         <field name="jefe_id" ref="user_jefe_sistemas"/>
@@ -97,8 +194,13 @@
         <field name="jefe_id" ref="user_jefe_electronica"/>
     </record>
 
+    <record id="depto_biologia" model="actividad.departamento">
+        <field name="name">Ingeniería en Biología</field>
+        <field name="jefe_id" ref="user_jefe_biologia"/>
+    </record>
+
     <!-- ================================================================== -->
-    <!--  PERMISOS DELEGADOS                                                -->
+    <!--  PERMISOS DELEGADOS                                                 -->
     <!-- ================================================================== -->
 
     <record id="permiso_personal_sistemas" model="actividad.empleado.permiso">
@@ -126,12 +228,20 @@
     </record>
 
     <!-- ================================================================== -->
-    <!--  ACTIVIDADES COMPLEMENTARIAS                                       -->
+    <!--  ACTIVIDADES COMPLEMENTARIAS                                        -->
+    <!--                                                                     -->
+    <!--  Estado aprobada    : act_futbol                                    -->
+    <!--  Estado pend_inicio : act_robotica, act_mooc_python, act_fotografia -->
+    <!--  Estado en_curso    : act_teatro, act_danza                         -->
+    <!--  Estado finalizada  : act_ingles (JD firmó, RA pendiente)           -->
+    <!--                       act_servicio_social (ambas firmas)            -->
+    <!--  Estado en_revision : act_hackathon                                 -->
+    <!--  Estado rechazada   : act_ajedrez                                   -->
     <!-- ================================================================== -->
 
     <record id="act_futbol" model="actividad.complementaria">
         <field name="name">Fútbol Representativo</field>
-        <field name="descripcion">Equipo representativo de fútbol del instituto. Entrenos y torneos regionales.</field>
+        <field name="descripcion">Equipo representativo de fútbol del instituto. Entrenos semanales y participación en torneos regionales del TecNM.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_deportiva"/>
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
@@ -148,7 +258,7 @@
 
     <record id="act_robotica" model="actividad.complementaria">
         <field name="name">Club de Robótica</field>
-        <field name="descripcion">Diseño y construcción de robots para competencias nacionales e internacionales.</field>
+        <field name="descripcion">Diseño y construcción de robots para competencias nacionales e internacionales. Se trabaja con Arduino, ROS y visión artificial.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_academica"/>
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
@@ -162,43 +272,123 @@
         <field name="cupo_max">15</field>
         <field name="estado_id" ref="actividades_complementarias.estado_pendiente_inicio"/>
         <field name="en_catalogo">True</field>
+        <field name="alumno_ids" eval="[(4, ref('user_alumno_1')), (4, ref('user_alumno_2')), (4, ref('user_alumno_3'))]"/>
+    </record>
+
+    <record id="act_mooc_python" model="actividad.complementaria">
+        <field name="name">Python para Ingeniería (MOOC)</field>
+        <field name="descripcion">Curso en línea de Python orientado a aplicaciones de ingeniería. Módulos de análisis de datos, automatización y certificado al terminar.</field>
+        <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_academica"/>
+        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
+        <field name="responsable_actividad_id" ref="user_responsable_2"/>
+        <field name="fecha_inicio">2026-04-14</field>
+        <field name="fecha_fin">2026-06-30</field>
+        <field name="cantidad_horas">40</field>
+        <field name="creditos">1.0</field>
+        <field name="cupo_ilimitado">True</field>
+        <field name="estado_id" ref="actividades_complementarias.estado_pendiente_inicio"/>
+        <field name="en_catalogo">True</field>
+        <field name="alumno_ids" eval="[(4, ref('user_alumno_4')), (4, ref('user_alumno_5')), (4, ref('user_alumno_6')), (4, ref('user_alumno_7'))]"/>
+    </record>
+
+    <record id="act_fotografia" model="actividad.complementaria">
+        <field name="name">Taller de Fotografía Científica</field>
+        <field name="descripcion">Técnicas de fotografía aplicadas a la documentación de proyectos científicos e ingeniería. Uso de DSLR, iluminación y edición básica.</field>
+        <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_cultural"/>
+        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="jefe_departamento_id" ref="user_jefe_biologia"/>
+        <field name="responsable_actividad_id" ref="user_responsable_3"/>
+        <field name="fecha_inicio">2026-04-20</field>
+        <field name="fecha_fin">2026-06-20</field>
+        <field name="cantidad_horas">30</field>
+        <field name="creditos">0.5</field>
+        <field name="horario">Viernes 14:00-17:00</field>
+        <field name="cupo_min">5</field>
+        <field name="cupo_max">20</field>
+        <field name="estado_id" ref="actividades_complementarias.estado_pendiente_inicio"/>
+        <field name="en_catalogo">True</field>
     </record>
 
     <record id="act_teatro" model="actividad.complementaria">
         <field name="name">Teatro y Expresión Oral</field>
-        <field name="descripcion">Taller de expresión oral y corporal orientado al desarrollo de habilidades de comunicación.</field>
+        <field name="descripcion">Taller de expresión oral y corporal orientado al desarrollo de habilidades de comunicación profesional y presentaciones en público.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_cultural"/>
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_electronica"/>
-        <field name="responsable_actividad_id" ref="user_responsable_1"/>
-        <field name="fecha_inicio">2026-01-10</field>
-        <field name="fecha_fin">2026-03-10</field>
+        <field name="responsable_actividad_id" ref="user_responsable_2"/>
+        <field name="fecha_inicio">2026-05-01</field>
+        <field name="fecha_fin">2026-06-30</field>
         <field name="cantidad_horas">40</field>
         <field name="creditos">0.5</field>
+        <field name="horario">Miércoles 17:00-19:00</field>
         <field name="cupo_min">8</field>
         <field name="cupo_max">25</field>
         <field name="estado_id" ref="actividades_complementarias.estado_en_curso"/>
+        <field name="alumno_ids" eval="[(4, ref('user_alumno_1')), (4, ref('user_alumno_4')), (4, ref('user_alumno_8'))]"/>
     </record>
 
+    <record id="act_danza" model="actividad.complementaria">
+        <field name="name">Danza Folclórica Regional</field>
+        <field name="descripcion">Conjunto representativo de danza folclórica. Participación en eventos institucionales y competencias culturales del TecNM.</field>
+        <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_cultural"/>
+        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="jefe_departamento_id" ref="user_jefe_biologia"/>
+        <field name="responsable_actividad_id" ref="user_responsable_3"/>
+        <field name="fecha_inicio">2026-05-15</field>
+        <field name="fecha_fin">2026-07-15</field>
+        <field name="cantidad_horas">50</field>
+        <field name="creditos">0.5</field>
+        <field name="horario">Lunes y Jueves 18:00-20:00</field>
+        <field name="cupo_min">10</field>
+        <field name="cupo_max">30</field>
+        <field name="estado_id" ref="actividades_complementarias.estado_en_curso"/>
+        <field name="alumno_ids" eval="[(4, ref('user_alumno_2')), (4, ref('user_alumno_5')), (4, ref('user_alumno_6'))]"/>
+    </record>
+
+    <!-- Finalizada: JD firmó, responsable pendiente — constancias_firmadas = False -->
     <record id="act_ingles" model="actividad.complementaria">
         <field name="name">Curso de Inglés Técnico</field>
-        <field name="descripcion">Curso intensivo de inglés enfocado en vocabulario técnico para ingeniería.</field>
+        <field name="descripcion">Curso intensivo de inglés enfocado en vocabulario técnico para ingeniería. Preparación para TOEFL básico.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_academica"/>
         <field name="periodo" ref="actividades_complementarias.periodo_2025_B"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
         <field name="responsable_actividad_id" ref="user_responsable_1"/>
-        <field name="fecha_inicio">2025-08-01</field>
-        <field name="fecha_fin">2025-12-15</field>
+        <field name="fecha_inicio">2026-08-01</field>
+        <field name="fecha_fin">2026-12-15</field>
         <field name="cantidad_horas">60</field>
         <field name="creditos">0.5</field>
         <field name="cupo_min">10</field>
         <field name="cupo_max">30</field>
         <field name="estado_id" ref="actividades_complementarias.estado_finalizada"/>
+        <field name="jd_firmo">True</field>
+        <field name="responsable_firmo">False</field>
+        <field name="alumno_ids" eval="[(4, ref('user_alumno_3')), (4, ref('user_alumno_7'))]"/>
+    </record>
+
+    <!-- Finalizada: ambas firmas — constancias_firmadas = True (computed) -->
+    <record id="act_servicio_social" model="actividad.complementaria">
+        <field name="name">Servicio Social Comunitario</field>
+        <field name="descripcion">Programa de servicio social en comunidades rurales de Quintana Roo. Talleres de alfabetización digital y mantenimiento de equipos de cómputo.</field>
+        <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_servicio_social"/>
+        <field name="periodo" ref="actividades_complementarias.periodo_2025_B"/>
+        <field name="jefe_departamento_id" ref="user_jefe_electronica"/>
+        <field name="responsable_actividad_id" ref="user_responsable_2"/>
+        <field name="fecha_inicio">2026-08-10</field>
+        <field name="fecha_fin">2026-11-30</field>
+        <field name="cantidad_horas">120</field>
+        <field name="creditos">2.0</field>
+        <field name="cupo_min">5</field>
+        <field name="cupo_max">20</field>
+        <field name="estado_id" ref="actividades_complementarias.estado_finalizada"/>
+        <field name="jd_firmo">True</field>
+        <field name="responsable_firmo">True</field>
+        <field name="alumno_ids" eval="[(4, ref('user_alumno_1')), (4, ref('user_alumno_2')), (4, ref('user_alumno_8'))]"/>
     </record>
 
     <record id="act_hackathon" model="actividad.complementaria">
         <field name="name">Hackathon Institucional de IA</field>
-        <field name="descripcion">Competencia de 48 horas para desarrollar soluciones con inteligencia artificial aplicada a problemáticas sociales.</field>
+        <field name="descripcion">Competencia de 48 horas para desarrollar soluciones con inteligencia artificial aplicada a problemáticas sociales reales del estado de Quintana Roo.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_nueva"/>
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
@@ -209,39 +399,22 @@
         <field name="estado_id" ref="actividades_complementarias.estado_en_revision"/>
     </record>
 
-    <record id="act_rechazada" model="actividad.complementaria">
+    <record id="act_ajedrez" model="actividad.complementaria">
         <field name="name">Torneo de Ajedrez Interinstitucional</field>
-        <field name="descripcion">Torneo de ajedrez con participación de varios institutos de la región.</field>
+        <field name="descripcion">Torneo de ajedrez con participación de varios institutos de la región sureste del TecNM.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_deportiva"/>
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_electronica"/>
-        <field name="fecha_inicio">2026-03-20</field>
-        <field name="fecha_fin">2026-03-21</field>
+        <field name="fecha_inicio">2026-05-20</field>
+        <field name="fecha_fin">2026-05-21</field>
         <field name="cantidad_horas">8</field>
         <field name="cupo_min">4</field>
         <field name="cupo_max">16</field>
         <field name="estado_id" ref="actividades_complementarias.estado_rechazada"/>
     </record>
 
-    <!-- Actividad predefinida de ejemplo: Curso MOOC -->
-    <record id="act_mooc_python" model="actividad.complementaria">
-        <field name="name">Python para Ingeniería (MOOC)</field>
-        <field name="descripcion">Curso en línea de Python orientado a aplicaciones de ingeniería. Certificado al terminar.</field>
-        <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_academica"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
-        <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
-        <field name="responsable_actividad_id" ref="user_responsable_1"/>
-        <field name="fecha_inicio">2026-04-01</field>
-        <field name="fecha_fin">2026-06-30</field>
-        <field name="cantidad_horas">40</field>
-        <field name="creditos">1.0</field>
-        <field name="cupo_ilimitado">True</field>
-        <field name="estado_id" ref="actividades_complementarias.estado_pendiente_inicio"/>
-        <field name="en_catalogo">True</field>
-    </record>
-
     <!-- ================================================================== -->
-    <!--  PROPUESTAS AL COMITÉ                                              -->
+    <!--  PROPUESTAS AL COMITÉ                                               -->
     <!-- ================================================================== -->
 
     <record id="propuesta_hackathon" model="actividad.propuesta">
@@ -255,9 +428,9 @@
     </record>
 
     <record id="propuesta_ajedrez" model="actividad.propuesta">
-        <field name="actividad_id" ref="act_rechazada"/>
+        <field name="actividad_id" ref="act_ajedrez"/>
         <field name="estado_solicitud_id" ref="actividades_complementarias.estado_solicitud_rechazada"/>
-        <field name="motivo_rechazo">La actividad no cumple con el mínimo de horas requeridas para otorgar créditos complementarios. Se solicita ampliar la duración o replantear el formato.</field>
+        <field name="motivo_rechazo">La actividad no cumple con el mínimo de horas requeridas para otorgar créditos complementarios (mínimo 20 h). Se solicita ampliar la duración o replantear el formato del evento.</field>
     </record>
 
 </data>
