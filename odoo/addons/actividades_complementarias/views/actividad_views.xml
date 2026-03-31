@@ -40,7 +40,7 @@
                 <field name="fecha_inicio"/>
                 <field name="fecha_fin"/>
                 <field name="estado_id"/>
-                <field name="en_catalogo" widget="boolean_toggle"/>
+                <field name="en_catalogo" widget="boolean_toggle" readonly="1"/>
                 <field name="alumno_count" string="Alumnos"/>
                 <field name="estado_code" column_invisible="1"/>
             </list>
