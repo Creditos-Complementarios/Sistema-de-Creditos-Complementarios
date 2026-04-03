@@ -11,11 +11,11 @@ class WizardAprobarPropuesta(models.TransientModel):
     propuesta_id = fields.Many2one('actividad.propuesta', string='Propuesta', required=True)
     nombre_actividad = fields.Char(string='Actividad', readonly=True)
     creditos = fields.Selection([
-        ('0.5', '0.5 creditos'),
-        ('1.0', '1 credito'),
-        ('1.5', '1.5 creditos'),
-        ('2.0', '2 creditos'),
-    ], string='Creditos Asignados', required=True)
+        ('0.5', '0.5 créditos'),
+        ('1.0', '1 crédito'),
+        ('1.5', '1.5 créditos'),
+        ('2.0', '2 créditos'),
+    ], string='Créditos Asignados', required=True)
 
     @api.model
     def default_get(self, fields_list):
@@ -30,6 +30,9 @@ class WizardAprobarPropuesta(models.TransientModel):
         self.ensure_one()
         if not self.creditos:
             raise ValidationError('Debe asignar los creditos a la actividad.')
-        self.propuesta_id.actividad_id.write({'creditos': self.creditos})
+        # bypass_edit_protection: el Comité asigna créditos como acción de negocio
+        self.propuesta_id.actividad_id.with_context(bypass_edit_protection=True).write(
+            {'creditos': self.creditos}
+        )
         self.propuesta_id.action_aprobar()
         return {'type': 'ir.actions.act_window_close'}
