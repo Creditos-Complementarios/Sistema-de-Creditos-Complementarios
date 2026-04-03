@@ -234,6 +234,7 @@ class Actividad(models.Model):
             if depto:
                 rec.departamento_id = depto
             else:
+                # Fallback: buscar en el registro de permisos del empleado
                 emp = self.env['actividad.empleado.permiso'].search(
                     [('user_id', '=', rec.jefe_departamento_id.id)], limit=1
                 )
@@ -434,6 +435,7 @@ class Actividad(models.Model):
     @api.constrains('fecha_inicio', 'fecha_fin')
     def _check_fechas(self):
         for rec in self:
+            # No validar fechas pasadas cuando se cargan datos de demo o desde el sistema
             if not self.env.context.get('install_demo') and not self.env.context.get('skip_fecha_check'):
                 if rec.fecha_inicio and rec.fecha_inicio < date.today():
                     raise ValidationError('La fecha de inicio no puede ser anterior a hoy.')
@@ -477,6 +479,7 @@ class Actividad(models.Model):
                 'Esta actividad ya fue aprobada o está en curso/finalizada. '
                 'No puede ser reenviada al Comité Académico.'
             )
+        # Verificar que no haya propuesta pendiente o aprobada ya
         propuesta_existente = self.env['actividad.propuesta'].search([
             ('actividad_id', '=', self.id),
             ('estado_code', 'in', ('en_revision', 'aprobada')),
@@ -494,6 +497,7 @@ class Actividad(models.Model):
             body='Propuesta enviada al Comité Académico para su revisión. '
                  'Se aprobará automáticamente si no hay respuesta en 5 días.'
         )
+        # Abrir la lista de propuestas
         return {
             'type': 'ir.actions.act_window',
             'name': 'Mis Propuestas al Comité',
@@ -504,7 +508,9 @@ class Actividad(models.Model):
         }
 
     def action_enviar_catalogo(self):
-        """Envía la actividad al catálogo."""
+        """Envía la actividad al catálogo.
+        Si tiene actividad_predefinida, se aprueba automáticamente antes de enviar.
+        """
         self.ensure_one()
         if self.estado_code == 'rechazada':
             raise ValidationError(

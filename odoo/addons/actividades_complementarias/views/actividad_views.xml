@@ -129,7 +129,7 @@
                                 <i>Horario por Día</i> en este estado.
                             </b>
                             <b invisible="not permisos_actividad_en_curso">
-                                Solo puede modificar el campo <i>Responsable de Actividad</i> en este estado. Probando cambio de texto
+                                Solo puede modificar el campo <i>Responsable de Actividad</i> en este estado.
                             </b>
                         </span>
                         <span invisible="estado_code != 'finalizada'">
