@@ -58,7 +58,7 @@
                             <field name="estado_solicitud_id" readonly="1"/>
                         </group>
                         <group string="Resolucion">
-                            <field name="motivo_rechazo" invisible="estado_code != 'rechazada'"/>
+                            <field name="motivo_rechazo" invisible="estado_code != 'rechazada'" readonly="1"/>
                         </group>
                     </group>
                     <group string="Detalle de la Actividad Propuesta" colspan="2">
