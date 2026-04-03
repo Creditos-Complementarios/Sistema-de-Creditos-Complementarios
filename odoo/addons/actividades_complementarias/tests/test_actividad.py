@@ -160,7 +160,7 @@ class TestActividad(TransactionCase):
         self.assertFalse(actividad.responsable_firmo)
         self.assertFalse(actividad.constancias_firmadas)
         # Responsable firma también
-        actividad.write({'responsable_firmo': True})
+        actividad.action_firmar_constancias_responsable()
         self.assertTrue(actividad.constancias_firmadas)
 
     def test_jd_no_puede_firmar_dos_veces(self):

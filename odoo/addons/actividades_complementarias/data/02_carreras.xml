@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+<record id="car_isc" model="sii.carrera">
+  <field name="clave_carrera">ISC</field>
+  <field name="nombre">Ingeniería en Sistemas Computacionales</field>
+  <field name="reticula">2020</field>
+</record>
+<record id="car_itc" model="sii.carrera">
+  <field name="clave_carrera">ITC</field>
+  <field name="nombre">Ingeniería en Tecnologías de la Comunicación</field>
+  <field name="reticula">2020</field>
+</record>
+<record id="car_lae" model="sii.carrera">
+  <field name="clave_carrera">LAE</field>
+  <field name="nombre">Licenciatura en Administración de Empresas</field>
+  <field name="reticula">2020</field>
+</record>
+<record id="car_iia" model="sii.carrera">
+  <field name="clave_carrera">IIA</field>
+  <field name="nombre">Ingeniería Industrial</field>
+  <field name="reticula">2020</field>
+</record>
+<record id="car_iee" model="sii.carrera">
+  <field name="clave_carrera">IEE</field>
+  <field name="nombre">Ingeniería Eléctrica y Electrónica</field>
+  <field name="reticula">2020</field>
+</record>
+</data>
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+<record id="tu_01" model="sii.tipousuario">
+  <field name="nombre">Alumno</field>
+</record>
+<record id="tu_02" model="sii.tipousuario">
+  <field name="nombre">JefeDepartamento</field>
+</record>
+<record id="tu_03" model="sii.tipousuario">
+  <field name="nombre">Coordinador</field>
+</record>
+<record id="tu_04" model="sii.tipousuario">
+  <field name="nombre">Docente</field>
+</record>
+<record id="tu_05" model="sii.tipousuario">
+  <field name="nombre">Administrativo</field>
+</record>
+<record id="tu_06" model="sii.tipousuario">
+  <field name="nombre">ComiteAcademico</field>
+</record>
+</data>
+</odoo>
