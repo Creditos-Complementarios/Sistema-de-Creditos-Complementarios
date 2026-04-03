@@ -565,6 +565,26 @@ class Actividad(models.Model):
                      'Pendiente firma del Responsable de Actividad.'
             )
 
+    def action_firmar_constancias_responsable(self):
+        """El Responsable de Actividad firma su parte. Las constancias solo se liberan cuando ambos firmen."""
+        self.ensure_one()
+        if self.estado_code != 'finalizada':
+            raise ValidationError('Solo se pueden firmar constancias de actividades finalizadas.')
+        if self.responsable_firmo:
+            raise ValidationError('El Responsable de Actividad ya firmó las constancias de esta actividad.')
+        # La firma es una acción de negocio válida sobre una actividad finalizada
+        self.with_context(bypass_edit_protection=True).write({'responsable_firmo': True})
+        if self.constancias_firmadas:
+            self.message_post(
+                body='Constancias firmadas por el Responsable de Actividad. '
+                     'Ambas firmas completas — constancias liberadas a expedientes.'
+            )
+        else:
+            self.message_post(
+                body='Constancias firmadas por el Responsable de Actividad. '
+                     'Pendiente firma del Jefe de Departamento.'
+            )
+
     def _actualizar_estado_por_fecha(self):
         """Cron: actualiza estados según fechas."""
         hoy = date.today()
