@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
-from odoo.exceptions import ValidationError
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from datetime import date
 
 
@@ -9,6 +9,18 @@ class Actividad(models.Model):
     _description = 'Actividad Complementaria'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'fecha_inicio desc'
+
+    # Campos que el JD nunca puede escribir directamente (gestionados por el sistema).
+    # Las acciones de negocio que los necesiten deben usar:
+    #   self.with_context(bypass_edit_protection=True).write(vals)
+    _CAMPOS_AUTO_JD = frozenset({
+        'jefe_departamento_id',
+        'departamento_id',
+        'estado_id',
+        'en_catalogo',
+        'jd_firmo',
+        'responsable_firmo',
+    })
 
     # ── Identificación ──────────────────────────────────────────────────────
     name = fields.Char(
@@ -145,14 +157,30 @@ class Actividad(models.Model):
             'sin pasar por el Comité Académico. Puede dejarse en blanco para quitarlo.',
     )
 
+    # ── Flags de permisos de edición (por estado) ─
+    permisos_actividad_pendiente_inicio = fields.Boolean(
+        string='Solo Responsable, Fechas y Horas Editables',
+        compute='_compute_permisos_edicion',
+        help='True cuando el JD solo puede modificar los campos Responsable de Actividad, Fecha de Inicio, '
+        'Fecha de Finalización y Horario por Día.',
+    )
+    permisos_actividad_en_curso = fields.Boolean(
+        string='Solo Responsable Editable',
+        compute='_compute_permisos_edicion',
+        help='True cuando el JD solo puede modificar el campo Responsable de Actividad.',
+    )
+    permisos_actividad_finalizada = fields.Boolean(
+        string='Solo Lectura',
+        compute='_compute_permisos_edicion',
+        help='True cuando el usuario en sesión no puede editar ningún campo del formulario.',
+    )
+
     # ────────────────────────────────────────────────────────────────────────
     # Computes
     # ────────────────────────────────────────────────────────────────────────
 
     @api.depends('tipo_actividad_id')
     def _compute_tipo_es_nueva(self):
-        """True cuando el tipo de actividad es 'Nueva (Propuesta)',
-        para ocultar el campo Actividades Predefinidas en ese caso."""
         for rec in self:
             rec.tipo_es_nueva = (
                 rec.tipo_actividad_id and
@@ -200,14 +228,12 @@ class Actividad(models.Model):
             if not rec.jefe_departamento_id:
                 rec.departamento_id = False
                 continue
-            # Primero buscar en el catálogo de departamentos (jefe_id)
             depto = self.env['actividad.departamento'].search(
                 [('jefe_id', '=', rec.jefe_departamento_id.id)], limit=1
             )
             if depto:
                 rec.departamento_id = depto
             else:
-                # Fallback: buscar en el registro de permisos del empleado
                 emp = self.env['actividad.empleado.permiso'].search(
                     [('user_id', '=', rec.jefe_departamento_id.id)], limit=1
                 )
@@ -223,6 +249,184 @@ class Actividad(models.Model):
         for rec in self:
             rec.alumno_count = len(rec.alumno_ids)
 
+    @api.depends('estado_code', 'en_catalogo', 'jefe_departamento_id')
+    def _compute_permisos_edicion(self):
+        """
+        Calcula los flags de solo-lectura para el formulario según el estado
+        del registro y el rol del usuario en sesión.
+
+        Las reglas implementadas son:
+        1. Finalizada             → permisos_actividad_finalizada=True para TODOS (incluido admin).
+        2. Admin (no finalizada)  → sin restricciones de formulario.
+        3. JD dueño, en_revision  → permisos_actividad_finalizada=True.
+        4. JD dueño, pendiente de inicio → permisos_actividad_pendiente_inicio = True
+        5. JD dueño, en_catalogo
+           o pendiente_inicio
+           o en_curso             → permisos_actividad_en_curso=True.
+        6. JD dueño, rechazada
+           o aprobada             → sin restricciones (puede editar campos no-auto).
+        7. JD viendo actividad
+           de otro JD             → permisos_actividad_finalizada=True (solo puede ver catálogo).
+        8. Cualquier otro rol     → permisos_actividad_finalizada=True.
+        """
+        is_admin = self.env.user.has_group(
+            'actividades_complementarias.group_admin_actividades'
+        )
+        is_jd = self.env.user.has_group(
+            'actividades_complementarias.group_jefe_departamento'
+        )
+
+        for rec in self:
+            # Regla 1 (absoluta): finalizada → nadie edita
+            if rec.estado_code == 'finalizada':
+                rec.permisos_actividad_finalizada = True
+                rec.permisos_actividad_pendiente_inicio = False
+                rec.permisos_actividad_en_curso = False
+                continue
+
+            # Admin: sin restricciones de solo-lectura (salvo finalizada)
+            if is_admin:
+                rec.permisos_actividad_finalizada = False
+                rec.permisos_actividad_pendiente_inicio = False
+                rec.permisos_actividad_en_curso = False
+                continue
+
+            if not is_jd:
+                # Otros roles: formulario de solo lectura
+                rec.permisos_actividad_finalizada = True
+                rec.permisos_actividad_pendiente_inicio = False
+                rec.permisos_actividad_en_curso = False
+                continue
+
+            # Usuario es JD (no admin)
+            es_dueno = (rec.jefe_departamento_id.id == self.env.user.id)
+
+            if not es_dueno:
+                # Regla 6: JD viendo actividad de otro JD (solo catálogo accesible via record rule)
+                rec.permisos_actividad_finalizada = True
+                rec.permisos_actividad_pendiente_inicio = False
+                rec.permisos_actividad_en_curso = False
+
+            elif rec.estado_code in ('aprobada', 'pendiente_inicio'):
+                # Regla 4: actividad pendiende de inicio
+                rec.permisos_actividad_finalizada = False
+                rec.permisos_actividad_pendiente_inicio = True
+                rec.permisos_actividad_en_curso = False
+
+            elif rec.estado_code == 'en_revision':
+                # Regla 2/3: propuesta en revisión → JD no puede modificar nada
+                rec.permisos_actividad_finalizada = True
+                rec.permisos_actividad_pendiente_inicio = False
+                rec.permisos_actividad_en_curso = False
+
+            elif rec.en_catalogo or rec.estado_code == 'en_curso':
+                # Regla 3: en catálogo o iniciada → solo responsable_actividad_id
+                rec.permisos_actividad_finalizada = False
+                rec.permisos_actividad_pendiente_inicio = False
+                rec.permisos_actividad_en_curso = True
+
+            else:
+                # Regla 4: rechazada, aprobada u otro estado → acceso completo (no-auto)
+                rec.permisos_actividad_finalizada = False
+                rec.permisos_actividad_pendiente_inicio = False
+                rec.permisos_actividad_en_curso = False
+
+    # ────────────────────────────────────────────────────────────────────────
+    # ORM override: write()
+    # ────────────────────────────────────────────────────────────────────────
+
+    def write(self, vals):
+        """
+        Aplica las reglas de edición según estado y rol del usuario en sesión.
+
+        Para que las acciones de negocio internas (cron, wizards, flujo de trabajo)
+        puedan modificar campos auto-gestionados o registros finalizados, deben usar:
+            self.with_context(bypass_edit_protection=True).write(vals)
+        """
+        # Las acciones internas del sistema omiten la protección
+        if self.env.context.get('bypass_edit_protection'):
+            return super().write(vals)
+
+        is_admin = self.env.user.has_group(
+            'actividades_complementarias.group_admin_actividades'
+        )
+        is_jd = self.env.user.has_group(
+            'actividades_complementarias.group_jefe_departamento'
+        )
+
+        for rec in self:
+            # ── Regla 1: Finalizada → nadie puede modificar (incluido admin) ──
+            if rec.estado_code == 'finalizada':
+                raise UserError(
+                    _('La actividad "%s" está finalizada y no puede ser '
+                      'modificada por ningún usuario.')
+                    % rec.name
+                )
+
+            # Admin: sin restricciones de estado
+            if is_admin:
+                continue
+
+            # Otros roles: se gestionan vía model access / record rules
+            if not is_jd:
+                continue
+
+            # ── A partir de aquí: usuario es JD (no admin) ──
+
+            # ── Regla 5: JD nunca modifica actividades de otro JD ──
+            if rec.jefe_departamento_id.id != self.env.user.id:
+                raise UserError(
+                    _('No tiene permiso para modificar actividades de '
+                      'otros Jefes de Departamento.')
+                )
+
+            # JD no puede escribir directamente campos auto-gestionados
+            campos_auto_solicitados = set(vals.keys()) & self._CAMPOS_AUTO_JD
+            if campos_auto_solicitados:
+                raise UserError(
+                    _('Los siguientes campos son gestionados automáticamente '
+                      'por el sistema y no pueden modificarse directamente: %s.')
+                    % ', '.join(sorted(campos_auto_solicitados))
+                )
+
+            # ── Regla 2: Propuesta en revisión → JD no modifica nada ──
+            if rec.estado_code == 'en_revision':
+                raise UserError(
+                    _('La propuesta de la actividad "%s" está siendo revisada '
+                      'por el Comité Académico. No puede modificarla durante la revisión.')
+                    % rec.name
+                )
+            # ── Regla 3: En catálogo / Pendiente de Inicio ──
+            if rec.en_catalogo or rec.estado_code in ('aprobada', 'pendiente_inicio'):
+                campos_permitidos = {'responsable_actividad_id', 'fecha_inicio', 'fecha_fin', 'horario'}
+                campos_no_permitidos = set(vals.keys()) - campos_permitidos
+                if campos_no_permitidos:
+                    raise UserError(
+                        _('La actividad "%s" está en aprobada o pendiente de inicio. '
+                          'En este estado únicamente puede modificar'
+                          '"Responsable de Actividad", "Fecha de Inicio", "Fecha de Finalización", '
+                          'y "Horario por Día".')
+                        % rec.name
+                    )
+
+            # ── Regla 3: En catálogo / En Curso ──
+            #    Solo se permite modificar responsable_actividad_id
+            if rec.estado_code == 'en_curso':
+                campos_permitidos = {'responsable_actividad_id'}
+                campos_no_permitidos = set(vals.keys()) - campos_permitidos
+                if campos_no_permitidos:
+                    raise UserError(
+                        _('La actividad "%s" está en curso. '
+                          'En este estado únicamente puede modificar '
+                          '"Responsable de Actividad".')
+                        % rec.name
+                    )
+
+            # ── Regla 4: Rechazada → JD puede modificar cualquier campo
+            #    que no sea auto-gestionado (ya validado arriba). ──
+
+        return super().write(vals)
+
     # ────────────────────────────────────────────────────────────────────────
     # Constraints
     # ────────────────────────────────────────────────────────────────────────
@@ -230,7 +434,6 @@ class Actividad(models.Model):
     @api.constrains('fecha_inicio', 'fecha_fin')
     def _check_fechas(self):
         for rec in self:
-            # No validar fechas pasadas cuando se cargan datos de demo o desde el sistema
             if not self.env.context.get('install_demo') and not self.env.context.get('skip_fecha_check'):
                 if rec.fecha_inicio and rec.fecha_inicio < date.today():
                     raise ValidationError('La fecha de inicio no puede ser anterior a hoy.')
@@ -262,6 +465,8 @@ class Actividad(models.Model):
 
     # ────────────────────────────────────────────────────────────────────────
     # Business Logic
+    # Todas las acciones de negocio que escriben campos auto-gestionados
+    # usan with_context(bypass_edit_protection=True) para pasar el guard de write().
     # ────────────────────────────────────────────────────────────────────────
 
     def action_enviar_comite(self):
@@ -272,7 +477,6 @@ class Actividad(models.Model):
                 'Esta actividad ya fue aprobada o está en curso/finalizada. '
                 'No puede ser reenviada al Comité Académico.'
             )
-        # Verificar que no haya propuesta pendiente o aprobada ya
         propuesta_existente = self.env['actividad.propuesta'].search([
             ('actividad_id', '=', self.id),
             ('estado_code', 'in', ('en_revision', 'aprobada')),
@@ -281,7 +485,7 @@ class Actividad(models.Model):
             raise ValidationError('Esta actividad ya tiene una propuesta activa o aprobada en el Comité.')
         estado_revision_solicitud = self.env.ref('actividades_complementarias.estado_solicitud_en_revision')
         estado_en_revision = self.env.ref('actividades_complementarias.estado_en_revision')
-        self.write({'estado_id': estado_en_revision.id})
+        self.with_context(bypass_edit_protection=True).write({'estado_id': estado_en_revision.id})
         self.env['actividad.propuesta'].create({
             'actividad_id': self.id,
             'estado_solicitud_id': estado_revision_solicitud.id,
@@ -290,7 +494,6 @@ class Actividad(models.Model):
             body='Propuesta enviada al Comité Académico para su revisión. '
                  'Se aprobará automáticamente si no hay respuesta en 5 días.'
         )
-        # Abrir la lista de propuestas
         return {
             'type': 'ir.actions.act_window',
             'name': 'Mis Propuestas al Comité',
@@ -301,9 +504,7 @@ class Actividad(models.Model):
         }
 
     def action_enviar_catalogo(self):
-        """Envía la actividad al catálogo.
-        Si tiene actividad_predefinida, se aprueba automáticamente antes de enviar.
-        """
+        """Envía la actividad al catálogo."""
         self.ensure_one()
         if self.estado_code == 'rechazada':
             raise ValidationError(
@@ -314,14 +515,13 @@ class Actividad(models.Model):
                 'Esta actividad ya fue finalizada y no puede ser enviada al catálogo. '
                 'Cree una nueva propuesta de actividad si desea volver a ofertarla.'
             )
-        # Si es predefinida y aún no está en un estado válido, la aprobamos automáticamente
         if self.actividad_predefinida and self.estado_code not in ('aprobada', 'pendiente_inicio', 'en_curso'):
             estado_pendiente = self.env.ref('actividades_complementarias.estado_pendiente_inicio')
-            self.write({'estado_id': estado_pendiente.id})
+            self.with_context(bypass_edit_protection=True).write({'estado_id': estado_pendiente.id})
             self.message_post(body=f'Actividad predefinida ({self.actividad_predefinida}) aprobada automáticamente.')
         if self.estado_code not in ('aprobada', 'pendiente_inicio'):
             raise ValidationError('Solo se pueden enviar al catálogo actividades aprobadas o pendientes de inicio.')
-        self.write({'en_catalogo': True})
+        self.with_context(bypass_edit_protection=True).write({'en_catalogo': True})
         self.message_post(body='Actividad enviada al catálogo.')
 
     def action_iniciar_actividad(self):
@@ -330,7 +530,7 @@ class Actividad(models.Model):
         if self.estado_code not in ('aprobada', 'pendiente_inicio'):
             raise ValidationError('Solo se pueden iniciar actividades aprobadas o pendientes de inicio.')
         estado_en_curso = self.env.ref('actividades_complementarias.estado_en_curso')
-        self.write({'estado_id': estado_en_curso.id})
+        self.with_context(bypass_edit_protection=True).write({'estado_id': estado_en_curso.id})
         self.message_post(body='Actividad iniciada manualmente por el Jefe de Departamento.')
 
     def action_finalizar_actividad(self):
@@ -339,7 +539,10 @@ class Actividad(models.Model):
         if self.estado_code != 'en_curso':
             raise ValidationError('Solo se pueden finalizar actividades que estén en curso.')
         estado_finalizada = self.env.ref('actividades_complementarias.estado_finalizada')
-        self.write({'estado_id': estado_finalizada.id, 'en_catalogo': False})
+        self.with_context(bypass_edit_protection=True).write({
+            'estado_id': estado_finalizada.id,
+            'en_catalogo': False,
+        })
         self.message_post(body='Actividad finalizada. Removida del catálogo automáticamente.')
 
     def action_firmar_constancias(self):
@@ -349,16 +552,38 @@ class Actividad(models.Model):
             raise ValidationError('Solo se pueden firmar constancias de actividades finalizadas.')
         if self.jd_firmo:
             raise ValidationError('El Jefe de Departamento ya firmó las constancias de esta actividad.')
-        self.write({'jd_firmo': True})
+        # La firma es una acción de negocio válida sobre una actividad finalizada
+        self.with_context(bypass_edit_protection=True).write({'jd_firmo': True})
         if self.constancias_firmadas:
             self.message_post(
-                body='Constancias firmadas por el Jefe de Departamento.' +
-                'Ambas firmas completas — constancias liberadas a expedientes.'
-                )
+                body='Constancias firmadas por el Jefe de Departamento. '
+                     'Ambas firmas completas — constancias liberadas a expedientes.'
+            )
         else:
             self.message_post(
-                body='Constancias firmadas por el Jefe de Departamento. Pendiente firma del Responsable de Actividad.'
-                )
+                body='Constancias firmadas por el Jefe de Departamento. '
+                     'Pendiente firma del Responsable de Actividad.'
+            )
+
+    def action_firmar_constancias_responsable(self):
+        """El Responsable de Actividad firma su parte. Las constancias solo se liberan cuando ambos firmen."""
+        self.ensure_one()
+        if self.estado_code != 'finalizada':
+            raise ValidationError('Solo se pueden firmar constancias de actividades finalizadas.')
+        if self.responsable_firmo:
+            raise ValidationError('El Responsable de Actividad ya firmó las constancias de esta actividad.')
+        # La firma es una acción de negocio válida sobre una actividad finalizada
+        self.with_context(bypass_edit_protection=True).write({'responsable_firmo': True})
+        if self.constancias_firmadas:
+            self.message_post(
+                body='Constancias firmadas por el Responsable de Actividad. '
+                     'Ambas firmas completas — constancias liberadas a expedientes.'
+            )
+        else:
+            self.message_post(
+                body='Constancias firmadas por el Responsable de Actividad. '
+                     'Pendiente firma del Jefe de Departamento.'
+            )
 
     def _actualizar_estado_por_fecha(self):
         """Cron: actualiza estados según fechas."""
@@ -371,14 +596,19 @@ class Actividad(models.Model):
                 ('estado_code', '=', 'pendiente_inicio'),
                 ('fecha_inicio', '<=', hoy),
             ])
-            pendientes.write({'estado_id': estado_en_curso.id})
+            pendientes.with_context(bypass_edit_protection=True).write(
+                {'estado_id': estado_en_curso.id}
+            )
 
         if estado_finalizada:
             en_curso = self.search([
                 ('estado_code', '=', 'en_curso'),
                 ('fecha_fin', '<=', hoy),
             ])
-            en_curso.write({'estado_id': estado_finalizada.id, 'en_catalogo': False})
+            en_curso.with_context(bypass_edit_protection=True).write({
+                'estado_id': estado_finalizada.id,
+                'en_catalogo': False,
+            })
 
 
 class ActividadDepartamento(models.Model):
