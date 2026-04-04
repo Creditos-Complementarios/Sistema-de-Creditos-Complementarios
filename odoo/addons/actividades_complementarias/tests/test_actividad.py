@@ -26,8 +26,6 @@ def _n_dias_habiles(n, desde=None):
             contados += 1
     return candidato
 
-
-
 class TestActividad(TransactionCase):
     """Tests para el modelo actividad.complementaria.
 
