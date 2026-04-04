@@ -60,7 +60,7 @@ class TestActividad(TransactionCase):
         vals = {
             'name': 'Actividad de prueba',
             'tipo_actividad_id': self.tipo.id,
-            'periodo': self.periodo.id,   # Many2one: pasar el ID del registro
+            'periodo': self.periodo.id,
             'fecha_inicio': self.fecha_valida,
             'fecha_fin': self.fecha_fin_valida,
             'cantidad_horas': 8.0,
