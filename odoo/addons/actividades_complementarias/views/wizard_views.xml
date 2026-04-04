@@ -28,7 +28,9 @@
                         <field name="fecha_inicio"/>
                         <field name="fecha_fin"/>
                         <field name="cantidad_horas"/>
-                        <field name="horario" placeholder="Ej: Lunes 10:00-12:00"/>
+                        <field name="horario" string="Horario"
+                                placeholder="Ej: Lunes 10:00-12:00"
+                                help="Opcional - especifica si la actividad tiene días y horas fijas"/>
                     </group>
                     <group string="Cupos">
                         <field name="cupo_ilimitado"/>

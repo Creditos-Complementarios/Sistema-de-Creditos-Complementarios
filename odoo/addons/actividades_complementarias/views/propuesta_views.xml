@@ -6,19 +6,14 @@
         <field name="name">actividad.propuesta.list</field>
         <field name="model">actividad.propuesta</field>
         <field name="arch" type="xml">
-            <list string="Propuestas al Comite Academico" create="0"
-                  decoration-warning="estado_code=='en_revision'"
-                  decoration-success="estado_code=='aprobada'"
-                  decoration-danger="estado_code=='rechazada'">
+            <list string="Propuestas al Comite Academico" create="0">
                 <field name="encabezado" string="Actividad"/>
                 <field name="actividad_tipo" string="Tipo"/>
                 <field name="actividad_jefe" string="Jefe de Departamento"/>
-                <field name="actividad_departamento" string="Departamento"/>
                 <field name="actividad_periodo" string="Periodo"/>
                 <field name="fecha" string="Enviada"/>
                 <field name="fecha_limite_revision" string="Limite"/>
                 <field name="estado_solicitud_id" string="Estado"/>
-                <field name="estado_code" column_invisible="1"/>
             </list>
         </field>
     </record>
@@ -58,7 +53,7 @@
                             <field name="estado_solicitud_id" readonly="1"/>
                         </group>
                         <group string="Resolucion">
-                            <field name="motivo_rechazo" invisible="estado_code != 'rechazada'" readonly="1"/>
+                            <field name="motivo_rechazo" invisible="estado_code != 'rechazada'"/>
                         </group>
                     </group>
                     <group string="Detalle de la Actividad Propuesta" colspan="2">
@@ -92,65 +87,46 @@
         <field name="domain">[('actividad_id.jefe_departamento_id', '=', uid)]</field>
     </record>
 
+    <!-- Acción para cambiar el texto de propuestas pendientes -->
     <record id="action_propuesta_pendiente" model="ir.actions.act_window">
         <field name="name">Propuestas Pendientes</field>
         <field name="res_model">actividad.propuesta</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('estado_code','=','en_revision')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay ninguna propuesta pendiente
+            </p>
+            <p>Las propuestas enviadas por los Jefes de Departamento aparecerán aquí.</p>
+        </field>
     </record>
 
+    <!-- Acción para cambiar el texto de todas las propuestas -->
     <record id="action_propuesta_todas" model="ir.actions.act_window">
-        <field name="name">Todas las Propuestas</field>
+        <field name="name">Historial de decisiones</field>
         <field name="res_model">actividad.propuesta</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay propuestas registradas
+            </p>
+            <p>Aún no se han enviado propuestas al Comité Académico.</p>
+        </field>
     </record>
 
+    <!-- Acción para cambiar el texto de catalogo de actividades -->
     <record id="action_catalogo_comite" model="ir.actions.act_window">
-        <field name="name">Catalogo de Actividades Aprobadas</field>
+        <field name="name">Catálogo de Actividades Aprobadas</field>
         <field name="res_model">actividad.complementaria</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="domain">[('estado_code', 'in', ['aprobada','pendiente_inicio','en_curso','finalizada'])]</field>
         <field name="context">{'search_default_filter_catalogo': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay actividades en el catálogo
+            </p>
+            <p>Las actividades aprobadas por el Comité aparecerán aquí.</p>
+        </field>
     </record>
-     <!-- Acción para cambiar el texto de propuestas pendientes -->
-    <record id="action_propuesta_pendiente" model="ir.actions.act_window">
-    <field name="name">Propuestas Pendientes</field>
-    <field name="res_model">actividad.propuesta</field>
-    <field name="view_mode">list,form</field>
-    <field name="domain">[('estado_code','=','en_revision')]</field>
-    <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-            No hay ninguna propuesta pendiente
-        </p>
-        <p>Las propuestas enviadas por los Jefes de Departamento aparecerán aquí.</p>
-    </field>
-</record>
-<!-- Acción para cambiar el texto de todas las propuestas -->
-<record id="action_propuesta_todas" model="ir.actions.act_window">
-    <field name="name">Todas las Propuestas</field>
-    <field name="res_model">actividad.propuesta</field>
-    <field name="view_mode">list,form</field>
-    <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-            No hay propuestas registradas
-        </p>
-        <p>Aún no se han enviado propuestas al Comité Académico.</p>
-    </field>
-</record>
-
-   <!-- Acción para cambiar el texto de catalogo de actividades -->
-   <record id="action_catalogo_comite" model="ir.actions.act_window">
-    <field name="name">Catálogo de Actividades Aprobadas</field>
-    <field name="res_model">actividad.complementaria</field>
-    <field name="view_mode">list,kanban,form</field>
-    <field name="domain">[('estado_code', 'in', ['aprobada','pendiente_inicio','en_curso','finalizada'])]</field>
-    <field name="context">{'search_default_filter_catalogo': 0}</field>
-    <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-            No hay actividades en el catálogo
-        </p>
-        <p>Las actividades aprobadas por el Comité aparecerán aquí.</p>
-    </field>
-</record>
 
 </odoo>

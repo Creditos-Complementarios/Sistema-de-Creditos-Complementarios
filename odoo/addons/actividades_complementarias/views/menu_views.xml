@@ -79,7 +79,7 @@
               groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_todas_propuestas"
-              name="Todas las Propuestas"
+              name="Historial de decisiones"
               parent="menu_comite"
               action="action_propuesta_todas"
               sequence="20"

@@ -1,15 +1,192 @@
-/* Navbar naranja SOLO cuando estás dentro de Actividades Complementarias */
-body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .o_main_navbar {
-    background-color: #2c3a4f!important;
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) {
+
+    /* Botón Nuevo siempre azul */
+    .o_control_panel .btn-outline-primary,
+    .o_control_panel .btn.btn-outline-primary,
+    .o_form_button_create {
+        background-color: #71639E !important;
+        border-color: #71639E !important;
+        color: white !important;
+
+        &:hover, &:focus, &:active {
+            background-color: #5a4f8a !important;
+            border-color: #5a4f8a !important;
+            color: white !important;
+        }
+    }
+
+    /* Botón Enviar al Comité Académico */
+    .o_form_statusbar .btn-warning,
+    .btn-warning {
+        background-color: #71639E !important;
+        border-color: #71639E !important;
+        color: white !important;
+    }
+
+   /* Separador antes de Gestión de Personal */
+    a[data-menu-xmlid="actividades_complementarias.menu_gestion_personal"] {
+        border-top: 1px solid rgba(0, 0, 0, 0.15) !important;
+        margin-top: 4px !important;
+        padding-top: 12px !important;
+    }
+
+    /* ── Empty state: reemplaza el muñeco por el logo del TecNM ── */
+    .o_nocontent_help .o_nocontent_image,
+    .o_view_nocontent .o_nocontent_image {
+        background-image: url('/actividades_complementarias/static/src/img/tecnm.png') !important;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        width: 120px !important;
+        height: 120px !important;
+    }
+
+    /* Oculta el SVG animado original de Odoo */
+    .o_nocontent_help .o_nocontent_image img,
+    .o_view_nocontent .o_nocontent_image img {
+        display: none !important;
+    }
 }
 
-/* Botones primarios naranja */
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) {
+
+    /* Botones barra superior */
+    .o_main_navbar .o_menu_sections button,
+    .o_main_navbar .o_menu_sections .o-dropdown-toggle,
+    .o_main_navbar .o_menu_sections .dropdown {
+        background-color: transparent !important;
+        color: white !important;
+        transition: background-color 0.2s ease !important;
+    }
+
+    /* Hover naranja */
+    .o_main_navbar .o_menu_sections button:hover,
+    .o_main_navbar .o_menu_sections .o-dropdown-toggle:hover,
+    .o_main_navbar .o_menu_sections button.show,
+    .o_main_navbar .o_menu_sections .o-dropdown-toggle.show {
+        background-color: #F06702 !important;
+        color: white !important;
+        border-radius: 4px !important;
+    }
+}
+
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) {
+
+    /* Ícono Gestión de Personal */
+    a[data-menu-xmlid="actividades_complementarias.menu_gestion_personal"]::before {
+        content: "\f007";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    /* Íconos menú Jefe de Departamento */
+    a[data-menu-xmlid="actividades_complementarias.menu_mis_actividades"]::before {
+        content: "\f073";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    a[data-menu-xmlid="actividades_complementarias.menu_catalogo"]::before {
+        content: "\f02d";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    a[data-menu-xmlid="actividades_complementarias.menu_mis_propuestas"]::before {
+        content: "\f1d8";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    a[data-menu-xmlid="actividades_complementarias.menu_gestion_personal"]::before {
+        content: "\f007";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    /* Íconos menú Comité Académico */
+    a[data-menu-xmlid="actividades_complementarias.menu_propuestas_pendientes"]::before {
+        content: "\f017";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    a[data-menu-xmlid="actividades_complementarias.menu_todas_propuestas"]::before {
+        content: "\f1da";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    a[data-menu-xmlid="actividades_complementarias.menu_catalogo_comite"]::before {
+        content: "\f02d";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    /* Íconos menú Personal de Departamento */
+    a[data-menu-xmlid="actividades_complementarias.menu_personal_mis_actividades"]::before {
+        content: "\f073";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    a[data-menu-xmlid="actividades_complementarias.menu_personal_catalogo"]::before {
+        content: "\f02d";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    /* Íconos menú Configuración */
+    a[data-menu-xmlid="actividades_complementarias.menu_admin_todas_actividades"]::before {
+        content: "\f0e8";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    a[data-menu-xmlid="actividades_complementarias.menu_tipos_actividad"]::before {
+        content: "\f0ca";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+
+    a[data-menu-xmlid="actividades_complementarias.menu_periodos"]::before {
+        content: "\f133";
+        font-family: FontAwesome;
+        margin-right: 8px;
+        opacity: 0.85;
+    }
+}
+
+
+/* Separador antes de Catálogo en Comité Académico */
+a[data-menu-xmlid="actividades_complementarias.menu_catalogo_comite"] {
+    border-top: 1px solid rgba(0, 0, 0, 0.15) !important;
+    margin-top: 4px !important;
+    padding-top: 12px !important;
+}
+
+/* Navbar SOLO cuando estás dentro de Actividades Complementarias */
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .o_main_navbar {
+    background-color: #2c3a4f !important;
+}
+
+/* Botones primarios */
 body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .btn-primary {
     background-color: #2c3a4f !important;
     border-color: #2c3a4f !important;
 }
-
-
 
 /* Contenedor del lado derecho */
 body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .o_menu_systray {
@@ -22,10 +199,39 @@ body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .o_menu_
 body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .o_menu_systray::before {
     content: "";
     display: inline-block;
-
     width: 32px;
     height: 32px;
-
     background: url('/actividades_complementarias/static/src/img/ITCH.png') no-repeat center;
     background-size: contain;
+}
+
+/* Palomita del boolean en verde */
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) {
+    .o_list_view .o_boolean_column .o_field_boolean .form-check-input:checked,
+    .o_list_view .o_field_boolean input:checked,
+    .o_field_boolean input[type="checkbox"]:checked {
+        background-color: #28a745 !important;
+        border-color: #28a745 !important;
+    }
+}
+
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) {
+
+    .o_switch_view.o_list::before {
+        content: "Vista Detallada";
+        display: block;
+        font-size: 10px;
+        color: var(--color-text-secondary);
+        text-align: center;
+        margin-bottom: 2px;
+    }
+
+    .o_switch_view.o_kanban::before {
+        content: "Tablero";
+        display: block;
+        font-size: 10px;
+        color: var(--color-text-secondary);
+        text-align: center;
+        margin-bottom: 2px;
+    }
 }
