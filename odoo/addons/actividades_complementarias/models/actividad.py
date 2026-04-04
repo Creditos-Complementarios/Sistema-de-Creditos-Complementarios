@@ -22,6 +22,7 @@ def _n_dias_habiles(n, desde=None):
             contados += 1
     return candidato
 
+
 class Actividad(models.Model):
     _name = 'actividad.complementaria'
     _description = 'Actividad Complementaria'
