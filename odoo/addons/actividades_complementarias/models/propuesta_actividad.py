@@ -25,7 +25,7 @@ class PropuestaActividadComplementaria(models.Model):
     )
     fecha = fields.Date(
         string='Fecha de Envío',
-        default=fields.Date.today,
+        default=lambda self: fields.Date.context_today(self),
         readonly=True,
     )
     fecha_limite_revision = fields.Date(

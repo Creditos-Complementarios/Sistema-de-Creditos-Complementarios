@@ -1,7 +1,26 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from datetime import date
+from datetime import date, timedelta
+
+
+def _n_dias_habiles(n, desde=None):
+    """Avanza *n* días hábiles (lunes a viernes) desde *desde*.
+
+    Args:
+        n:     Número de días hábiles a avanzar.
+        desde: Fecha base. Si es None se usa la fecha actual.
+    Returns:
+        date con la fecha resultante.
+    """
+    base = desde if desde is not None else date.today()
+    contados = 0
+    candidato = base
+    while contados < n:
+        candidato += timedelta(days=1)
+        if candidato.weekday() < 5:   # 0=lun … 4=vie; 5=sáb, 6=dom
+            contados += 1
+    return candidato
 
 
 class Actividad(models.Model):
@@ -234,7 +253,6 @@ class Actividad(models.Model):
             if depto:
                 rec.departamento_id = depto
             else:
-                # Fallback: buscar en el registro de permisos del empleado
                 emp = self.env['actividad.empleado.permiso'].search(
                     [('user_id', '=', rec.jefe_departamento_id.id)], limit=1
                 )
@@ -331,6 +349,24 @@ class Actividad(models.Model):
                 rec.permisos_actividad_finalizada = False
                 rec.permisos_actividad_pendiente_inicio = False
                 rec.permisos_actividad_en_curso = False
+
+    # ────────────────────────────────────────────────────────────────────────
+    # ORM override: create()
+    # ────────────────────────────────────────────────────────────────────────
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Estampa el flag actividad_creating=True en el contexto para que
+        _check_fechas pueda distinguir una creación de una edición.
+
+        El flag se elimina del recordset devuelto para que llamadas
+        posteriores a write() sobre esos registros no lo hereden.
+        """
+        records = super(
+            Actividad,
+            self.with_context(actividad_creating=True),
+        ).create(vals_list)
+        return records.with_context(actividad_creating=False)
 
     # ────────────────────────────────────────────────────────────────────────
     # ORM override: write()
@@ -434,11 +470,54 @@ class Actividad(models.Model):
 
     @api.constrains('fecha_inicio', 'fecha_fin')
     def _check_fechas(self):
+        bypass = (
+            self.env.context.get('install_demo')
+            or self.env.context.get('skip_fecha_check')
+        )
+        manana = date.today() + timedelta(days=1)
         for rec in self:
-            # No validar fechas pasadas cuando se cargan datos de demo o desde el sistema
-            if not self.env.context.get('install_demo') and not self.env.context.get('skip_fecha_check'):
-                if rec.fecha_inicio and rec.fecha_inicio < date.today():
-                    raise ValidationError('La fecha de inicio no puede ser anterior a hoy.')
+            if rec.fecha_inicio and not bypass:
+                # True durante create() gracias al flag que estampa el override;
+                # False durante write() donde el flag no está presente.
+                es_nuevo = self.env.context.get('actividad_creating', False)
+                if es_nuevo:
+                    # Al crear: mínimo 5 días hábiles desde hoy
+                    min_fecha = _n_dias_habiles(5)
+                    if rec.fecha_inicio < min_fecha:
+                        raise ValidationError(
+                            _(
+                                'La fecha de inicio debe ser al menos 5 días hábiles '
+                                '(sin domingos) a partir de hoy. '
+                                'La fecha mínima válida es %(fecha)s.',
+                                fecha=min_fecha.strftime('%d/%m/%Y'),
+                            )
+                        )
+                else:
+                    # En edición: si existe propuesta aprobada, el mínimo se calcula
+                    # como 5 días hábiles contados desde la fecha de envío de esa propuesta,
+                    # de modo que el tiempo total (envío → inicio) sea al menos 5 días hábiles.
+                    # Piso absoluto: siempre al menos mañana.
+                    propuesta = self.env['actividad.propuesta'].search(
+                        [
+                            ('actividad_id', '=', rec.id),
+                            ('estado_code', '=', 'aprobada'),
+                        ],
+                        order='fecha desc',
+                        limit=1,
+                    )
+                    if propuesta:
+                        min_desde_propuesta = _n_dias_habiles(5, desde=propuesta.fecha)
+                        min_fecha = max(min_desde_propuesta, manana)
+                    else:
+                        min_fecha = manana
+
+                    if rec.fecha_inicio < min_fecha:
+                        raise ValidationError(
+                            _(
+                                'La fecha de inicio no puede ser anterior a %(fecha)s.',
+                                fecha=min_fecha.strftime('%d/%m/%Y'),
+                            )
+                        )
             if rec.fecha_fin and rec.fecha_inicio and rec.fecha_fin <= rec.fecha_inicio:
                 raise ValidationError('La fecha de fin debe ser posterior a la fecha de inicio.')
 
@@ -479,7 +558,6 @@ class Actividad(models.Model):
                 'Esta actividad ya fue aprobada o está en curso/finalizada. '
                 'No puede ser reenviada al Comité Académico.'
             )
-        # Verificar que no haya propuesta pendiente o aprobada ya
         propuesta_existente = self.env['actividad.propuesta'].search([
             ('actividad_id', '=', self.id),
             ('estado_code', 'in', ('en_revision', 'aprobada')),
@@ -497,7 +575,6 @@ class Actividad(models.Model):
             body='Propuesta enviada al Comité Académico para su revisión. '
                  'Se aprobará automáticamente si no hay respuesta en 5 días.'
         )
-        # Abrir la lista de propuestas
         return {
             'type': 'ir.actions.act_window',
             'name': 'Mis Propuestas al Comité',
@@ -508,9 +585,7 @@ class Actividad(models.Model):
         }
 
     def action_enviar_catalogo(self):
-        """Envía la actividad al catálogo.
-        Si tiene actividad_predefinida, se aprueba automáticamente antes de enviar.
-        """
+        """Envía la actividad al catálogo."""
         self.ensure_one()
         if self.estado_code == 'rechazada':
             raise ValidationError(

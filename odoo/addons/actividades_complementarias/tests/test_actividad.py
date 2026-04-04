@@ -2,11 +2,30 @@
 from datetime import date, timedelta
 
 from odoo.exceptions import ValidationError
-from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 
 
-@tagged('actividades_complementarias', '-standard')
+# ---------------------------------------------------------------------------
+# Utilidad de fechas compartida entre tests
+# ---------------------------------------------------------------------------
+
+def _n_dias_habiles(n, desde=None):
+    """Devuelve la fecha resultante de avanzar *n* días hábiles (lunes a viernes).
+
+    Args:
+        n:     Número de días hábiles a avanzar.
+        desde: Fecha base. Si es None se usa la fecha actual.
+    """
+    base = desde or date.today()
+    contados = 0
+    candidato = base
+    while contados < n:
+        candidato += timedelta(days=1)
+        if candidato.weekday() < 5:   # 0=lun … 4=vie; 5=sáb, 6=dom
+            contados += 1
+    return candidato
+
+
 class TestActividad(TransactionCase):
     """Tests para el modelo actividad.complementaria.
 
@@ -30,8 +49,8 @@ class TestActividad(TransactionCase):
         # tipo_actividad no tiene XMLs de datos predefinidos — se crea aquí
         cls.tipo = cls.env['actividad.tipo'].create({'name': 'Conferencia Test'})
 
-        cls.manana = date.today() + timedelta(days=1)
-        cls.pasado_manana = date.today() + timedelta(days=2)
+        cls.fecha_valida = _n_dias_habiles(5)   # mínimo exacto exigido por el constraint
+        cls.fecha_fin_valida = _n_dias_habiles(6)   # un día hábil más, para que fin > inicio
 
     def _make_actividad(self, **kwargs):
         """Helper: crea una actividad con valores mínimos válidos.
@@ -42,9 +61,9 @@ class TestActividad(TransactionCase):
         vals = {
             'name': 'Actividad de prueba',
             'tipo_actividad_id': self.tipo.id,
-            'periodo': self.periodo.id,   # Many2one: pasar el ID del registro
-            'fecha_inicio': self.manana,
-            'fecha_fin': self.pasado_manana,
+            'periodo': self.periodo.id,
+            'fecha_inicio': self.fecha_valida,
+            'fecha_fin': self.fecha_fin_valida,
             'cantidad_horas': 8.0,
             'cupo_min': 5,
             'cupo_max': 30,
@@ -57,7 +76,6 @@ class TestActividad(TransactionCase):
     def test_fecha_inicio_pasada_falla(self):
         """No se debe poder crear una actividad con fecha de inicio en el pasado."""
         with self.assertRaises(ValidationError):
-            # Sin skip_fecha_check, el constraint de fecha debe activarse
             self.env['actividad.complementaria'].create({
                 'name': 'Actividad pasada',
                 'tipo_actividad_id': self.tipo.id,
@@ -67,10 +85,89 @@ class TestActividad(TransactionCase):
                 'cantidad_horas': 4.0,
             })
 
+    def test_fecha_inicio_menos_de_5_habiles_falla(self):
+        """Una fecha de inicio con solo 4 días hábiles de antelación debe fallar."""
+        with self.assertRaises(ValidationError):
+            self.env['actividad.complementaria'].create({
+                'name': 'Actividad con poco margen',
+                'tipo_actividad_id': self.tipo.id,
+                'periodo': self.periodo.id,
+                'fecha_inicio': _n_dias_habiles(4),
+                'fecha_fin': _n_dias_habiles(5),
+                'cantidad_horas': 4.0,
+            })
+
+    def test_fecha_inicio_exactamente_5_habiles_ok(self):
+        """Una fecha de inicio con exactamente 5 días hábiles de antelación debe ser válida."""
+        actividad = self.env['actividad.complementaria'].create({
+            'name': 'Actividad con margen justo',
+            'tipo_actividad_id': self.tipo.id,
+            'periodo': self.periodo.id,
+            'fecha_inicio': _n_dias_habiles(5),
+            'fecha_fin': _n_dias_habiles(6),
+            'cantidad_horas': 4.0,
+        })
+        self.assertTrue(actividad.id)
+
     def test_fecha_fin_antes_de_inicio_falla(self):
         """La fecha de fin debe ser posterior a la fecha de inicio."""
         with self.assertRaises(ValidationError):
-            self._make_actividad(fecha_inicio=self.manana, fecha_fin=self.manana)
+            self._make_actividad(fecha_inicio=self.fecha_valida, fecha_fin=self.fecha_valida)
+
+    def test_edicion_sin_propuesta_manana_ok(self):
+        """En edición sin propuesta aprobada, mover fecha_inicio a mañana es válido."""
+        actividad = self._make_actividad()
+        manana = date.today() + timedelta(days=1)
+        actividad.write({
+            'fecha_inicio': manana,
+            'fecha_fin': manana + timedelta(days=1),
+        })
+        self.assertEqual(actividad.fecha_inicio, manana)
+
+    def test_edicion_sin_propuesta_hoy_falla(self):
+        """En edición sin propuesta aprobada, fecha_inicio = hoy debe fallar."""
+        actividad = self._make_actividad()
+        with self.assertRaises(ValidationError):
+            actividad.write({'fecha_inicio': date.today()})
+
+    def test_edicion_con_propuesta_usa_fecha_envio(self):
+        """Con propuesta aprobada, el mínimo de fecha_inicio se calcula desde la fecha de envío."""
+        # Crear la actividad sorteando el constraint (usamos fechas futuras válidas)
+        actividad = self._make_actividad()
+
+        # Simular una propuesta cuya fecha de envío fue hace un día hábil:
+        # buscamos el día hábil (lun-vie) más reciente anterior a hoy.
+        fecha_envio = date.today() - timedelta(days=1)
+        while fecha_envio.weekday() >= 5:   # retroceder si cae en sáb(5) o dom(6)
+            fecha_envio -= timedelta(days=1)
+
+        estado_en_revision = self.env.ref(
+            'actividades_complementarias.estado_solicitud_en_revision'
+        )
+        estado_aprobada = self.env.ref(
+            'actividades_complementarias.estado_solicitud_aprobada'
+        )
+        propuesta = self.env['actividad.propuesta'].create({
+            'actividad_id': actividad.id,
+            'estado_solicitud_id': estado_en_revision.id,
+            'fecha': fecha_envio,
+        })
+        propuesta.write({'estado_solicitud_id': estado_aprobada.id})
+
+        # La fecha mínima válida es 5 días hábiles desde fecha_envio, pero
+        # nunca antes de mañana.
+        min_fecha = max(_n_dias_habiles(5, desde=fecha_envio), date.today() + timedelta(days=1))
+
+        # Un día antes del mínimo debe fallar
+        with self.assertRaises(ValidationError):
+            actividad.write({'fecha_inicio': min_fecha - timedelta(days=1)})
+
+        # El día exacto del mínimo debe funcionar
+        actividad.write({
+            'fecha_inicio': min_fecha,
+            'fecha_fin': min_fecha + timedelta(days=1),
+        })
+        self.assertEqual(actividad.fecha_inicio, min_fecha)
 
     # ── Constraints de cupos ─────────────────────────────────────────────────
 
