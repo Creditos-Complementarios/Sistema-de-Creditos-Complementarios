@@ -359,13 +359,14 @@ class Actividad(models.Model):
         """Estampa el flag actividad_creating=True en el contexto para que
         _check_fechas pueda distinguir una creación de una edición.
 
-        _origin.id no es fiable aquí porque el constraint corre después de que
-        el registro ya fue insertado en la BD y _origin ya tiene un ID real.
+        El flag se elimina del recordset devuelto para que llamadas
+        posteriores a write() sobre esos registros no lo hereden.
         """
-        return super(
+        records = super(
             Actividad,
             self.with_context(actividad_creating=True),
         ).create(vals_list)
+        return records.with_context(actividad_creating=False)
 
     # ────────────────────────────────────────────────────────────────────────
     # ORM override: write()
