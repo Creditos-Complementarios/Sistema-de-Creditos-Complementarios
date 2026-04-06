@@ -267,7 +267,7 @@
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
         <field name="responsable_actividad_id" ref="user_responsable_1"/>
-        <field name="fecha_inicio">2026-06-09</field>
+        <field name="fecha_inicio">2026-04-01</field>
         <field name="fecha_fin">2026-07-01</field>
         <field name="cantidad_horas">60</field>
         <field name="creditos">0.5</field>
@@ -284,7 +284,7 @@
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
         <field name="responsable_actividad_id" ref="user_responsable_1"/>
-        <field name="fecha_inicio">2026-07-14</field>
+        <field name="fecha_inicio">2026-04-05</field>
         <field name="fecha_fin">2026-08-05</field>
         <field name="cantidad_horas">80</field>
         <field name="creditos">1.0</field>
@@ -303,7 +303,7 @@
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
         <field name="responsable_actividad_id" ref="user_responsable_2"/>
-        <field name="fecha_inicio">2026-06-01</field>
+        <field name="fecha_inicio">2026-04-14</field>
         <field name="fecha_fin">2026-06-30</field>
         <field name="cantidad_horas">40</field>
         <field name="creditos">1.0</field>
@@ -320,7 +320,7 @@
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_biologia"/>
         <field name="responsable_actividad_id" ref="user_responsable_3"/>
-        <field name="fecha_inicio">2026-05-20</field>
+        <field name="fecha_inicio">2026-04-20</field>
         <field name="fecha_fin">2026-06-20</field>
         <field name="cantidad_horas">30</field>
         <field name="creditos">0.5</field>

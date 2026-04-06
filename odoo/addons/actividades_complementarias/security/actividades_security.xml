@@ -70,28 +70,14 @@
     </record>
 
     <!-- ════════════════════════════════════════════════════════════════════
-         Record Rules
-         ════════════════════════════════════════════════════════════════════
-
-         Alumno
-           Solo ve actividades en catálogo (en_catalogo = True).
-
-         Responsable de Actividad
-           Solo ve actividades donde está asignado como responsable.
-
-         Jefe de Departamento
-           Puede ver (lectura):
-             - Sus propias actividades (jefe_departamento_id = usuario).
-             - Actividades en catálogo de cualquier departamento.
-           No puede ver (ni acceder) actividades de otros JD fuera del catálogo.
-           Las restricciones de escritura se aplican adicionalmente en
-           Actividad.write() según el estado del registro.
-
-         Admin y Comité
-           Sin record rules adicionales; ven todo.
+         Record rules
+         Alumno     — solo ve actividades en catálogo (en_catalogo = True).
+         Responsable — solo ve actividades donde está asignado como responsable.
+         JD y Comité — el filtrado por departamento se gestiona en Python
+                       (_search override); no requieren record rules adicionales
+                       a menos que se necesite aislamiento multi-empresa.
     ════════════════════════════════════════════════════════════════════ -->
 
-    <!-- Alumno: solo actividades en catálogo -->
     <record id="rule_actividad_alumno" model="ir.rule">
         <field name="name">Alumno: solo actividades en catálogo</field>
         <field name="model_id" ref="model_actividad_complementaria"/>
@@ -103,7 +89,6 @@
         <field name="perm_unlink" eval="False"/>
     </record>
 
-    <!-- Responsable de Actividad: solo sus actividades asignadas -->
     <record id="rule_actividad_responsable" model="ir.rule">
         <field name="name">Responsable: solo sus actividades asignadas</field>
         <field name="model_id" ref="model_actividad_complementaria"/>
@@ -125,26 +110,4 @@
         <field name="perm_unlink" eval="False"/>
     </record>
 
-    <!--
-        Jefe de Departamento:
-          - Lee y escribe sus propias actividades (todas).
-          - Lee (solo lectura ORM) actividades de otros JD que estén en catálogo.
-        NOTA: perm_write=True aquí no implica que pueda escribir todo;
-        Actividad.write() aplica las restricciones por estado encima de esta regla.
-    -->
-    <record id="rule_actividad_jefe_departamento" model="ir.rule">
-        <field name="name">JD: sus actividades y actividades en catálogo</field>
-        <field name="model_id" ref="model_actividad_complementaria"/>
-        <field name="domain_force">
-            ['|',
-                ('jefe_departamento_id', '=', user.id),
-                ('en_catalogo', '=', True)
-            ]
-        </field>
-        <field name="groups" eval="[(4, ref('actividades_complementarias.group_jefe_departamento'))]"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-    </record>
 </odoo>

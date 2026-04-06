@@ -91,50 +91,39 @@
         <field name="context">{"origen_propuesta": "mis_propuestas"}</field>
     </record>
 
-
-
-
-
-
-
     <record id="action_propuesta_pendiente" model="ir.actions.act_window">
-    <field name="name">Propuestas Pendientes</field>
-    <field name="res_model">actividad.propuesta</field>
-    <field name="view_mode">list,form</field>
-    <field name="domain">[('estado_code','=','en_revision')]</field>
-    <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-            No hay ninguna propuesta pendiente
-        </p>
-        <p>Las propuestas enviadas por los Jefes de Departamento aparecerán aquí.</p>
-    </field>
-</record>
+        <field name="name">Propuestas Pendientes</field>
+        <field name="res_model">actividad.propuesta</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('estado_code','=','en_revision')]</field>
+        <field name="context">{"origen_propuesta": "pendientes"}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No hay ninguna propuesta pendiente</p>
+            <p>Las propuestas enviadas por los Jefes de Departamento aparecerán aquí.</p>
+        </field>
+    </record>
 
-<record id="action_propuesta_todas" model="ir.actions.act_window">
-    <field name="name">Todas las Propuestas</field>
-    <field name="res_model">actividad.propuesta</field>
-    <field name="view_mode">list,form</field>
-    <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-            No hay propuestas registradas
-        </p>
-        <p>Aún no se han enviado propuestas al Comité Académico.</p>
-    </field>
-</record>
+    <record id="action_propuesta_todas" model="ir.actions.act_window">
+        <field name="name">Todas las Propuestas</field>
+        <field name="res_model">actividad.propuesta</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"origen_propuesta": "todas"}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No hay propuestas registradas</p>
+            <p>Aún no se han enviado propuestas al Comité Académico.</p>
+        </field>
+    </record>
 
-
-   <record id="action_catalogo_comite" model="ir.actions.act_window">
-    <field name="name">Catálogo de Actividades Aprobadas</field>
-    <field name="res_model">actividad.complementaria</field>
-    <field name="view_mode">list,kanban,form</field>
-    <field name="domain">[('estado_code', 'in', ['aprobada','pendiente_inicio','en_curso','finalizada'])]</field>
-    <field name="context">{'search_default_filter_catalogo': 0}</field>
-    <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-            No hay actividades en el catálogo
-        </p>
-        <p>Las actividades aprobadas por el Comité aparecerán aquí.</p>
-    </field>
-</record>
+    <record id="action_catalogo_comite" model="ir.actions.act_window">
+        <field name="name">Catálogo de Actividades Aprobadas</field>
+        <field name="res_model">actividad.complementaria</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('estado_code', 'in', ['aprobada','pendiente_inicio','en_curso','finalizada'])]</field>
+        <field name="context">{'search_default_filter_catalogo': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No hay actividades en el catálogo</p>
+            <p>Las actividades aprobadas por el Comité aparecerán aquí.</p>
+        </field>
+    </record>
 
 </odoo>

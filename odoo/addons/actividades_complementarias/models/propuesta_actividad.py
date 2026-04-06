@@ -99,8 +99,6 @@ class PropuestaActividadComplementaria(models.Model):
 
     # ────────────────────────────────────────────────────────────────────────
     # Business logic
-    # Usamos bypass_edit_protection=True porque estas acciones escriben
-    # campos auto-gestionados (estado_id) en la actividad asociada.
     # ────────────────────────────────────────────────────────────────────────
 
     def action_aprobar(self):
@@ -108,9 +106,7 @@ class PropuestaActividadComplementaria(models.Model):
         estado_aprobada = self.env.ref('actividades_complementarias.estado_solicitud_aprobada')
         estado_act_aprobada = self.env.ref('actividades_complementarias.estado_aprobada')
         self.write({'estado_solicitud_id': estado_aprobada.id})
-        self.actividad_id.with_context(bypass_edit_protection=True).write(
-            {'estado_id': estado_act_aprobada.id}
-        )
+        self.actividad_id.write({'estado_id': estado_act_aprobada.id})
         self.message_post(body='Propuesta aprobada por el Comité Académico.')
 
     def action_rechazar(self):
@@ -120,9 +116,7 @@ class PropuestaActividadComplementaria(models.Model):
         estado_rechazada = self.env.ref('actividades_complementarias.estado_solicitud_rechazada')
         estado_act_rechazada = self.env.ref('actividades_complementarias.estado_rechazada')
         self.write({'estado_solicitud_id': estado_rechazada.id})
-        self.actividad_id.with_context(bypass_edit_protection=True).write(
-            {'estado_id': estado_act_rechazada.id}
-        )
+        self.actividad_id.write({'estado_id': estado_act_rechazada.id})
         self.message_post(body=f'Propuesta rechazada. Motivo: {self.motivo_rechazo}')
 
     def action_abrir_wizard_rechazo(self):

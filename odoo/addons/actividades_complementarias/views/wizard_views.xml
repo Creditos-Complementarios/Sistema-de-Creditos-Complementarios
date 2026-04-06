@@ -20,7 +20,7 @@
                         <field name="actividad_predefinida"/>
                         <field name="periodo" placeholder="Ej: 2025-A"/>
                     </group>
-                    <group string="Responsable (solo actividades predefinidas)" invisible="not es_predefinida">
+                    <group string="Responsable y Creditos">
                         <field name="responsable_actividad_id"/>
                         <field name="creditos"/>
                     </group>
@@ -141,10 +141,10 @@
                         <field name="nombre_actividad" string="Actividad" readonly="1"/>
                         <field name="responsable_actual" string="Responsable Actual" readonly="1"
                                invisible="not responsable_actual"/>
-                        <field name="dominio_responsable_ids" invisible="1"/>
+                        <field name="dominio_responsable" invisible="1"/>
                         <field name="responsable_nuevo_id"
                                string="Responsable a Asignar"
-                               domain="[('id', 'in', dominio_responsable_ids)]"
+                               domain="dominio_responsable"
                                options="{'no_create': True, 'no_quick_create': True}"/>
                     </group>
                 </sheet>
