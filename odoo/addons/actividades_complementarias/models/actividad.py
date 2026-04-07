@@ -642,6 +642,11 @@ class Actividad(models.Model):
                 'Esta actividad ya fue aprobada o está en curso/finalizada. '
                 'No puede ser reenviada al Comité Académico.'
             )
+        # Validar cantidad de horas > 0
+        if not self.cantidad_horas or self.cantidad_horas <= 0:
+            raise ValidationError(
+                'La cantidad de horas debe ser mayor a 0 antes de enviar al Comité Académico.'
+            )
         # Validar que tenga creditos asignados
         if not self.creditos:
             raise ValidationError(

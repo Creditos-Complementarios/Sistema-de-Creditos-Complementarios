@@ -46,12 +46,10 @@
                 <footer>
                     <button name="action_confirmar" string="Enviar al Catalogo"
                             type="object" class="btn-primary"
-                            invisible="not es_predefinida"
-                            confirm="Esta actividad es predefinida y se aprobara automaticamente. Confirma el registro?"/>
+                            invisible="not es_predefinida"/>
                     <button name="action_confirmar" string="Enviar al Comite Academico"
                             type="object" class="btn-warning"
-                            invisible="es_predefinida"
-                            confirm="Confirma el envio de esta actividad al Comite Academico para su revision?"/>
+                            invisible="es_predefinida"/>
                     <button name="action_cancelar" string="Cancelar"
                             type="object" class="btn-secondary"/>
                 </footer>

@@ -116,7 +116,7 @@ class WizardNuevaActividad(models.TransientModel):
         """
         self.ensure_one()
 
-        # Validaciones antes de crear el registro
+        # --- Validaciones comunes (aplican siempre) -------------------------
         errores = []
 
         if not self.name or not self.name.strip():
@@ -150,6 +150,21 @@ class WizardNuevaActividad(models.TransientModel):
                 errores.append(u'\u2022 El Cupo Minimo debe ser al menos 1.')
             if self.cupo_max < self.cupo_min:
                 errores.append(u'\u2022 El Cupo Maximo debe ser mayor o igual al Cupo Minimo.')
+
+        # --- Validaciones extra para actividades predefinidas ---------------
+        es_predefinida_check = (
+            bool(self.actividad_predefinida) or
+            (self.tipo_actividad_id.es_predefinida if self.tipo_actividad_id else False)
+        )
+        if es_predefinida_check:
+            if not self.creditos:
+                errores.append(u'\u2022 Cantidad de Creditos es obligatoria para enviar al Catalogo.')
+            if not self.responsable_actividad_id:
+                errores.append(u'\u2022 Responsable de Actividad es obligatorio para enviar al Catalogo.')
+        else:
+            # Para enviar al Comite la cantidad de horas tambien debe ser > 0 (ya cubierto arriba)
+            if not self.creditos:
+                errores.append(u'\u2022 Cantidad de Creditos es obligatoria para enviar al Comite Academico.')
 
         if errores:
             raise ValidationError(
