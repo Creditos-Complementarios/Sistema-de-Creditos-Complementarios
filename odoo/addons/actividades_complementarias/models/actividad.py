@@ -544,6 +544,18 @@ class Actividad(models.Model):
                 if rec.cupo_max < rec.cupo_min:
                     raise ValidationError('El cupo máximo debe ser mayor o igual al cupo mínimo.')
 
+    @api.constrains('alumno_ids', 'cupo_max', 'cupo_ilimitado')
+    def _check_cupo_alumnos(self):
+        """Valida que el número de alumnos no supere el cupo máximo permitido."""
+        for rec in self:
+            if not rec.cupo_ilimitado and len(rec.alumno_ids) > rec.cupo_max:
+                raise ValidationError(
+                    f'No se pueden añadir más alumnos. '
+                    f'La actividad "{rec.name}" tiene un cupo máximo de '
+                    f'{rec.cupo_max} alumno(s) y actualmente hay '
+                    f'{len(rec.alumno_ids)} inscrito(s).'
+                )
+
     # ────────────────────────────────────────────────────────────────────────
     # Business Logic
     # Todas las acciones de negocio que escriben campos auto-gestionados
