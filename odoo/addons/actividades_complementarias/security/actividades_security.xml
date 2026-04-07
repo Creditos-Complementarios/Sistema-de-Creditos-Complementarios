@@ -103,11 +103,16 @@
         <field name="perm_unlink" eval="False"/>
     </record>
 
-    <!-- Responsable de Actividad: solo sus actividades asignadas -->
+    <!-- Responsable de Actividad: sus actividades asignadas Y todo el catálogo -->
     <record id="rule_actividad_responsable" model="ir.rule">
-        <field name="name">Responsable: solo sus actividades asignadas</field>
+        <field name="name">Responsable: sus actividades asignadas y catálogo</field>
         <field name="model_id" ref="model_actividad_complementaria"/>
-        <field name="domain_force">[('responsable_actividad_id', '=', user.id)]</field>
+        <field name="domain_force">
+            ['|',
+                ('responsable_actividad_id', '=', user.id),
+                ('en_catalogo', '=', True)
+            ]
+        </field>
         <field name="groups" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="True"/>
