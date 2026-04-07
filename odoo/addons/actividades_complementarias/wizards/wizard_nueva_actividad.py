@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from datetime import date, timedelta
+
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
-from datetime import date, timedelta
 
 
 def _n_dias_habiles(n, desde=None):
@@ -89,6 +90,8 @@ class WizardNuevaActividad(models.TransientModel):
                             f'a partir de hoy. La fecha mínima válida es '
                             f'{min_fecha.strftime("%d/%m/%Y")}.'
                         )
+                if rec.fecha_inicio and rec.fecha_inicio < date.today():
+                    raise ValidationError('La fecha de inicio no puede ser anterior a hoy.')
             if rec.fecha_fin and rec.fecha_inicio and rec.fecha_fin <= rec.fecha_inicio:
                 raise ValidationError('La fecha de fin debe ser posterior a la fecha de inicio.')
 
@@ -107,15 +110,69 @@ class WizardNuevaActividad(models.TransientModel):
 
     def action_confirmar(self):
         """
-        Crea la actividad y la enruta:
-        - Predefinida (por tipo o por campo actividad_predefinida) → estado 'pendiente_inicio'
-          directamente (sin comité). El botón cambia a 'Enviar al Catálogo'.
-        - Nueva → estado 'en_revision', se crea propuesta al Comité.
-                   Solo pasa a 'aprobada' cuando el Comité la aprueba
-                   (o automáticamente a los 5 días por el cron).
+        Valida todos los campos, luego crea la actividad y la enruta:
+        - Predefinida -> estado 'pendiente_inicio' (sin comite).
+        - Nueva -> estado 'en_revision', se crea propuesta al Comite.
         """
         self.ensure_one()
 
+        # --- Validaciones comunes (aplican siempre) -------------------------
+        errores = []
+
+        if not self.name or not self.name.strip():
+            errores.append(u'\u2022 Nombre de la Actividad es obligatorio.')
+        if not self.tipo_actividad_id:
+            errores.append(u'\u2022 Tipo de Actividad es obligatorio.')
+        if not self.periodo:
+            errores.append(u'\u2022 Periodo Escolar es obligatorio.')
+        if not self.fecha_inicio:
+            errores.append(u'\u2022 Fecha de Inicio es obligatoria.')
+        if not self.fecha_fin:
+            errores.append(u'\u2022 Fecha de Finalizacion es obligatoria.')
+        if self.fecha_inicio and self.fecha_fin:
+            if self.fecha_fin <= self.fecha_inicio:
+                errores.append(u'\u2022 La Fecha de Finalizacion debe ser posterior a la Fecha de Inicio.')
+            if not self.env.context.get('install_demo') and self.fecha_inicio < date.today():
+                errores.append(u'\u2022 La Fecha de Inicio no puede ser anterior a hoy.')
+            dias = (self.fecha_fin - self.fecha_inicio).days + 1
+            horas_max = dias * 12
+            if self.cantidad_horas and self.cantidad_horas > horas_max:
+                errores.append(
+                    u'\u2022 La Cantidad de Horas (%g h) supera el maximo para el periodo '
+                    u'seleccionado (%d dia(s) x 12 h = %d h maximos).' % (
+                        self.cantidad_horas, dias, horas_max
+                    )
+                )
+        if not self.cantidad_horas or self.cantidad_horas <= 0:
+            errores.append(u'\u2022 La Cantidad de Horas debe ser mayor a 0.')
+        if not self.cupo_ilimitado:
+            if self.cupo_min < 1:
+                errores.append(u'\u2022 El Cupo Minimo debe ser al menos 1.')
+            if self.cupo_max < self.cupo_min:
+                errores.append(u'\u2022 El Cupo Maximo debe ser mayor o igual al Cupo Minimo.')
+
+        # --- Validaciones extra para actividades predefinidas ---------------
+        es_predefinida_check = (
+            bool(self.actividad_predefinida) or
+            (self.tipo_actividad_id.es_predefinida if self.tipo_actividad_id else False)
+        )
+        if es_predefinida_check:
+            if not self.creditos:
+                errores.append(u'\u2022 Cantidad de Creditos es obligatoria para enviar al Catalogo.')
+            if not self.responsable_actividad_id:
+                errores.append(u'\u2022 Responsable de Actividad es obligatorio para enviar al Catalogo.')
+        else:
+            # Para enviar al Comite la cantidad de horas tambien debe ser > 0 (ya cubierto arriba)
+            if not self.creditos:
+                errores.append(u'\u2022 Cantidad de Creditos es obligatoria para enviar al Comite Academico.')
+
+        if errores:
+            raise ValidationError(
+                u'Por favor corrija los siguientes campos antes de continuar:\n\n' +
+                u'\n'.join(errores)
+            )
+
+        # Determinar si es predefinida
         es_predefinida = (
             bool(self.actividad_predefinida) or
             (self.tipo_actividad_id.es_predefinida if self.tipo_actividad_id else False)
@@ -124,7 +181,6 @@ class WizardNuevaActividad(models.TransientModel):
         if es_predefinida:
             estado = self.env.ref('actividades_complementarias.estado_pendiente_inicio')
         else:
-            # Queda en revisión hasta que el Comité decida (o pasen 5 días)
             estado = self.env.ref('actividades_complementarias.estado_en_revision')
 
         vals = {
@@ -142,16 +198,18 @@ class WizardNuevaActividad(models.TransientModel):
             'ruta_imagen': self.ruta_imagen,
             'jefe_departamento_id': self.env.user.id,
             'estado_id': estado.id,
+            'responsable_actividad_id': (
+                self.responsable_actividad_id.id if self.responsable_actividad_id else False
+            ),
+            'creditos': self.creditos,
         }
 
         if es_predefinida:
-            vals['responsable_actividad_id'] = (
-                self.responsable_actividad_id.id if self.responsable_actividad_id else False
-            )
-            vals['creditos'] = self.creditos
-            vals['en_catalogo'] = False  # JD decide luego cuándo publicar
+            vals['en_catalogo'] = False
 
-        actividad = self.env['actividad.complementaria'].create(vals)
+        actividad = self.env['actividad.complementaria'].with_context(
+            skip_fecha_check=True, skip_horas_check=True
+        ).create(vals)
 
         if not es_predefinida:
             # Crear propuesta al comité en estado "en revisión"
@@ -173,7 +231,18 @@ class WizardNuevaActividad(models.TransientModel):
                      f'Lista para enviar al catálogo.'
             )
 
-        # Abrir el registro recién creado
+        # Redirigir según el tipo de actividad
+        if not es_predefinida:
+            # Enviada al comité → ir a "Mis Propuestas al Comité"
+            action = self.env.ref(
+                'actividades_complementarias.action_propuesta',
+                raise_if_not_found=False,
+            )
+            if action:
+                result = action.read()[0]
+                result['target'] = 'current'
+                return result
+        # Predefinida → abrir el registro para que el JD pueda enviarlo al catálogo
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'actividad.complementaria',

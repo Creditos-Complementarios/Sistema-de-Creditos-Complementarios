@@ -99,8 +99,6 @@ class PropuestaActividadComplementaria(models.Model):
 
     # ────────────────────────────────────────────────────────────────────────
     # Business logic
-    # Usamos bypass_edit_protection=True porque estas acciones escriben
-    # campos auto-gestionados (estado_id) en la actividad asociada.
     # ────────────────────────────────────────────────────────────────────────
 
     def action_aprobar(self):
@@ -150,7 +148,28 @@ class PropuestaActividadComplementaria(models.Model):
         }
 
     def action_regresar_lista(self):
-        """Regresa a la lista de propuestas."""
+        """Regresa a la lista segun el contexto de origen."""
+        ctx = self.env.context
+        origen = ctx.get('origen_propuesta', 'todas')
+        if origen == 'pendientes':
+            action_ref = self.env.ref(
+                'actividades_complementarias.action_propuesta_pendiente',
+                raise_if_not_found=False,
+            )
+        elif origen == 'mis_propuestas':
+            action_ref = self.env.ref(
+                'actividades_complementarias.action_propuesta',
+                raise_if_not_found=False,
+            )
+        else:
+            action_ref = self.env.ref(
+                'actividades_complementarias.action_propuesta_todas',
+                raise_if_not_found=False,
+            )
+        if action_ref:
+            action = action_ref.read()[0]
+            action['target'] = 'current'
+            return action
         return {
             'type': 'ir.actions.act_window',
             'name': 'Propuestas',

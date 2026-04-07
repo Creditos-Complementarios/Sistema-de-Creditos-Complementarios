@@ -48,20 +48,6 @@
     </record>
 
     <!-- ── Form ─────────────────────────────────────────────────────────── -->
-    <!--
-        Lógica de solo-lectura del formulario:
-
-        Los campos computed 'permisos_actividad_finalizada' y 'permisos_actividad_en_curso'
-        son calculados en Python por _compute_permisos_edicion() según el
-        estado del registro y el rol del usuario en sesión.
-
-        - permisos_actividad_finalizada=True          → todos los campos son readonly.
-        - permisos_actividad_en_curso=True → solo 'responsable_actividad_id' es editable;
-                                           el resto son readonly.
-        - Ambos False                 → edición normal (según estado y rol).
-
-        La protección a nivel de ORM se aplica en Actividad.write().
-    -->
     <record id="view_actividad_form" model="ir.ui.view">
         <field name="name">actividad.complementaria.form</field>
         <field name="model">actividad.complementaria</field>
@@ -79,29 +65,17 @@
                             invisible="not actividad_predefinida or en_catalogo or estado_code in ['rechazada','finalizada']"
                             groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"
                             confirm="Esta actividad es predefinida y se enviará directo al catálogo. ¿Confirma?"/>
-                    <field name="estado_id" widget="statusbar"
-                           statusbar_visible="en_revision,aprobada,rechazada,pendiente_inicio,en_curso,finalizada"/>
+                    <field name="estado_id" widget="statusbar"/>
                     <button name="action_enviar_catalogo" string="Enviar al Catálogo"
                             type="object" class="btn-primary"
                             invisible="estado_code not in ['aprobada','pendiente_inicio'] or en_catalogo"
                             groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
-                    <button name="action_iniciar_actividad" string="Iniciar Actividad"
-                            type="object" class="btn-success"
-                            invisible="estado_code not in ['aprobada','pendiente_inicio']"
-                            groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"
-                            confirm="¿Confirma el inicio de esta actividad?"/>
-                    <button name="action_finalizar_actividad" string="Finalizar Actividad"
-                            type="object" class="btn-secondary"
-                            invisible="estado_code != 'en_curso'"
-                            groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"
-                            confirm="¿Confirma la finalización de esta actividad?"/>
                     <button name="action_firmar_constancias" string="Firmar Constancias"
                             type="object" class="btn-primary"
                             invisible="estado_code != 'finalizada' or constancias_firmadas"
                             groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
                 </header>
                 <sheet>
-                    <!-- Flags internos (no visibles al usuario) -->
                     <field name="tiene_propuesta_activa" invisible="1"/>
                     <field name="tipo_actividad_predefinida" invisible="1"/>
                     <field name="tipo_es_nueva" invisible="1"/>
@@ -138,63 +112,76 @@
                         </span>
                     </div>
 
+                    <field name="responsable_bloqueado" invisible="1"/>
+                    <field name="horas_maximas" invisible="1"/>
                     <field name="ruta_imagen" widget="image" class="oe_avatar"
-                           readonly="permisos_actividad_finalizada or permisos_actividad_en_curso"/>
+                           readonly="estado_code in ['aprobada','en_curso','finalizada','en_revision']"/>
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="Nombre de la actividad..."
-                                   readonly="permisos_actividad_finalizada or permisos_actividad_en_curso"/>
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
                         </h1>
                     </div>
                     <group>
                         <group string="Información General">
                             <field name="tipo_actividad_id"
-                                   readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso"/>
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
                             <field name="actividad_predefinida"
                                    invisible="tipo_es_nueva"
-                                   readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso"
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
                                    help="Seleccione si la actividad es predefinida (aprobación automática). Deje en blanco para quitar la selección."/>
                             <field name="periodo"
-                                   readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso"/>
-                            <!-- jefe_departamento_id y departamento_id son siempre readonly -->
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
                             <field name="jefe_departamento_id" readonly="1"/>
                             <field name="departamento_id" readonly="1"/>
+                            <!-- Responsable: visible cuando hay actividad predefinida seleccionada (creación)
+                                 o cuando la actividad ya está aprobada/en curso -->
                             <field name="responsable_actividad_id"
                                    domain="dominio_responsable"
-                                   readonly="permisos_actividad_finalizada"
-                                   options="{'no_create': True, 'no_quick_create': True}"/>
+                                   options="{'no_create': True, 'no_quick_create': True}"
+                                   invisible="not actividad_predefinida and estado_code not in ['aprobada','pendiente_inicio','en_curso','finalizada','rechazada']"
+                                   readonly="estado_code in ['en_revision','finalizada']"/>
+                            <button name="action_abrir_wizard_responsable"
+                                    string="Asignar Responsable"
+                                    type="object"
+                                    class="btn btn-primary btn-sm"
+                                    invisible="responsable_bloqueado or responsable_actividad_id or estado_code not in ['aprobada','pendiente_inicio']"
+                                    groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
                         </group>
                         <group string="Fechas y Duración">
                             <field name="fecha_inicio"
-                                   readonly="permisos_actividad_finalizada or permisos_actividad_en_curso"/>
+                                   readonly="estado_code in ['en_curso','finalizada','en_revision']"/>
                             <field name="fecha_fin"
-                                   readonly="permisos_actividad_finalizada or permisos_actividad_en_curso"/>
+                                   readonly="estado_code in ['en_curso','finalizada','en_revision']"/>
                             <field name="cantidad_horas"
-                                   readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso"/>
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
                             <field name="creditos"
-                                   readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso"/>
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
                             <field name="horario"
                                    placeholder="Ej: Lunes 10:00-12:00, Miércoles 10:00-12:00"
-                                   readonly="permisos_actividad_finalizada or permisos_actividad_en_curso"/>
+                                   readonly="estado_code in ['en_curso','finalizada','en_revision']"/>
                         </group>
                     </group>
-                    <group string="Cupos"
-                           readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso">
-                        <field name="cupo_ilimitado" readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso"/>
-                        <field name="cupo_min" invisible="cupo_ilimitado" readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso"/>
-                        <field name="cupo_max" invisible="cupo_ilimitado" readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso"/>
+                    <!-- Cupos: editables en aprobada/pendiente, readonly el resto -->
+                    <group string="Cupos">
+                        <field name="cupo_ilimitado"
+                               readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
+                        <field name="cupo_min" invisible="cupo_ilimitado"
+                               readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
+                        <field name="cupo_max" invisible="cupo_ilimitado"
+                               readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
                     </group>
                     <group string="Descripción">
                         <field name="descripcion" nolabel="1" colspan="2"
                                placeholder="Descripción de la actividad (máximo 2000 caracteres)..."
-                               readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso"/>
+                               readonly="estado_code in ['aprobada','en_curso','finalizada','en_revision']"/>
                     </group>
-                    <notebook>
-                        <page string="Alumnos Asignados" name="alumnos"
-                              invisible="estado_code in ['aprobada','rechazada'] or en_catalogo">
+                    <!-- Alumnos: visible cuando la actividad está aprobada o más avanzada -->
+                    <notebook invisible="estado_code not in ['aprobada','pendiente_inicio','en_curso','finalizada'] and not en_catalogo">
+                        <page string="Alumnos Asignados" name="alumnos">
                             <field name="alumno_ids"
                                    domain="dominio_alumnos"
-                                   readonly="permisos_actividad_finalizada or permisos_actividad_pendiente_inicio or permisos_actividad_en_curso"
+                                   readonly="estado_code in ['finalizada']"
                                    options="{'no_create': True, 'no_quick_create': True}">
                                 <list>
                                     <field name="name"/>
@@ -273,12 +260,14 @@
         <field name="search_view_id" ref="view_actividad_search"/>
     </record>
 
+    <!-- Catálogo filtrado por departamento del JD: solo ve sus propias actividades en catálogo -->
     <record id="action_actividad_catalogo" model="ir.actions.act_window">
         <field name="name">Catálogo de Actividades</field>
         <field name="res_model">actividad.complementaria</field>
         <field name="view_mode">list,kanban,form</field>
-        <field name="domain">[('en_catalogo', '=', True)]</field>
+        <field name="domain">[('en_catalogo', '=', True), ('jefe_departamento_id', '=', uid)]</field>
         <field name="search_view_id" ref="view_actividad_search"/>
     </record>
+
 
 </odoo>

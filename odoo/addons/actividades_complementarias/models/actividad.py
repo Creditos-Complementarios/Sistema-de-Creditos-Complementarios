@@ -79,6 +79,12 @@ class Actividad(models.Model):
         tracking=True,
         help='Solo usuarios del grupo Responsable de Actividad.',
     )
+    responsable_bloqueado = fields.Boolean(
+        string='Responsable Bloqueado',
+        default=False,
+        help='Una vez confirmado, el Responsable de Actividad no puede cambiarse.',
+        tracking=True,
+    )
     dominio_responsable = fields.Binary(
         compute='_compute_dominios',
         string='Dominio Responsable',
@@ -95,6 +101,12 @@ class Actividad(models.Model):
     fecha_inicio = fields.Date(string='Fecha de Inicio', required=True, tracking=True)
     fecha_fin = fields.Date(string='Fecha de Finalización', required=True, tracking=True)
     cantidad_horas = fields.Float(string='Cantidad de Horas', required=True)
+    horas_maximas = fields.Float(
+        string='Máximo de Horas',
+        compute='_compute_horas_maximas',
+        store=False,
+        help='Máximo de horas permitidas según el rango de fechas (12 h por día).',
+    )
     creditos = fields.Selection([
         ('0.5', '0.5 créditos'),
         ('1.0', '1 crédito'),
@@ -175,7 +187,6 @@ class Actividad(models.Model):
        help='Si la actividad es de tipo predefinido se aprueba automáticamente '
             'sin pasar por el Comité Académico. Puede dejarse en blanco para quitarlo.',
     )
-
     # ── Flags de permisos de edición (por estado) ─
     permisos_actividad_pendiente_inicio = fields.Boolean(
         string='Solo Responsable, Fechas y Horas Editables',
@@ -200,11 +211,47 @@ class Actividad(models.Model):
 
     @api.depends('tipo_actividad_id')
     def _compute_tipo_es_nueva(self):
+        """True cuando el tipo de actividad es 'Nueva (Propuesta)',
+        para ocultar el campo Actividades Predefinidas en ese caso."""
         for rec in self:
             rec.tipo_es_nueva = (
                 rec.tipo_actividad_id and
                 rec.tipo_actividad_id.name == 'Nueva (Propuesta)'
             )
+
+    @api.depends('fecha_inicio', 'fecha_fin')
+    def _compute_horas_maximas(self):
+        """12 horas por día del rango (fecha_fin - fecha_inicio + 1)."""
+        for rec in self:
+            if rec.fecha_inicio and rec.fecha_fin and rec.fecha_fin >= rec.fecha_inicio:
+                dias = (rec.fecha_fin - rec.fecha_inicio).days + 1
+                rec.horas_maximas = dias * 12.0
+            else:
+                rec.horas_maximas = 0.0
+
+    @api.onchange('fecha_inicio', 'fecha_fin')
+    def _onchange_fechas_ajustar_horas(self):
+        """Si las horas ya cargadas superan el nuevo máximo, las recorta al máximo."""
+        if self.fecha_inicio and self.fecha_fin and self.fecha_fin >= self.fecha_inicio:
+            dias = (self.fecha_fin - self.fecha_inicio).days + 1
+            maximo = dias * 12.0
+            if self.cantidad_horas and self.cantidad_horas > maximo:
+                self.cantidad_horas = maximo
+
+    @api.onchange('tipo_actividad_id')
+    def _onchange_tipo_actividad_limpiar_predefinida(self):
+        """Borra actividad_predefinida cuando el tipo es 'Nueva (Propuesta)'.
+        Evita que una actividad tipo nueva pueda saltarse el Comite Academico."""
+        if self.tipo_actividad_id and self.tipo_actividad_id.name == 'Nueva (Propuesta)':
+            self.actividad_predefinida = False
+            self.responsable_actividad_id = False
+
+    @api.onchange('actividad_predefinida')
+    def _onchange_actividad_predefinida_limpiar_responsable(self):
+        """Borra el responsable cuando se quita la selección de actividad predefinida.
+        El campo responsable solo aplica a actividades predefinidas en creación."""
+        if not self.actividad_predefinida and not self.estado_code:
+            self.responsable_actividad_id = False
 
     def _compute_dominios(self):
         """
@@ -247,6 +294,7 @@ class Actividad(models.Model):
             if not rec.jefe_departamento_id:
                 rec.departamento_id = False
                 continue
+            # Primero buscar en el catálogo de departamentos (jefe_id)
             depto = self.env['actividad.departamento'].search(
                 [('jefe_id', '=', rec.jefe_departamento_id.id)], limit=1
             )
@@ -544,6 +592,25 @@ class Actividad(models.Model):
                 if rec.cupo_max < rec.cupo_min:
                     raise ValidationError('El cupo máximo debe ser mayor o igual al cupo mínimo.')
 
+    @api.constrains('cantidad_horas', 'fecha_inicio', 'fecha_fin')
+    def _check_horas_vs_dias(self):
+        """La cantidad de horas no puede exceder el total de horas disponibles
+        en el rango de fechas (dias * 12 h como tope). Se omite en carga de demo."""
+        if self.env.context.get('install_demo') or self.env.context.get('skip_horas_check'):
+            return
+        for rec in self:
+            if rec.fecha_inicio and rec.fecha_fin and rec.cantidad_horas:
+                dias = (rec.fecha_fin - rec.fecha_inicio).days + 1
+                horas_maximas = dias * 12
+                if rec.cantidad_horas > horas_maximas:
+                    raise ValidationError(
+                        f'La cantidad de horas ({rec.cantidad_horas} h) no puede ser mayor '
+                        f'al máximo permitido para el período seleccionado '
+                        f'({dias} día(s) × 12 h = {horas_maximas} h máximo).'
+                    )
+                if rec.cantidad_horas <= 0:
+                    raise ValidationError('La cantidad de horas debe ser mayor a 0.')
+
     @api.constrains('alumno_ids', 'cupo_max', 'cupo_ilimitado')
     def _check_cupo_alumnos(self):
         """Valida que el número de alumnos no supere el cupo máximo permitido."""
@@ -562,14 +629,42 @@ class Actividad(models.Model):
     # usan with_context(bypass_edit_protection=True) para pasar el guard de write().
     # ────────────────────────────────────────────────────────────────────────
 
+    def action_abrir_wizard_responsable(self):
+        """Abre el wizard de confirmación para asignar el Responsable de Actividad."""
+        self.ensure_one()
+        if self.responsable_bloqueado:
+            raise ValidationError(
+                'El Responsable de Actividad ya fue asignado y no puede modificarse.'
+            )
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Asignar Responsable de Actividad',
+            'res_model': 'actividad.wizard.asignar.responsable',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_actividad_id': self.id},
+        }
+
     def action_enviar_comite(self):
-        """Envía la actividad como propuesta al Comité Académico."""
+        """Envía la actividad como propuesta al Comité Académico.
+        Permite reenvío cuando la propuesta fue rechazada previamente."""
         self.ensure_one()
         if self.estado_code in ('aprobada', 'pendiente_inicio', 'en_curso', 'finalizada'):
             raise ValidationError(
                 'Esta actividad ya fue aprobada o está en curso/finalizada. '
                 'No puede ser reenviada al Comité Académico.'
             )
+        # Validar cantidad de horas > 0
+        if not self.cantidad_horas or self.cantidad_horas <= 0:
+            raise ValidationError(
+                'La cantidad de horas debe ser mayor a 0 antes de enviar al Comité Académico.'
+            )
+        # Validar que tenga creditos asignados
+        if not self.creditos:
+            raise ValidationError(
+                'Debe asignar la cantidad de créditos antes de enviar al Comité Académico.'
+            )
+        # Verificar que no haya propuesta pendiente o aprobada ya
         propuesta_existente = self.env['actividad.propuesta'].search([
             ('actividad_id', '=', self.id),
             ('estado_code', 'in', ('en_revision', 'aprobada')),
@@ -587,12 +682,21 @@ class Actividad(models.Model):
             body='Propuesta enviada al Comité Académico para su revisión. '
                  'Se aprobará automáticamente si no hay respuesta en 5 días.'
         )
+        # Redirigir a "Mis Propuestas al Comité" (lista completa, sin filtro por actividad)
+        action = self.env.ref(
+            'actividades_complementarias.action_propuesta',
+            raise_if_not_found=False,
+        )
+        if action:
+            result = action.read()[0]
+            result['target'] = 'current'
+            return result
         return {
             'type': 'ir.actions.act_window',
             'name': 'Mis Propuestas al Comité',
             'res_model': 'actividad.propuesta',
             'view_mode': 'list,form',
-            'domain': [('actividad_id', '=', self.id)],
+            'domain': [('actividad_id.jefe_departamento_id', '=', self.env.user.id)],
             'target': 'current',
         }
 
@@ -608,14 +712,42 @@ class Actividad(models.Model):
                 'Esta actividad ya fue finalizada y no puede ser enviada al catálogo. '
                 'Cree una nueva propuesta de actividad si desea volver a ofertarla.'
             )
+        # Validar horas > 0
+        if not self.cantidad_horas or self.cantidad_horas <= 0:
+            raise ValidationError(
+                'La cantidad de horas debe ser mayor a 0 antes de enviar al catálogo.'
+            )
+        # Validar créditos obligatorios
+        if not self.creditos:
+            raise ValidationError(
+                'Debe asignar la cantidad de créditos antes de enviar al catálogo.'
+            )
+        # Validar responsable obligatorio
+        if not self.responsable_actividad_id:
+            raise ValidationError(
+                'Debe asignar un Responsable de Actividad antes de enviar al catálogo.'
+            )
+        # Si es predefinida y aún no está en un estado válido, la aprobamos automáticamente
         if self.actividad_predefinida and self.estado_code not in ('aprobada', 'pendiente_inicio', 'en_curso'):
             estado_pendiente = self.env.ref('actividades_complementarias.estado_pendiente_inicio')
-            self.with_context(bypass_edit_protection=True).write({'estado_id': estado_pendiente.id})
-            self.message_post(body=f'Actividad predefinida ({self.actividad_predefinida}) aprobada automáticamente.')
+            self.write({'estado_id': estado_pendiente.id})
+            self.message_post(
+                body='Actividad predefinida (%s) aprobada automáticamente.' % self.actividad_predefinida
+            )
         if self.estado_code not in ('aprobada', 'pendiente_inicio'):
             raise ValidationError('Solo se pueden enviar al catálogo actividades aprobadas o pendientes de inicio.')
         self.with_context(bypass_edit_protection=True).write({'en_catalogo': True})
         self.message_post(body='Actividad enviada al catálogo.')
+        # Redirigir al catálogo de actividades (no quedar en vista superpuesta)
+        action = self.env.ref(
+            'actividades_complementarias.action_actividad_catalogo',
+            raise_if_not_found=False,
+        )
+        if action:
+            result = action.read()[0]
+            result['target'] = 'current'
+            return result
+        return {'type': 'ir.actions.act_window_close'}
 
     def action_iniciar_actividad(self):
         """Marca la actividad como En Curso manualmente."""

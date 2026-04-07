@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 <data noupdate="1">
+    <!-- ── Periodos Escolares ──────────────────────────────────────────── -->
+    <record id="periodo_2024_2025" model="actividad.periodo">
+        <field name="name">2024-2025</field>
+    </record>
+    <record id="periodo_2025_2026" model="actividad.periodo">
+        <field name="name">2025-2026</field>
+    </record>
+    <record id="periodo_2026_2027" model="actividad.periodo">
+        <field name="name">2026-2027</field>
+    </record>
+    <record id="periodo_2025_A" model="actividad.periodo">
+        <field name="name">2025-A</field>
+    </record>
+    <record id="periodo_2025_B" model="actividad.periodo">
+        <field name="name">2025-B</field>
+    </record>
+    <record id="periodo_2026_A" model="actividad.periodo">
+        <field name="name">2026-A</field>
+    </record>
+
+
 
     <!-- ================================================================== -->
     <!--  USUARIOS DE PRUEBA  (contraseña: Admin1234!)                      -->
@@ -394,7 +415,7 @@
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
         <field name="fecha_inicio">2026-05-10</field>
         <field name="fecha_fin">2026-05-12</field>
-        <field name="cantidad_horas">48</field>
+        <field name="cantidad_horas">12</field>
         <field name="cupo_ilimitado">True</field>
         <field name="estado_id" ref="actividades_complementarias.estado_en_revision"/>
     </record>

@@ -224,13 +224,21 @@ class TestActividad(TransactionCase):
 
     def test_enviar_catalogo_aprobada_ok(self):
         """Una actividad aprobada puede enviarse al catálogo."""
-        actividad = self._make_actividad(estado_id=self.estado_aprobada.id)
+        actividad = self._make_actividad(
+            estado_id=self.estado_aprobada.id,
+            creditos='1.0',
+            responsable_actividad_id=self.env.user.id,
+        )
         actividad.action_enviar_catalogo()
         self.assertTrue(actividad.en_catalogo)
 
     def test_enviar_catalogo_pendiente_inicio_ok(self):
         """Una actividad pendiente de inicio puede enviarse al catálogo."""
-        actividad = self._make_actividad(estado_id=self.estado_pendiente.id)
+        actividad = self._make_actividad(
+            estado_id=self.estado_pendiente.id,
+            creditos='1.0',
+            responsable_actividad_id=self.env.user.id,
+        )
         actividad.action_enviar_catalogo()
         self.assertTrue(actividad.en_catalogo)
 
