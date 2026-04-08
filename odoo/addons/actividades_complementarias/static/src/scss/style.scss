@@ -205,6 +205,14 @@ body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) .o_menu_
     background-size: contain;
 }
 
+/* Columnas de tabla no redimensionables */
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) {
+    .o_list_renderer th .o_resize {
+        display: none !important;
+        pointer-events: none !important;
+    }
+}
+
 /* Palomita del boolean en verde */
 body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) {
     .o_list_view .o_boolean_column .o_field_boolean .form-check-input:checked,
