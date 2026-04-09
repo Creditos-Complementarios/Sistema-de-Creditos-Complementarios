@@ -41,14 +41,6 @@ class Actividad(models.Model):
         'responsable_firmo',
     })
 
-    # XML-IDs de los grupos de Personal de Departamento.
-    _GRUPOS_PERSONAL = (
-        'actividades_complementarias.group_personal_departamento_sistemas',
-        'actividades_complementarias.group_personal_departamento_electrica',
-        'actividades_complementarias.group_personal_departamento_biologia',
-        'actividades_complementarias.group_personal_departamento_extraescolar',
-    )
-
     # ── Identificación ──────────────────────────────────────────────────────
     name = fields.Char(
         string='Nombre de la Actividad',
@@ -87,12 +79,6 @@ class Actividad(models.Model):
         tracking=True,
         help='Solo usuarios del grupo Responsable de Actividad.',
     )
-    responsable_bloqueado = fields.Boolean(
-        string='Responsable Bloqueado',
-        default=False,
-        help='Una vez confirmado, el Responsable de Actividad no puede cambiarse.',
-        tracking=True,
-    )
     dominio_responsable = fields.Binary(
         compute='_compute_dominios',
         string='Dominio Responsable',
@@ -109,19 +95,35 @@ class Actividad(models.Model):
     fecha_inicio = fields.Date(string='Fecha de Inicio', required=True, tracking=True)
     fecha_fin = fields.Date(string='Fecha de Finalización', required=True, tracking=True)
     cantidad_horas = fields.Float(string='Cantidad de Horas', required=True)
-    horas_maximas = fields.Float(
-        string='Máximo de Horas',
-        compute='_compute_horas_maximas',
-        store=False,
-        help='Máximo de horas permitidas según el rango de fechas (12 h por día).',
-    )
     creditos = fields.Selection([
         ('0.5', '0.5 créditos'),
         ('1.0', '1 crédito'),
         ('1.5', '1.5 créditos'),
         ('2.0', '2 créditos'),
     ], string='Cantidad de Créditos')
-    horario = fields.Text(string='Horario por Día (si aplica)')
+    horario = fields.Text(
+        string='Horario por Día (si aplica)',
+        help=(
+            'Ingrese un horario por línea con el formato:\n'
+            'Día HH:MM-HH:MM\n\n'
+            'Días válidos: Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo\n'
+            'Ejemplo:\n'
+            '  Lunes 10:00-12:00\n'
+            '  Miércoles 10:00-12:00'
+        ),
+    )
+    horario_valido = fields.Boolean(
+        string='Horario con Formato Válido',
+        compute='_compute_horario_valido',
+        store=True,
+        help='True si el horario cumple con el formato Día HH:MM-HH:MM.',
+    )
+    horario_sanitizado = fields.Text(
+        string='Horario Sanitizado',
+        compute='_compute_horario_sanitizado',
+        store=True,
+        help='Versión normalizada y limpia del horario ingresado.',
+    )
 
     # ── Cupos ────────────────────────────────────────────────────────────────
     cupo_min = fields.Integer(string='Cupo Mínimo', default=1)
@@ -195,6 +197,7 @@ class Actividad(models.Model):
        help='Si la actividad es de tipo predefinido se aprueba automáticamente '
             'sin pasar por el Comité Académico. Puede dejarse en blanco para quitarlo.',
     )
+
     # ── Flags de permisos de edición (por estado) ─
     permisos_actividad_pendiente_inicio = fields.Boolean(
         string='Solo Responsable, Fechas y Horas Editables',
@@ -214,95 +217,106 @@ class Actividad(models.Model):
     )
 
     # ────────────────────────────────────────────────────────────────────────
-    # Helpers de rol
-    # ────────────────────────────────────────────────────────────────────────
-
-    def _es_personal(self):
-        """True si el usuario en sesion pertenece a algun grupo de Personal."""
-        return any(self.env.user.has_group(g) for g in self._GRUPOS_PERSONAL)
-
-    def _get_permiso_personal(self):
-        """Devuelve el registro EmpleadoPermiso del usuario en sesion o vacio."""
-        return self.env['actividad.empleado.permiso'].sudo().search(
-            [('user_id', '=', self.env.user.id)], limit=1
-        )
-
-    # ────────────────────────────────────────────────────────────────────────
-    # ORM override: _search() -- filtrado automatico para Personal
-    # ────────────────────────────────────────────────────────────────────────
-
-    @api.model
-    def _search(self, domain, offset=0, limit=None, order=None, **kwargs):
-        """Restringe la busqueda del Personal al departamento propio + catalogo."""
-        is_admin = self.env.user.has_group(
-            'actividades_complementarias.group_admin_actividades'
-        )
-        is_jd = self.env.user.has_group(
-            'actividades_complementarias.group_jefe_departamento'
-        )
-        if not is_admin and not is_jd and self._es_personal():
-            permiso = self._get_permiso_personal()
-            if permiso and permiso.departamento_id:
-                dept_id = permiso.departamento_id.id
-                dept_domain = [
-                    '|',
-                    ('departamento_id', '=', dept_id),
-                    ('en_catalogo', '=', True),
-                ]
-            else:
-                dept_domain = [('en_catalogo', '=', True)]
-            domain = dept_domain + list(domain)
-        return super()._search(
-            domain, offset=offset, limit=limit, order=order, **kwargs
-        )
-
-    # ────────────────────────────────────────────────────────────────────────
     # Computes
     # ────────────────────────────────────────────────────────────────────────
 
+    # ── Helpers de horario (Solución B) ─────────────────────────────────────
+
+    _DIAS_VALIDOS = {
+        'lunes': 'Lunes', 'martes': 'Martes', 'miércoles': 'Miércoles',
+        'miercoles': 'Miércoles', 'jueves': 'Jueves', 'viernes': 'Viernes',
+        'sábado': 'Sábado', 'sabado': 'Sábado', 'domingo': 'Domingo',
+    }
+
+    @staticmethod
+    def _parsear_linea_horario(linea):
+        """
+        Parsea una línea de horario con el formato:
+            Día HH:MM-HH:MM
+        Retorna dict con keys: dia, inicio, fin  o None si no es válida.
+        """
+        import re
+        linea = linea.strip()
+        if not linea:
+            return None
+        patron = re.compile(
+            r'^([A-Za-záéíóúüÁÉÍÓÚÜñÑ]+)'     # día
+            r'\s+'
+            r'(\d{1,2}):(\d{2})'               # HH:MM inicio
+            r'\s*-\s*'
+            r'(\d{1,2}):(\d{2})'               # HH:MM fin
+            r'$',
+            re.IGNORECASE,
+        )
+        m = patron.match(linea)
+        if not m:
+            return None
+        dia_raw, h1, m1, h2, m2 = m.groups()[:5]
+        return {
+            'dia': dia_raw,
+            'inicio': (int(h1), int(m1)),
+            'fin': (int(h2), int(m2)),
+
+        }
+
+    @api.depends('horario')
+    def _compute_horario_valido(self):
+        for rec in self:
+            if not rec.horario:
+                rec.horario_valido = True
+                continue
+            valido = True
+            for linea in rec.horario.splitlines():
+                if not linea.strip():
+                    continue
+                parsed = self._parsear_linea_horario(linea)
+                if parsed is None:
+                    valido = False
+                    break
+                dia_key = parsed['dia'].lower()
+                if dia_key not in self._DIAS_VALIDOS:
+                    valido = False
+                    break
+                h1, m1 = parsed['inicio']
+                h2, m2 = parsed['fin']
+                if not (0 <= h1 <= 23 and 0 <= m1 <= 59):
+                    valido = False
+                    break
+                if not (0 <= h2 <= 23 and 0 <= m2 <= 59):
+                    valido = False
+                    break
+                if (h1 * 60 + m1) >= (h2 * 60 + m2):
+                    valido = False
+                    break
+            rec.horario_valido = valido
+
+    @api.depends('horario')
+    def _compute_horario_sanitizado(self):
+        """Normaliza el horario: capitaliza días, unifica separadores y elimina espacios extra."""
+        for rec in self:
+            if not rec.horario:
+                rec.horario_sanitizado = ''
+                continue
+            lineas_limpias = []
+            for linea in rec.horario.splitlines():
+                parsed = self._parsear_linea_horario(linea)
+                if parsed is None:
+                    lineas_limpias.append(linea.strip())
+                    continue
+                dia_norm = self._DIAS_VALIDOS.get(parsed['dia'].lower(), parsed['dia'].capitalize())
+                h1, m1 = parsed['inicio']
+                h2, m2 = parsed['fin']
+                parte = f"{dia_norm} {h1:02d}:{m1:02d}-{h2:02d}:{m2:02d}"
+                lineas_limpias.append(parte)
+            rec.horario_sanitizado = '\n'.join(lineas_limpias)
+
     @api.depends('tipo_actividad_id')
     def _compute_tipo_es_nueva(self):
-        """True cuando el tipo de actividad es 'Nueva (Propuesta)',
-        para ocultar el campo Actividades Predefinidas en ese caso."""
         for rec in self:
             rec.tipo_es_nueva = (
                 rec.tipo_actividad_id and
                 rec.tipo_actividad_id.name == 'Nueva (Propuesta)'
             )
-
-    @api.depends('fecha_inicio', 'fecha_fin')
-    def _compute_horas_maximas(self):
-        """12 horas por día del rango (fecha_fin - fecha_inicio + 1)."""
-        for rec in self:
-            if rec.fecha_inicio and rec.fecha_fin and rec.fecha_fin >= rec.fecha_inicio:
-                dias = (rec.fecha_fin - rec.fecha_inicio).days + 1
-                rec.horas_maximas = dias * 12.0
-            else:
-                rec.horas_maximas = 0.0
-
-    @api.onchange('fecha_inicio', 'fecha_fin')
-    def _onchange_fechas_ajustar_horas(self):
-        """Si las horas ya cargadas superan el nuevo máximo, las recorta al máximo."""
-        if self.fecha_inicio and self.fecha_fin and self.fecha_fin >= self.fecha_inicio:
-            dias = (self.fecha_fin - self.fecha_inicio).days + 1
-            maximo = dias * 12.0
-            if self.cantidad_horas and self.cantidad_horas > maximo:
-                self.cantidad_horas = maximo
-
-    @api.onchange('tipo_actividad_id')
-    def _onchange_tipo_actividad_limpiar_predefinida(self):
-        """Borra actividad_predefinida cuando el tipo es 'Nueva (Propuesta)'.
-        Evita que una actividad tipo nueva pueda saltarse el Comite Academico."""
-        if self.tipo_actividad_id and self.tipo_actividad_id.name == 'Nueva (Propuesta)':
-            self.actividad_predefinida = False
-            self.responsable_actividad_id = False
-
-    @api.onchange('actividad_predefinida')
-    def _onchange_actividad_predefinida_limpiar_responsable(self):
-        """Borra el responsable cuando se quita la selección de actividad predefinida.
-        El campo responsable solo aplica a actividades predefinidas en creación."""
-        if not self.actividad_predefinida and not self.estado_code:
-            self.responsable_actividad_id = False
 
     def _compute_dominios(self):
         """
@@ -345,7 +359,6 @@ class Actividad(models.Model):
             if not rec.jefe_departamento_id:
                 rec.departamento_id = False
                 continue
-            # Primero buscar en el catálogo de departamentos (jefe_id)
             depto = self.env['actividad.departamento'].search(
                 [('jefe_id', '=', rec.jefe_departamento_id.id)], limit=1
             )
@@ -503,43 +516,11 @@ class Actividad(models.Model):
             if is_admin:
                 continue
 
-            # ── Personal de Departamento ──────────────────────────────────────
-            if not is_jd and self._es_personal():
-                permiso = self._get_permiso_personal()
-                if not permiso:
-                    raise UserError(
-                        _('No tiene permisos delegados para modificar '
-                          'actividades complementarias.')
-                    )
-                # Solo puede modificar actividades de su propio departamento
-                if rec.departamento_id != permiso.departamento_id:
-                    raise UserError(
-                        _('No tiene permiso para modificar actividades '
-                          'de otros departamentos.')
-                    )
-                # Verificar permiso granular segun los campos modificados
-                campos_vals = set(vals.keys())
-                if 'alumno_ids' in campos_vals and not permiso.perm_asignar_alumnos:
-                    raise UserError(
-                        _('No tiene el permiso "Asignar Alumnos a Actividad".')
-                    )
-                if 'en_catalogo' in campos_vals and not permiso.perm_enviar_catalogo:
-                    raise UserError(
-                        _('No tiene el permiso "Enviar al Catalogo".')
-                    )
-                campos_generales = campos_vals - {'alumno_ids', 'en_catalogo'}
-                if campos_generales and not permiso.perm_modificar_actividades:
-                    raise UserError(
-                        _('No tiene el permiso "Modificar Actividades '
-                          'Complementarias".')
-                    )
-                continue
-
-            # Otros roles sin gestion especial
+            # Otros roles: se gestionan vía model access / record rules
             if not is_jd:
                 continue
 
-            # ── A partir de aqui: usuario es JD (no admin) ──
+            # ── A partir de aquí: usuario es JD (no admin) ──
 
             # ── Regla 5: JD nunca modifica actividades de otro JD ──
             if rec.jefe_departamento_id.id != self.env.user.id:
@@ -598,6 +579,46 @@ class Actividad(models.Model):
     # ────────────────────────────────────────────────────────────────────────
     # Constraints
     # ────────────────────────────────────────────────────────────────────────
+
+    @api.constrains('horario')
+    def _check_horario_formato(self):
+        """Valida que cada línea del horario cumpla el formato Día HH:MM-HH:MM."""
+        for rec in self:
+            if not rec.horario:
+                continue
+            errores = []
+            for i, linea in enumerate(rec.horario.splitlines(), start=1):
+                if not linea.strip():
+                    continue
+                parsed = self._parsear_linea_horario(linea)
+                if parsed is None:
+                    errores.append(
+                        f'Línea {i}: "{linea.strip()}" — '
+                        f'use el formato "Día HH:MM-HH:MM". '
+                        f'Ejemplo: "Lunes 10:00-12:00 Aula 3".'
+                    )
+                    continue
+                dia_key = parsed['dia'].lower()
+                if dia_key not in self._DIAS_VALIDOS:
+                    errores.append(
+                        f'Línea {i}: día "{parsed["dia"]}" no reconocido. '
+                        f'Use: Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo.'
+                    )
+                h1, m1 = parsed['inicio']
+                h2, m2 = parsed['fin']
+                if not (0 <= h1 <= 23 and 0 <= m1 <= 59):
+                    errores.append(f'Línea {i}: hora de inicio "{h1:02d}:{m1:02d}" no válida.')
+                if not (0 <= h2 <= 23 and 0 <= m2 <= 59):
+                    errores.append(f'Línea {i}: hora de fin "{h2:02d}:{m2:02d}" no válida.')
+                elif (h1 * 60 + m1) >= (h2 * 60 + m2):
+                    errores.append(
+                        f'Línea {i}: la hora de fin ({h2:02d}:{m2:02d}) '
+                        f'debe ser posterior a la de inicio ({h1:02d}:{m1:02d}).'
+                    )
+            if errores:
+                raise ValidationError(
+                    'El horario contiene errores de formato:\n' + '\n'.join(errores)
+                )
 
     @api.constrains('fecha_inicio', 'fecha_fin')
     def _check_fechas(self):
@@ -675,25 +696,6 @@ class Actividad(models.Model):
                 if rec.cupo_max < rec.cupo_min:
                     raise ValidationError('El cupo máximo debe ser mayor o igual al cupo mínimo.')
 
-    @api.constrains('cantidad_horas', 'fecha_inicio', 'fecha_fin')
-    def _check_horas_vs_dias(self):
-        """La cantidad de horas no puede exceder el total de horas disponibles
-        en el rango de fechas (dias * 12 h como tope). Se omite en carga de demo."""
-        if self.env.context.get('install_demo') or self.env.context.get('skip_horas_check'):
-            return
-        for rec in self:
-            if rec.fecha_inicio and rec.fecha_fin and rec.cantidad_horas:
-                dias = (rec.fecha_fin - rec.fecha_inicio).days + 1
-                horas_maximas = dias * 12
-                if rec.cantidad_horas > horas_maximas:
-                    raise ValidationError(
-                        f'La cantidad de horas ({rec.cantidad_horas} h) no puede ser mayor '
-                        f'al máximo permitido para el período seleccionado '
-                        f'({dias} día(s) × 12 h = {horas_maximas} h máximo).'
-                    )
-                if rec.cantidad_horas <= 0:
-                    raise ValidationError('La cantidad de horas debe ser mayor a 0.')
-
     @api.constrains('alumno_ids', 'cupo_max', 'cupo_ilimitado')
     def _check_cupo_alumnos(self):
         """Valida que el número de alumnos no supere el cupo máximo permitido."""
@@ -712,49 +714,14 @@ class Actividad(models.Model):
     # usan with_context(bypass_edit_protection=True) para pasar el guard de write().
     # ────────────────────────────────────────────────────────────────────────
 
-    def action_abrir_wizard_responsable(self):
-        """Abre el wizard de confirmación para asignar el Responsable de Actividad."""
-        self.ensure_one()
-        if self.responsable_bloqueado:
-            raise ValidationError(
-                'El Responsable de Actividad ya fue asignado y no puede modificarse.'
-            )
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Asignar Responsable de Actividad',
-            'res_model': 'actividad.wizard.asignar.responsable',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {'default_actividad_id': self.id},
-        }
-
     def action_enviar_comite(self):
-        """Envia la actividad como propuesta al Comite Academico.
-        Permite reenvio cuando la propuesta fue rechazada previamente."""
+        """Envía la actividad como propuesta al Comité Académico."""
         self.ensure_one()
-        if self._es_personal():
-            permiso = self._get_permiso_personal()
-            if not permiso or not permiso.perm_modificar_actividades:
-                raise UserError(
-                    _('No tiene el permiso "Modificar Actividades Complementarias" '
-                      'para enviar una propuesta al Comite Academico.')
-                )
         if self.estado_code in ('aprobada', 'pendiente_inicio', 'en_curso', 'finalizada'):
             raise ValidationError(
                 'Esta actividad ya fue aprobada o está en curso/finalizada. '
                 'No puede ser reenviada al Comité Académico.'
             )
-        # Validar cantidad de horas > 0
-        if not self.cantidad_horas or self.cantidad_horas <= 0:
-            raise ValidationError(
-                'La cantidad de horas debe ser mayor a 0 antes de enviar al Comité Académico.'
-            )
-        # Validar que tenga creditos asignados
-        if not self.creditos:
-            raise ValidationError(
-                'Debe asignar la cantidad de créditos antes de enviar al Comité Académico.'
-            )
-        # Verificar que no haya propuesta pendiente o aprobada ya
         propuesta_existente = self.env['actividad.propuesta'].search([
             ('actividad_id', '=', self.id),
             ('estado_code', 'in', ('en_revision', 'aprobada')),
@@ -772,33 +739,18 @@ class Actividad(models.Model):
             body='Propuesta enviada al Comité Académico para su revisión. '
                  'Se aprobará automáticamente si no hay respuesta en 5 días.'
         )
-        # Redirigir a "Mis Propuestas al Comité" (lista completa, sin filtro por actividad)
-        action = self.env.ref(
-            'actividades_complementarias.action_propuesta',
-            raise_if_not_found=False,
-        )
-        if action:
-            result = action.read()[0]
-            result['target'] = 'current'
-            return result
         return {
             'type': 'ir.actions.act_window',
             'name': 'Mis Propuestas al Comité',
             'res_model': 'actividad.propuesta',
             'view_mode': 'list,form',
-            'domain': [('actividad_id.jefe_departamento_id', '=', self.env.user.id)],
+            'domain': [('actividad_id', '=', self.id)],
             'target': 'current',
         }
 
     def action_enviar_catalogo(self):
-        """Envia la actividad al catalogo."""
+        """Envía la actividad al catálogo."""
         self.ensure_one()
-        if self._es_personal():
-            permiso = self._get_permiso_personal()
-            if not permiso or not permiso.perm_enviar_catalogo:
-                raise UserError(
-                    _('No tiene el permiso "Enviar al Catalogo".')
-                )
         if self.estado_code == 'rechazada':
             raise ValidationError(
                 'Las actividades rechazadas no pueden ser enviadas al catálogo.'
@@ -808,42 +760,14 @@ class Actividad(models.Model):
                 'Esta actividad ya fue finalizada y no puede ser enviada al catálogo. '
                 'Cree una nueva propuesta de actividad si desea volver a ofertarla.'
             )
-        # Validar horas > 0
-        if not self.cantidad_horas or self.cantidad_horas <= 0:
-            raise ValidationError(
-                'La cantidad de horas debe ser mayor a 0 antes de enviar al catálogo.'
-            )
-        # Validar créditos obligatorios
-        if not self.creditos:
-            raise ValidationError(
-                'Debe asignar la cantidad de créditos antes de enviar al catálogo.'
-            )
-        # Validar responsable obligatorio
-        if not self.responsable_actividad_id:
-            raise ValidationError(
-                'Debe asignar un Responsable de Actividad antes de enviar al catálogo.'
-            )
-        # Si es predefinida y aún no está en un estado válido, la aprobamos automáticamente
         if self.actividad_predefinida and self.estado_code not in ('aprobada', 'pendiente_inicio', 'en_curso'):
             estado_pendiente = self.env.ref('actividades_complementarias.estado_pendiente_inicio')
-            self.write({'estado_id': estado_pendiente.id})
-            self.message_post(
-                body='Actividad predefinida (%s) aprobada automáticamente.' % self.actividad_predefinida
-            )
+            self.with_context(bypass_edit_protection=True).write({'estado_id': estado_pendiente.id})
+            self.message_post(body=f'Actividad predefinida ({self.actividad_predefinida}) aprobada automáticamente.')
         if self.estado_code not in ('aprobada', 'pendiente_inicio'):
             raise ValidationError('Solo se pueden enviar al catálogo actividades aprobadas o pendientes de inicio.')
         self.with_context(bypass_edit_protection=True).write({'en_catalogo': True})
         self.message_post(body='Actividad enviada al catálogo.')
-        # Redirigir al catálogo de actividades (no quedar en vista superpuesta)
-        action = self.env.ref(
-            'actividades_complementarias.action_actividad_catalogo',
-            raise_if_not_found=False,
-        )
-        if action:
-            result = action.read()[0]
-            result['target'] = 'current'
-            return result
-        return {'type': 'ir.actions.act_window_close'}
 
     def action_iniciar_actividad(self):
         """Marca la actividad como En Curso manualmente."""
