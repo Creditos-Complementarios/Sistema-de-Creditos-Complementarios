@@ -169,9 +169,21 @@
                             <field name="creditos"
                                    readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
                             <field name="horario"
-                                   placeholder="Ej: Lunes 10:00-12:00, Miércoles 10:00-12:00"
+                                   placeholder="Ej:&#10;Lunes 10:00-12:00&#10;Miércoles 10:00-12:00"
                                    readonly="estado_code in ['en_curso','finalizada','en_revision']"
-                                   help="Opcional - especifica si la actividad tiene días y horas fijas"/>
+                                   help="Un horario por línea con el formato: Día HH:MM-HH:MM"/>
+                            <div class="alert alert-warning mb-0" role="alert"
+                                 invisible="horario_valido or not horario">
+                                <strong>&#9888; Formato incorrecto.</strong>
+                                Use una línea por horario:
+                                <code>Día HH:MM-HH:MM</code><br/>
+                                Ejemplo: <code>Lunes 10:00-12:00</code>
+                            </div>
+                            <field name="horario_sanitizado"
+                                   string="Vista Normalizada"
+                                   readonly="1"
+                                   invisible="not horario_valido or not horario"
+                                   help="Versión normalizada del horario ingresado."/>
                         </group>
                     </group>
                     <!-- Cupos: editables en aprobada/pendiente, readonly el resto -->
