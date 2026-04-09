@@ -31,8 +31,10 @@ class WizardConfirmarEnvio(models.TransientModel):
             def row(label, value):
                 return (
                     f'<tr>'
-                    f'<td style="padding:5px 14px;font-weight:600;color:#555;white-space:nowrap;width:220px;">{label}</td>'
-                    f'<td style="padding:5px 14px;color:#222;">{value or "—"}</td>'
+                    f'<td style="padding:5px 14px;font-weight:600;'
+                    f'color:#555;white-space:nowrap;width:220px;">{label}</td>'
+                    f'<td style="padding:5px 14px;color:#222;">'
+                    f'{value or "—"}</td>'
                     f'</tr>'
                 )
 
@@ -67,3 +69,4 @@ class WizardConfirmarEnvio(models.TransientModel):
         if self.tipo_envio == 'comite':
             return self.actividad_id.action_enviar_comite()
         return self.actividad_id.action_enviar_catalogo()
+    

@@ -727,6 +727,7 @@ class Actividad(models.Model):
             'target': 'new',
             'context': {'default_actividad_id': self.id},
         }
+    
     def action_abrir_confirmacion_comite(self):
         self.ensure_one()
         wizard = self.env['actividad.wizard.confirmar.envio'].create({
