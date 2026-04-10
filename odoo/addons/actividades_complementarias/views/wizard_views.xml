@@ -181,6 +181,10 @@
                     <button string="Cancelar"
                             class="btn-secondary"
                             special="cancel"/>
+                            </footer>
+            </form>
+        </field>
+    </record>
 <!-- Wizard: Confirmar Envío con Resumen -->
     <record id="view_wizard_confirmar_envio_form" model="ir.ui.view">
         <field name="name">actividad.wizard.confirmar.envio.form</field>
