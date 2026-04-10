@@ -157,4 +157,33 @@
         </field>
     </record>
 
+<!-- Wizard: Eliminar Alumnos -->
+    <record id="view_wizard_eliminar_alumnos_form" model="ir.ui.view">
+        <field name="name">actividad.wizard.eliminar.alumnos.form</field>
+        <field name="model">actividad.wizard.eliminar.alumnos</field>
+        <field name="arch" type="xml">
+            <form string="Eliminar Alumnos">
+                <sheet>
+                    <field name="actividad_id" invisible="1"/>
+                    <field name="linea_ids">
+                        <list editable="top" create="0" delete="0">
+                            <field name="a_eliminar" string="Eliminar"/>
+                            <field name="alumno_id" string="Nombre" readonly="1"/>
+                            <field name="login" string="Correo" readonly="1"/>
+                        </list>
+                    </field>
+                </sheet>
+                <footer>
+                    <button name="action_confirmar"
+                            string="Confirmar"
+                            type="object"
+                            class="btn-danger"/>
+                    <button string="Cancelar"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
 </odoo>
