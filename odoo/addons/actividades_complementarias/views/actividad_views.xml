@@ -108,7 +108,7 @@
                                 Esta actividad no puede modificarse en su estado actual.
                             </b>
                             <b invisible="not permisos_actividad_pendiente_inicio">
-                                Solo puede modificar los campos <i>Responsable de Actividad</i>, <i>Fecha de Inicio</i>, <i>Fecha de Finalización</i>, y 
+                                Solo puede modificar los campos <i>Responsable de Actividad</i>, <i>Fecha de Inicio</i>, <i>Fecha de Finalización</i>, <i>Alumnos</i> y 
                                 <i>Horario por Día</i> en este estado.
                             </b>
                             <b invisible="not permisos_actividad_en_curso">

@@ -58,7 +58,7 @@ class WizardAsignarResponsable(models.TransientModel):
         self.ensure_one()
         if not self.responsable_nuevo_id:
             raise ValidationError('Debe seleccionar un Responsable de Actividad.')
-        self.actividad_id.write({
+        self.actividad_id.with_context(bypass_edit_protection=True).write({
             'responsable_actividad_id': self.responsable_nuevo_id.id,
             'responsable_bloqueado': True,
         })

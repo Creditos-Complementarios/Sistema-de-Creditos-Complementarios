@@ -729,7 +729,7 @@ class Actividad(models.Model):
                 campos_permitidos = {
                     'responsable_actividad_id', 'fecha_inicio',
                     'fecha_fin', 'horario', 'horario_valido',
-                    'horario_sanitizado',
+                    'horario_sanitizado', 'alumno_ids',
                 }
                 campos_no_permitidos = set(vals.keys()) - campos_permitidos
                 if campos_no_permitidos:
@@ -737,7 +737,7 @@ class Actividad(models.Model):
                         _('La actividad "%s" está en aprobada o pendiente de inicio. '
                           'En este estado únicamente puede modificar'
                           '"Responsable de Actividad", "Fecha de Inicio", "Fecha de Finalización", '
-                          'y "Horario por Día".')
+                          '"alumnos" y "Horario por Día".')
                         % rec.name
                     )
 
@@ -1020,10 +1020,16 @@ class Actividad(models.Model):
         # Si es predefinida y aún no está en un estado válido, la aprobamos automáticamente
         if self.actividad_predefinida and self.estado_code not in ('aprobada', 'pendiente_inicio', 'en_curso'):
             estado_pendiente = self.env.ref('actividades_complementarias.estado_pendiente_inicio')
-            self.write({'estado_id': estado_pendiente.id})
+            self.with_context(bypass_edit_protection=True).write({'estado_id': estado_pendiente.id})
             self.message_post(
                 body='Actividad predefinida (%s) aprobada automáticamente.' % self.actividad_predefinida
             )
+        elif self.estado_code == 'aprobada':
+            estado_pendiente = self.env.ref('actividades_complementarias.estado_pendiente_inicio')
+            self.with_context(bypass_edit_protection=True).write(
+                {'estado_id': estado_pendiente.id}
+            )
+            self.message_post(body='Actividad enviada al catálogo. Estado actualizado a Pendiente de Inicio.')
         if self.estado_code not in ('aprobada', 'pendiente_inicio'):
             raise ValidationError('Solo se pueden enviar al catálogo actividades aprobadas o pendientes de inicio.')
         self.with_context(bypass_edit_protection=True).write({'en_catalogo': True})
