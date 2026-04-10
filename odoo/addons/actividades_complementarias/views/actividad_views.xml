@@ -57,17 +57,15 @@
         <field name="arch" type="xml">
             <form string="Actividad Complementaria">
                 <header>
-                    <button name="action_enviar_comite" string="Enviar al Comité Académico"
-                            type="object" class="btn-warning"
-                            invisible="tiene_propuesta_activa or tipo_actividad_predefinida or actividad_predefinida or estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada']"
-                            groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"
-                            confirm="¿Confirma el envío de esta actividad al Comité Académico para su revisión?"/>
+                    <button name="action_abrir_confirmacion_comite" string="Enviar al Comité Académico"
+                        type="object" class="btn-warning"
+                        invisible="tiene_propuesta_activa or tipo_actividad_predefinida or actividad_predefinida or estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada']"
+                        groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
                     <!-- Botón para actividades predefinidas (sin pasar por el Comité) -->
-                    <button name="action_enviar_catalogo" string="Enviar al Catálogo"
-                            type="object" class="btn-success"
-                            invisible="not actividad_predefinida or en_catalogo or estado_code in ['rechazada','finalizada']"
-                            groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"
-                            confirm="Esta actividad es predefinida y se enviará directo al catálogo. ¿Confirma?"/>
+                    <button name="action_abrir_confirmacion_catalogo" string="Enviar al Catálogo"
+                        type="object" class="btn-success"
+                        invisible="not actividad_predefinida or en_catalogo or estado_code in ['rechazada','finalizada']"
+                        groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
                     <!-- Statusbar SIN rechazda (cuando es Nueva Propuesta) -->
                     <field name="estado_id" widget="statusbar"
                         statusbar_visible="en_revision,aprobada,pendiente_inicio,en_curso,finalizada"

@@ -22,7 +22,7 @@ body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) {
         border-color: #71639E !important;
         color: white !important;
     }
-
+    
    /* Separador antes de Gestión de Personal */
     a[data-menu-xmlid="actividades_complementarias.menu_gestion_personal"] {
         border-top: 1px solid rgba(0, 0, 0, 0.15) !important;
@@ -242,4 +242,18 @@ body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) {
         text-align: center;
         margin-bottom: 2px;
     }
+    
+}
+/* ── Ícono de ayuda personalizado ── */
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) sup.d-print-none[data-tooltip-template="web.FieldTooltip"] {
+    font-size: 0 !important;
+    display: inline-block !important;
+    width: 14px !important;
+    height: 14px !important;
+    background-image: url('/actividades_complementarias/static/src/img/HelpIcon.png') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    vertical-align: middle !important;
+    cursor: pointer !important;
 }
