@@ -1024,6 +1024,12 @@ class Actividad(models.Model):
             self.message_post(
                 body='Actividad predefinida (%s) aprobada automáticamente.' % self.actividad_predefinida
             )
+        elif self.estado_code == 'aprobada':
+            estado_pendiente = self.env.ref('actividades_complementarias.estado_pendiente_inicio')
+            self.with_context(bypass_edit_protection=True).write(
+                {'estado_id': estado_pendiente.id}
+            )
+            self.message_post(body='Actividad enviada al catálogo. Estado actualizado a Pendiente de Inicio.')
         if self.estado_code not in ('aprobada', 'pendiente_inicio'):
             raise ValidationError('Solo se pueden enviar al catálogo actividades aprobadas o pendientes de inicio.')
         self.with_context(bypass_edit_protection=True).write({'en_catalogo': True})
