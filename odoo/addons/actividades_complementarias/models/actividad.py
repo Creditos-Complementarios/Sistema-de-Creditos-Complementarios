@@ -903,6 +903,11 @@ class Actividad(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Eliminar Alumnos',
             'res_model': 'actividad.wizard.eliminar.alumnos',
+            'res_id': wizard.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
+        
     def action_abrir_confirmacion_comite(self):
         self.ensure_one()
         wizard = self.env['actividad.wizard.confirmar.envio'].create({
