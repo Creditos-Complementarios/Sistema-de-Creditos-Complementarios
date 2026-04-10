@@ -24,6 +24,7 @@
         'views/periodo_views.xml',
         'views/actividad_views.xml',
         'views/propuesta_views.xml',
+        'data/07_usuarios_sii.xml',
         'views/empleado_views.xml',
         'views/wizard_views.xml',
         'views/menu_views.xml',
