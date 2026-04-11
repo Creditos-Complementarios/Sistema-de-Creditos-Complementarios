@@ -201,6 +201,12 @@
                     <!-- Alumnos: visible cuando la actividad está aprobada o más avanzada -->
                     <notebook invisible="estado_code not in ['aprobada','pendiente_inicio','en_curso','finalizada'] and not en_catalogo">
                         <page string="Alumnos Asignados" name="alumnos">
+                        <button name="action_abrir_wizard_eliminar_alumnos"
+                            string="Eliminar alumnos"
+                            type="object"
+                            class="btn btn-danger btn-sm mb-2"
+                            invisible="estado_code in ['finalizada'] or not alumno_ids"
+                            groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
                             <field name="alumno_ids"
                                    domain="dominio_alumnos"
                                    readonly="estado_code in ['finalizada']"

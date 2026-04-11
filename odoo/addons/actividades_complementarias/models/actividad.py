@@ -892,6 +892,22 @@ class Actividad(models.Model):
             'context': {'default_actividad_id': self.id},
         }
 
+    def action_abrir_wizard_eliminar_alumnos(self):
+        self.ensure_one()
+        lineas = [(0, 0, {'alumno_id': uid}) for uid in self.alumno_ids.ids]
+        wizard = self.env['actividad.wizard.eliminar.alumnos'].create({
+            'actividad_id': self.id,
+            'linea_ids': lineas,
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Eliminar Alumnos',
+            'res_model': 'actividad.wizard.eliminar.alumnos',
+            'res_id': wizard.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
     def action_abrir_confirmacion_comite(self):
         self.ensure_one()
         wizard = self.env['actividad.wizard.confirmar.envio'].create({
