@@ -271,7 +271,6 @@
         <field name="fecha_fin">2026-07-01</field>
         <field name="cantidad_horas">60</field>
         <field name="creditos">0.5</field>
-        <field name="horario">Martes y Jueves 16:00-18:00</field>
         <field name="cupo_min">10</field>
         <field name="cupo_max">22</field>
         <field name="estado_id" ref="actividades_complementarias.estado_aprobada"/>
@@ -288,7 +287,6 @@
         <field name="fecha_fin">2026-08-05</field>
         <field name="cantidad_horas">80</field>
         <field name="creditos">1.0</field>
-        <field name="horario">Lunes y Miércoles 15:00-17:00</field>
         <field name="cupo_min">5</field>
         <field name="cupo_max">15</field>
         <field name="estado_id" ref="actividades_complementarias.estado_pendiente_inicio"/>
@@ -324,7 +322,6 @@
         <field name="fecha_fin">2026-06-20</field>
         <field name="cantidad_horas">30</field>
         <field name="creditos">0.5</field>
-        <field name="horario">Viernes 14:00-17:00</field>
         <field name="cupo_min">5</field>
         <field name="cupo_max">20</field>
         <field name="estado_id" ref="actividades_complementarias.estado_pendiente_inicio"/>
@@ -342,7 +339,6 @@
         <field name="fecha_fin">2026-06-30</field>
         <field name="cantidad_horas">40</field>
         <field name="creditos">0.5</field>
-        <field name="horario">Miércoles 17:00-19:00</field>
         <field name="cupo_min">8</field>
         <field name="cupo_max">25</field>
         <field name="estado_id" ref="actividades_complementarias.estado_en_curso"/>
@@ -360,7 +356,6 @@
         <field name="fecha_fin">2026-07-15</field>
         <field name="cantidad_horas">50</field>
         <field name="creditos">0.5</field>
-        <field name="horario">Lunes y Jueves 18:00-20:00</field>
         <field name="cupo_min">10</field>
         <field name="cupo_max">30</field>
         <field name="estado_id" ref="actividades_complementarias.estado_en_curso"/>
