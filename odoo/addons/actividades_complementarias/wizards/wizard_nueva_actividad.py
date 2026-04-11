@@ -239,7 +239,7 @@ class WizardNuevaActividad(models.TransientModel):
                 raise_if_not_found=False,
             )
             if action:
-                result = action.read()[0]
+                result = action.sudo().read()[0]
                 result['target'] = 'current'
                 return result
         # Predefinida → abrir el registro para que el JD pueda enviarlo al catálogo

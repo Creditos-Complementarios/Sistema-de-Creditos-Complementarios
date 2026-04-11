@@ -167,7 +167,7 @@ class PropuestaActividadComplementaria(models.Model):
                 raise_if_not_found=False,
             )
         if action_ref:
-            action = action_ref.read()[0]
+            action = action_ref.sudo().read()[0]
             action['target'] = 'current'
             return action
         return {

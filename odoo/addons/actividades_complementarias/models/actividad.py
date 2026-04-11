@@ -986,7 +986,7 @@ class Actividad(models.Model):
             raise_if_not_found=False,
         )
         if action:
-            result = action.read()[0]
+            result = action.sudo().read()[0]
             result['target'] = 'current'
             return result
         return {
@@ -1044,7 +1044,7 @@ class Actividad(models.Model):
             raise_if_not_found=False,
         )
         if action:
-            result = action.read()[0]
+            result = action.sudo().read()[0]
             result['target'] = 'current'
             return result
         return {'type': 'ir.actions.act_window_close'}

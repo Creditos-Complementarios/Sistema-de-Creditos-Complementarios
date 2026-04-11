@@ -271,7 +271,8 @@
         <field name="fecha_fin">2026-07-01</field>
         <field name="cantidad_horas">60</field>
         <field name="creditos">0.5</field>
-        <field name="horario">Martes y Jueves 16:00-18:00</field>
+        <field name="horario">Martes 16:00-18:00
+Jueves 16:00-18:00</field>
         <field name="cupo_min">10</field>
         <field name="cupo_max">22</field>
         <field name="estado_id" ref="actividades_complementarias.estado_aprobada"/>
@@ -288,7 +289,8 @@
         <field name="fecha_fin">2026-08-05</field>
         <field name="cantidad_horas">80</field>
         <field name="creditos">1.0</field>
-        <field name="horario">Lunes y Miércoles 15:00-17:00</field>
+        <field name="horario">Lunes 15:00-17:00
+Miércoles 15:00-17:00</field>
         <field name="cupo_min">5</field>
         <field name="cupo_max">15</field>
         <field name="estado_id" ref="actividades_complementarias.estado_pendiente_inicio"/>
@@ -360,7 +362,8 @@
         <field name="fecha_fin">2026-07-15</field>
         <field name="cantidad_horas">50</field>
         <field name="creditos">0.5</field>
-        <field name="horario">Lunes y Jueves 18:00-20:00</field>
+        <field name="horario">Lunes 18:00-20:00
+Jueves 18:00-20:00</field>
         <field name="cupo_min">10</field>
         <field name="cupo_max">30</field>
         <field name="estado_id" ref="actividades_complementarias.estado_en_curso"/>
@@ -413,9 +416,11 @@
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_nueva"/>
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
+        <field name="responsable_actividad_id" ref="user_responsable_1"/>
         <field name="fecha_inicio">2026-05-10</field>
         <field name="fecha_fin">2026-05-12</field>
         <field name="cantidad_horas">12</field>
+        <field name="creditos">1.0</field>
         <field name="cupo_ilimitado">True</field>
         <field name="estado_id" ref="actividades_complementarias.estado_en_revision"/>
     </record>
@@ -426,9 +431,11 @@
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_deportiva"/>
         <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
         <field name="jefe_departamento_id" ref="user_jefe_electronica"/>
+        <field name="responsable_actividad_id" ref="user_responsable_2"/>
         <field name="fecha_inicio">2026-05-20</field>
         <field name="fecha_fin">2026-05-21</field>
         <field name="cantidad_horas">8</field>
+        <field name="creditos">0.5</field>
         <field name="cupo_min">4</field>
         <field name="cupo_max">16</field>
         <field name="estado_id" ref="actividades_complementarias.estado_rechazada"/>
