@@ -67,6 +67,7 @@ class TestActividad(TransactionCase):
             'cantidad_horas': 8.0,
             'cupo_min': 5,
             'cupo_max': 30,
+            'creditos': '1.0',
         }
         vals.update(kwargs)
         return self.env['actividad.complementaria'].create(vals)

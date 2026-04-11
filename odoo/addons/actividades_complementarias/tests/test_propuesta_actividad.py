@@ -49,6 +49,7 @@ class TestPropuestaActividad(TransactionCase):
             'fecha_inicio': hoy + timedelta(days=1),
             'fecha_fin': hoy + timedelta(days=2),
             'cantidad_horas': 4.0,
+            'creditos': '1.0',
         })
 
     def _make_propuesta(self, **kwargs):
