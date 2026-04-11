@@ -30,9 +30,9 @@
                 <field name="no_empleado" string="No. Empleado"/>
                 <field name="departamento_id" string="Departamento"/>
                 <field name="departamento_grupo" string="Rama de Departamento"/>
-                <field name="perm_modificar_actividades" string="Modificar Actividades Complementarias" widget="boolean_toggle" readonly="1"/>
+                <field name="perm_modificar_actividades" string="Modificar Actividades" widget="boolean_toggle" readonly="1"/>
                 <field name="perm_difundir_actividades" string="Difundir Actividades" widget="boolean_toggle" readonly="1"/>
-                <field name="perm_asignar_alumnos" string="Asignar Alumnos a Actividad" widget="boolean_toggle" readonly="1"/>
+                <field name="perm_asignar_alumnos" string="Asignar Alumnos" widget="boolean_toggle" readonly="1"/>
                 <field name="perm_enviar_catalogo" string="Enviar al Catalogo" widget="boolean_toggle" readonly="1"/>
                 <field name="fecha_ultimo_uso" string="Ultimo Uso"/>
             </list>

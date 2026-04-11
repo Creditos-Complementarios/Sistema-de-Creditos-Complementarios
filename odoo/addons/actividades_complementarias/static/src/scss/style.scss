@@ -270,3 +270,12 @@ body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) sup.d-pr
     border-bottom: 1px solid #aaa !important;
     border-radius: 0;
 }
+
+/* Asterisco en campos requeridos */
+body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) {
+    .o_form_view .o_wrap_label:has(+ .o_wrap_input .o_required_modifier) .o_form_label::after {
+        content: " *";
+        color: #e74c3c;
+        font-weight: bold;
+    }
+}
