@@ -24,6 +24,21 @@
         </field>
     </record>
 
+        <!-- ── Search ───────────────────────────────────────────────────────── -->
+    <record id="view_actividad_Catalogo_search" model="ir.ui.view">
+        <field name="name">actividad.complementaria.search</field>
+        <field name="model">actividad.complementaria</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Actividades">
+                <field name="name" string="Actividad"/>
+                <field name="periodo"/>
+                <field name="jefe_departamento_id"/>
+                <filter name="group_tipo" string="Por Tipo" context="{'group_by':'tipo_actividad_id'}"/>
+                <filter name="group_periodo" string="Por Periodo" context="{'group_by':'periodo'}"/>
+            </search>
+        </field>
+    </record>
+
     <!-- ── List ─────────────────────────────────────────────────────────── -->
     <record id="view_actividad_list" model="ir.ui.view">
         <field name="name">actividad.complementaria.list</field>
@@ -71,7 +86,6 @@
                         statusbar_visible="en_revision"
                         invisible="estado_code != 'en_revision'"
                         readonly="1"/>
-
                     <!-- Statusbar: solo Rechazada -->
                     <field name="estado_barra" widget="statusbar"
                         statusbar_visible="rechazada"
@@ -303,7 +317,7 @@
         <field name="res_model">actividad.complementaria</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="domain">[('en_catalogo', '=', True), ('jefe_departamento_id', '=', uid)]</field>
-        <field name="search_view_id" ref="view_actividad_search"/>
+        <field name="search_view_id" ref="view_actividad_Catalogo_search"/>
         <field name="context">{'hide_catalogo': True}</field>
     </record>
 
