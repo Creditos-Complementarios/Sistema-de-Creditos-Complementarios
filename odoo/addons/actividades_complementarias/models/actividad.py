@@ -120,7 +120,7 @@ class Actividad(models.Model):
         ('1.0', '1 crédito'),
         ('1.5', '1.5 créditos'),
         ('2.0', '2 créditos'),
-    ], string='Cantidad de Créditos')
+    ], string='Cantidad de Créditos', required=True)
     horario = fields.Text(
         string='Horario por Día (si aplica)',
         help=(
@@ -910,6 +910,10 @@ class Actividad(models.Model):
 
     def action_abrir_confirmacion_comite(self):
         self.ensure_one()
+        if not self.cantidad_horas or self.cantidad_horas <= 0:
+            raise ValidationError(
+                'La cantidad de horas debe ser mayor a 0 antes de enviar al Comité Académico.'
+            )
         wizard = self.env['actividad.wizard.confirmar.envio'].create({
             'actividad_id': self.id,
             'tipo_envio': 'comite',
@@ -925,6 +929,10 @@ class Actividad(models.Model):
 
     def action_abrir_confirmacion_catalogo(self):
         self.ensure_one()
+        if not self.cantidad_horas or self.cantidad_horas <= 0:
+            raise ValidationError(
+                'La cantidad de horas debe ser mayor a 0 antes de enviar al Catálogo.'
+            )
         wizard = self.env['actividad.wizard.confirmar.envio'].create({
             'actividad_id': self.id,
             'tipo_envio': 'catalogo',
@@ -953,16 +961,6 @@ class Actividad(models.Model):
             raise ValidationError(
                 'Esta actividad ya fue aprobada o está en curso/finalizada. '
                 'No puede ser reenviada al Comité Académico.'
-            )
-        # Validar cantidad de horas > 0
-        if not self.cantidad_horas or self.cantidad_horas <= 0:
-            raise ValidationError(
-                'La cantidad de horas debe ser mayor a 0 antes de enviar al Comité Académico.'
-            )
-        # Validar que tenga creditos asignados
-        if not self.creditos:
-            raise ValidationError(
-                'Debe asignar la cantidad de créditos antes de enviar al Comité Académico.'
             )
         # Verificar que no haya propuesta pendiente o aprobada ya
         propuesta_existente = self.env['actividad.propuesta'].search([
@@ -1017,16 +1015,6 @@ class Actividad(models.Model):
             raise ValidationError(
                 'Esta actividad ya fue finalizada y no puede ser enviada al catálogo. '
                 'Cree una nueva propuesta de actividad si desea volver a ofertarla.'
-            )
-        # Validar horas > 0
-        if not self.cantidad_horas or self.cantidad_horas <= 0:
-            raise ValidationError(
-                'La cantidad de horas debe ser mayor a 0 antes de enviar al catálogo.'
-            )
-        # Validar créditos obligatorios
-        if not self.creditos:
-            raise ValidationError(
-                'Debe asignar la cantidad de créditos antes de enviar al catálogo.'
             )
         # Validar responsable obligatorio
         if not self.responsable_actividad_id:

@@ -67,6 +67,7 @@ class TestActividad(TransactionCase):
             'cantidad_horas': 8.0,
             'cupo_min': 5,
             'cupo_max': 30,
+            'creditos': '1.0',
         }
         vals.update(kwargs)
         return self.env['actividad.complementaria'].create(vals)
@@ -83,6 +84,7 @@ class TestActividad(TransactionCase):
                 'fecha_inicio': date.today() - timedelta(days=1),
                 'fecha_fin': date.today() + timedelta(days=1),
                 'cantidad_horas': 4.0,
+                'creditos': '1.0',
             })
 
     def test_fecha_inicio_menos_de_5_habiles_falla(self):
@@ -95,6 +97,7 @@ class TestActividad(TransactionCase):
                 'fecha_inicio': _n_dias_habiles(4),
                 'fecha_fin': _n_dias_habiles(5),
                 'cantidad_horas': 4.0,
+                'creditos': '1.0',
             })
 
     def test_fecha_inicio_exactamente_5_habiles_ok(self):
@@ -106,6 +109,7 @@ class TestActividad(TransactionCase):
             'fecha_inicio': _n_dias_habiles(5),
             'fecha_fin': _n_dias_habiles(6),
             'cantidad_horas': 4.0,
+            'creditos': '1.0',
         })
         self.assertTrue(actividad.id)
 
