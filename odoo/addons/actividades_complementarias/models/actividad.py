@@ -165,6 +165,21 @@ class Actividad(models.Model):
         store=True,
         readonly=True,
     )
+    # Campo Selection nativo para el widget statusbar en vistas
+    # (los campos related no permiten filtrar statusbar_visible correctamente)
+    estado_barra = fields.Selection(
+        selection=[
+            ('en_revision',      'En Revisión'),
+            ('rechazada',        'Rechazada'),
+            ('aprobada',         'Aprobada'),
+            ('pendiente_inicio', 'Pendiente de Inicio'),
+            ('en_curso',         'En Curso'),
+            ('finalizada',       'Finalizada'),
+        ],
+        string='Estado (barra)',
+        compute='_compute_estado_barra',
+        store=True,
+    )
 
     # ── Alumnos asignados ────────────────────────────────────────────────────
     alumno_ids = fields.Many2many(
@@ -521,6 +536,15 @@ class Actividad(models.Model):
     def _compute_constancias_firmadas(self):
         for rec in self:
             rec.constancias_firmadas = rec.jd_firmo and rec.responsable_firmo
+
+    @api.depends('estado_code')
+    def _compute_estado_barra(self):
+        """Sincroniza estado_barra con estado_code para uso exclusivo
+        del widget statusbar en vistas (evita que related muestre
+        todos los valores del Selection de origen).
+        """
+        for rec in self:
+            rec.estado_barra = rec.estado_code or False
 
     @api.depends('alumno_ids')
     def _compute_alumno_count(self):

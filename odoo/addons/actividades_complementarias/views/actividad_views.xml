@@ -66,15 +66,23 @@
                         type="object" class="btn-success"
                         invisible="not actividad_predefinida or en_catalogo or estado_code in ['rechazada','finalizada']"
                         groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
-                    <!-- Statusbar SIN rechazda (cuando es Nueva Propuesta) -->
-                    <field name="estado_id" widget="statusbar"
-                        statusbar_visible="en_revision,aprobada,pendiente_inicio,en_curso,finalizada"
-                        invisible="not tipo_es_nueva"/>
+                    <!-- Statusbar: solo En Revisión -->
+                    <field name="estado_barra" widget="statusbar"
+                        statusbar_visible="en_revision"
+                        invisible="estado_code != 'en_revision'"
+                        readonly="1"/>
 
-                    <!-- Statusbar CON rechazada (cuando es otro tipo) -->
-                    <field name="estado_id" widget="statusbar"
-                        statusbar_visible="en_revision,aprobada,rechazada,pendiente_inicio,en_curso,finalizada"
-                        invisible="tipo_es_nueva"/>
+                    <!-- Statusbar: solo Rechazada -->
+                    <field name="estado_barra" widget="statusbar"
+                        statusbar_visible="rechazada"
+                        invisible="estado_code != 'rechazada'"
+                        readonly="1"/>
+
+                    <!-- Statusbar: flujo Aprobada → Finalizada -->
+                    <field name="estado_barra" widget="statusbar"
+                        statusbar_visible="aprobada,pendiente_inicio,en_curso,finalizada"
+                        invisible="estado_code not in ['aprobada','pendiente_inicio','en_curso','finalizada']"
+                        readonly="1"/>
                     <button name="action_enviar_catalogo" string="Enviar al Catálogo"
                             type="object" class="btn-primary"
                             invisible="estado_code not in ['aprobada','pendiente_inicio'] or en_catalogo"
