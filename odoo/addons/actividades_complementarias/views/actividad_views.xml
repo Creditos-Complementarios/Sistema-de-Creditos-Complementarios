@@ -290,16 +290,21 @@
     </record>
 
     <!-- ── Actions ──────────────────────────────────────────────────────── -->
+    <!--
+        Mis Actividades (JD / Admin): el domain filtra por jefe_departamento_id
+        en la UI. La record rule de JD es write-only (perm_read=False), por lo
+        que no interfiere con el Catálogo ni con lecturas de otras vistas.
+    -->
     <record id="action_actividad_complementaria" model="ir.actions.act_window">
         <field name="name">Mis Actividades</field>
         <field name="res_model">actividad.complementaria</field>
         <field name="view_mode">list,kanban,form</field>
-        <field name="domain">[]</field>
+        <field name="domain">[('jefe_departamento_id', '=', uid)]</field>
         <field name="search_view_id" ref="view_actividad_search"/>
         <field name="views" eval="[(ref('view_actividad_list_jefe'), 'list'), (ref('view_actividad_kanban'), 'kanban'), (ref('view_actividad_form'), 'form')]"/>
     </record>
 
-    <!-- Acción para admin: ve todas las actividades sin filtro -->
+    <!-- Admin: ve todas las actividades sin filtro -->
     <record id="action_actividad_todas" model="ir.actions.act_window">
         <field name="name">Todas las Actividades</field>
         <field name="res_model">actividad.complementaria</field>
@@ -307,18 +312,40 @@
         <field name="search_view_id" ref="view_actividad_search"/>
     </record>
 
-    <!-- Mis Actividades para Personal de Departamento.
-         domain=[] porque la record rule de cada grupo de Personal ya restringe
-         la lectura a las actividades del departamento correspondiente,
-         produciendo exactamente el mismo conjunto que ve el Jefe de Departamento. -->
-    <record id="action_actividad_personal" model="ir.actions.act_window">
+    <!--
+        Mis Actividades para Personal de Departamento — una acción por departamento.
+        El domain aplica el mismo filtro que la record rule de escritura pero para
+        lectura en la UI, permitiendo que el Catálogo (sin domain de depto) funcione
+        correctamente para todos los actores.
+    -->
+    <record id="action_actividad_personal_sistemas" model="ir.actions.act_window">
         <field name="name">Mis Actividades</field>
         <field name="res_model">actividad.complementaria</field>
         <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('departamento_id.name', 'ilike', 'sistem')]</field>
         <field name="search_view_id" ref="view_actividad_search"/>
+        <field name="views" eval="[(ref('view_actividad_list'), 'list'), (ref('view_actividad_kanban'), 'kanban'), (ref('view_actividad_form'), 'form')]"/>
     </record>
 
-    <!-- Catalogo global: todas las actividades en catalogo -->
+    <record id="action_actividad_personal_electrica" model="ir.actions.act_window">
+        <field name="name">Mis Actividades</field>
+        <field name="res_model">actividad.complementaria</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('departamento_id.name', 'ilike', 'electr')]</field>
+        <field name="search_view_id" ref="view_actividad_search"/>
+        <field name="views" eval="[(ref('view_actividad_list'), 'list'), (ref('view_actividad_kanban'), 'kanban'), (ref('view_actividad_form'), 'form')]"/>
+    </record>
+
+    <record id="action_actividad_personal_biologia" model="ir.actions.act_window">
+        <field name="name">Mis Actividades</field>
+        <field name="res_model">actividad.complementaria</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('departamento_id.name', 'ilike', 'biol')]</field>
+        <field name="search_view_id" ref="view_actividad_search"/>
+        <field name="views" eval="[(ref('view_actividad_list'), 'list'), (ref('view_actividad_kanban'), 'kanban'), (ref('view_actividad_form'), 'form')]"/>
+    </record>
+
+    <!-- Catálogo global: todas las actividades con en_catalogo=True -->
     <record id="action_actividad_catalogo" model="ir.actions.act_window">
         <field name="name">Catálogo de Actividades</field>
         <field name="res_model">actividad.complementaria</field>
@@ -327,6 +354,5 @@
         <field name="search_view_id" ref="view_actividad_Catalogo_search"/>
         <field name="context">{'hide_catalogo': True}</field>
     </record>
-
 
 </odoo>
