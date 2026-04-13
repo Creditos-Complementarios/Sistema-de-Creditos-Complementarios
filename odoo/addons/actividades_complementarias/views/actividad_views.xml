@@ -57,26 +57,34 @@
         <field name="arch" type="xml">
             <form string="Actividad Complementaria">
                 <header>
-                    <button name="action_enviar_comite" string="Enviar al Comité Académico"
-                            type="object" class="btn-warning"
-                            invisible="tiene_propuesta_activa or tipo_actividad_predefinida or actividad_predefinida or estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada']"
-                            groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"
-                            confirm="¿Confirma el envío de esta actividad al Comité Académico para su revisión?"/>
+                    <button name="action_abrir_confirmacion_comite" string="Enviar al Comité Académico"
+                        type="object" class="btn-warning"
+                        invisible="tiene_propuesta_activa or tipo_actividad_predefinida or actividad_predefinida or estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada']"
+                        groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"
+                        confirm="¿Confirma el envío de esta actividad al Comité Académico para su revisión?"/>
                     <!-- Botón para actividades predefinidas (sin pasar por el Comité) -->
-                    <button name="action_enviar_catalogo" string="Enviar al Catálogo"
-                            type="object" class="btn-success"
-                            invisible="not actividad_predefinida or en_catalogo or estado_code in ['rechazada','finalizada']"
-                            groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"
-                            confirm="Esta actividad es predefinida y se enviará directo al catálogo. ¿Confirma?"/>
-                    <!-- Statusbar SIN rechazda (cuando es Nueva Propuesta) -->
-                    <field name="estado_id" widget="statusbar"
-                        statusbar_visible="en_revision,aprobada,pendiente_inicio,en_curso,finalizada"
-                        invisible="not tipo_es_nueva"/>
+                    <button name="action_abrir_confirmacion_catalogo" string="Enviar al Catálogo"
+                        type="object" class="btn-success"
+                        invisible="not actividad_predefinida or en_catalogo or estado_code in ['rechazada','finalizada']"
+                        groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"
+                        confirm="Esta actividad es predefinida y se enviará directo al catálogo. ¿Confirma?"/>
+                    <!-- Statusbar: solo En Revisión -->
+                    <field name="estado_barra" widget="statusbar"
+                        statusbar_visible="en_revision"
+                        invisible="estado_code != 'en_revision'"
+                        readonly="1"/>
 
-                    <!-- Statusbar CON rechazada (cuando es otro tipo) -->
-                    <field name="estado_id" widget="statusbar"
-                        statusbar_visible="en_revision,aprobada,rechazada,pendiente_inicio,en_curso,finalizada"
-                        invisible="tipo_es_nueva"/>
+                    <!-- Statusbar: solo Rechazada -->
+                    <field name="estado_barra" widget="statusbar"
+                        statusbar_visible="rechazada"
+                        invisible="estado_code != 'rechazada'"
+                        readonly="1"/>
+
+                    <!-- Statusbar: flujo Aprobada → Finalizada -->
+                    <field name="estado_barra" widget="statusbar"
+                        statusbar_visible="aprobada,pendiente_inicio,en_curso,finalizada"
+                        invisible="estado_code not in ['aprobada','pendiente_inicio','en_curso','finalizada']"
+                        readonly="1"/>
                     <button name="action_enviar_catalogo" string="Enviar al Catálogo"
                             type="object" class="btn-primary"
                             invisible="estado_code not in ['aprobada','pendiente_inicio'] or en_catalogo"
@@ -110,7 +118,7 @@
                                 Esta actividad no puede modificarse en su estado actual.
                             </b>
                             <b invisible="not permisos_actividad_pendiente_inicio">
-                                Solo puede modificar los campos <i>Responsable de Actividad</i>, <i>Fecha de Inicio</i>, <i>Fecha de Finalización</i>, y 
+                                Solo puede modificar los campos <i>Responsable de Actividad</i>, <i>Fecha de Inicio</i>, <i>Fecha de Finalización</i>, <i>Alumnos</i> y 
                                 <i>Horario por Día</i> en este estado.
                             </b>
                             <b invisible="not permisos_actividad_en_curso">
@@ -130,19 +138,22 @@
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="Nombre de la actividad..."
-                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
+                                   options="{'no_create': True, 'no_quick_create': True}"/>
                         </h1>
                     </div>
                     <group col="1">
                         <group string="Información General">
                             <field name="tipo_actividad_id"
-                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
+                                   options="{'no_create': True, 'no_quick_create': True}"/>
                             <field name="actividad_predefinida"
                                    invisible="tipo_es_nueva"
                                    readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
                                    help="Seleccione si la actividad es predefinida (aprobación automática). Deje en blanco para quitar la selección."/>
                             <field name="periodo"
-                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
+                                   options="{'no_create': True, 'no_quick_create': True}"/>
                             <field name="jefe_departamento_id" readonly="1"/>
                             <field name="departamento_id" readonly="1"/>
                             <!-- Responsable: visible cuando hay actividad predefinida seleccionada (creación)
@@ -165,9 +176,11 @@
                             <field name="fecha_fin"
                                    readonly="estado_code in ['en_curso','finalizada','en_revision']"/>
                             <field name="cantidad_horas"
-                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
+                                   options="{'no_create': True, 'no_quick_create': True}"/>
                             <field name="creditos"
-                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
+                                   readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
+                                   options="{'no_create': True, 'no_quick_create': True}"/>
                             <field name="horario"
                                    placeholder="Ej:&#10;Lunes 10:00-12:00&#10;Miércoles 10:00-12:00"
                                    readonly="estado_code in ['en_curso','finalizada','en_revision']"
@@ -189,11 +202,14 @@
                     <!-- Cupos: editables en aprobada/pendiente, readonly el resto -->
                     <group string="Cupos">
                         <field name="cupo_ilimitado"
-                               readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
+                               readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
+                                   options="{'no_create': True, 'no_quick_create': True}"/>
                         <field name="cupo_min" invisible="cupo_ilimitado"
-                               readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
+                               readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
+                                   options="{'no_create': True, 'no_quick_create': True}"/>
                         <field name="cupo_max" invisible="cupo_ilimitado"
-                               readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
+                               readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
+                                   options="{'no_create': True, 'no_quick_create': True}"/>
                     </group>
                     <group string="Descripción">
                         <field name="descripcion" nolabel="1" colspan="2"
@@ -203,6 +219,12 @@
                     <!-- Alumnos: visible cuando la actividad está aprobada o más avanzada -->
                     <notebook invisible="estado_code not in ['aprobada','pendiente_inicio','en_curso','finalizada'] and not en_catalogo">
                         <page string="Alumnos Asignados" name="alumnos">
+                        <button name="action_abrir_wizard_eliminar_alumnos"
+                            string="Eliminar alumnos"
+                            type="object"
+                            class="btn btn-danger btn-sm mb-2"
+                            invisible="estado_code in ['finalizada'] or not alumno_ids"
+                            groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
                             <field name="alumno_ids"
                                    domain="dominio_alumnos"
                                    readonly="estado_code in ['finalizada']"
