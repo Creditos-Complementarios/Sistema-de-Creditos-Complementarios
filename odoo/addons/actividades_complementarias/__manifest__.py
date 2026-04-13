@@ -15,9 +15,9 @@
     'data': [
         # 1. Grupos de seguridad (primero siempre)
         'security/actividades_security.xml',
-         # 2. Permisos de modelos existentes (CSV — solo modelos ya conocidos)
+        # 2. Permisos de modelos existentes (CSV — solo modelos ya conocidos)
         'security/ir.model.access.csv',
-         # 3. Catálogos SII (deben cargarse antes que datos de actividades)
+        # 3. Catálogos SII (deben cargarse antes que datos de actividades)
         'data/01_departamentos.xml',
         'data/02_carreras.xml',
         'data/03_tipousuario.xml',

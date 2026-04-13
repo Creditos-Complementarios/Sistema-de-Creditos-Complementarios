@@ -24,3 +24,4 @@ class SiiPeriodo(models.Model):
     _sql_constraints = [
         ('cu', 'UNIQUE(clave_periodo)', 'ClavePeriodo única.')
     ]
+    

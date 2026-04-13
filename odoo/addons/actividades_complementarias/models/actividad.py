@@ -535,7 +535,6 @@ class Actividad(models.Model):
             if not rec.jefe_departamento_id:
                 rec.departamento_id = False
                 continue
-            
             # 1. Buscar en catálogo interno por jefe_id
             depto = self.env['actividad.departamento'].search(
                 [('jefe_id', '=', rec.jefe_departamento_id.id)], limit=1
@@ -893,7 +892,8 @@ class Actividad(models.Model):
             ]
             if self.search_count(domain):
                 raise ValidationError(
-                    f'Ya existe una actividad activa con el nombre "{rec.name}" en el periodo {rec.periodo.clave_periodo}.'
+                    f'Ya existe una actividad activa con el nombre "{rec.name}" '
+                    f'en el periodo {rec.periodo.clave_periodo}.'
                 )
 
     @api.constrains('cupo_min', 'cupo_max', 'cupo_ilimitado')
