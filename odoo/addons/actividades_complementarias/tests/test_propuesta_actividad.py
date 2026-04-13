@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import date, timedelta
 
+from odoo import fields
 from odoo.exceptions import ValidationError
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
@@ -34,18 +35,21 @@ class TestPropuestaActividad(TransactionCase):
         cls.estado_rechazada = cls.env.ref('actividades_complementarias.estado_rechazada')
 
         # Periodo — Many2one, definido en periodo_data.xml
-        cls.periodo = cls.env.ref('actividades_complementarias.periodo_2025_A')
+        cls.periodo = cls.env.ref('actividades_complementarias.per_2025A')
 
         cls.tipo = cls.env['actividad.tipo'].create({'name': 'Taller Test'})
 
         hoy = date.today()
-        cls.actividad = cls.env['actividad.complementaria'].create({
+        cls.actividad = cls.env['actividad.complementaria'].with_context(
+            skip_fecha_check=True
+        ).create({
             'name': 'Actividad para Propuesta',
             'tipo_actividad_id': cls.tipo.id,
             'periodo': cls.periodo.id,   # Many2one: pasar el ID del registro
             'fecha_inicio': hoy + timedelta(days=1),
             'fecha_fin': hoy + timedelta(days=2),
             'cantidad_horas': 4.0,
+            'creditos': '1.0',
         })
 
     def _make_propuesta(self, **kwargs):
@@ -64,7 +68,10 @@ class TestPropuestaActividad(TransactionCase):
         propuesta = self._make_propuesta()
         self.assertEqual(propuesta.encabezado, self.actividad.name)
 
-    def test_fecha_limite_es_cinco_dias_despues(self):
+    def test_fecha_envio_es_hoy(self):
+        """La fecha de envío de la propuesta debe ser la fecha actual en la zona horaria del usuario."""
+        propuesta = self._make_propuesta()
+        self.assertEqual(propuesta.fecha, fields.Date.context_today(propuesta))
         """La fecha límite de revisión debe ser 5 días después de la fecha de envío."""
         propuesta = self._make_propuesta()
         esperada = propuesta.fecha + timedelta(days=5)

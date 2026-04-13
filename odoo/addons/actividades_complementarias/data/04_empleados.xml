@@ -1,0 +1,805 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+<record id="emp_000" model="sii.empleado">
+  <field name="rfc_empleado">MIRF750000ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Francisco</field>
+  <field name="apellido_paterno">Mis</field>
+  <field name="apellido_materno">Reyes</field>
+  <field name="correo">francisco.mis@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_001" model="sii.empleado">
+  <field name="rfc_empleado">MIRV750001ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Víctor</field>
+  <field name="apellido_paterno">Miranda</field>
+  <field name="apellido_materno">Rojas</field>
+  <field name="correo">víctor.miranda@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_002" model="sii.empleado">
+  <field name="rfc_empleado">ORCS750002ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Sergio</field>
+  <field name="apellido_paterno">Ortiz</field>
+  <field name="apellido_materno">Cruz</field>
+  <field name="correo">sergio.ortiz@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_003" model="sii.empleado">
+  <field name="rfc_empleado">MAPJ750003ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Juan Antonio</field>
+  <field name="apellido_paterno">Matos</field>
+  <field name="apellido_materno">Paredes</field>
+  <field name="correo">juan.matos@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_004" model="sii.empleado">
+  <field name="rfc_empleado">GOJL750004ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Leticia</field>
+  <field name="apellido_paterno">González</field>
+  <field name="apellido_materno">Jiménez</field>
+  <field name="correo">coord.isc@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_005" model="sii.empleado">
+  <field name="rfc_empleado">VEIF750005ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Francisco</field>
+  <field name="apellido_paterno">Vega</field>
+  <field name="apellido_materno">Islas</field>
+  <field name="correo">coord.itc@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_006" model="sii.empleado">
+  <field name="rfc_empleado">PAFI750006ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Ingrid</field>
+  <field name="apellido_paterno">Pat</field>
+  <field name="apellido_materno">Fuentes</field>
+  <field name="correo">coord.lae@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_007" model="sii.empleado">
+  <field name="rfc_empleado">QUQC750007ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Carlos Alberto</field>
+  <field name="apellido_paterno">Qui</field>
+  <field name="apellido_materno">Quiroz</field>
+  <field name="correo">coord.iia@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_008" model="sii.empleado">
+  <field name="rfc_empleado">AGAN750008ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Nadia</field>
+  <field name="apellido_paterno">Aguilar</field>
+  <field name="apellido_materno">Acevedo</field>
+  <field name="correo">coord.iee@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_009" model="sii.empleado">
+  <field name="rfc_empleado">GAHH750009ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Hilda</field>
+  <field name="apellido_paterno">García</field>
+  <field name="apellido_materno">Herrera</field>
+  <field name="correo">hilda9@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_010" model="sii.empleado">
+  <field name="rfc_empleado">MIRR750010ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Raúl</field>
+  <field name="apellido_paterno">Miranda</field>
+  <field name="apellido_materno">Ruiz</field>
+  <field name="correo">raúl10@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_011" model="sii.empleado">
+  <field name="rfc_empleado">GÓNG750011ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Gabriela</field>
+  <field name="apellido_paterno">Gómez</field>
+  <field name="apellido_materno">Núñez</field>
+  <field name="correo">gabriela11@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_012" model="sii.empleado">
+  <field name="rfc_empleado">VIMG750012ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Guillermo</field>
+  <field name="apellido_paterno">Villanueva</field>
+  <field name="apellido_materno">May</field>
+  <field name="correo">guillermo12@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_013" model="sii.empleado">
+  <field name="rfc_empleado">MAOA750013ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Alejandra</field>
+  <field name="apellido_paterno">May</field>
+  <field name="apellido_materno">Ocampo</field>
+  <field name="correo">alejandra13@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_014" model="sii.empleado">
+  <field name="rfc_empleado">YAAB750014ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Benito</field>
+  <field name="apellido_paterno">Yam</field>
+  <field name="apellido_materno">Acosta</field>
+  <field name="correo">benito14@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_015" model="sii.empleado">
+  <field name="rfc_empleado">TOSF750015ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Fabiola</field>
+  <field name="apellido_paterno">Torres</field>
+  <field name="apellido_materno">Sánchez</field>
+  <field name="correo">fabiola15@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_016" model="sii.empleado">
+  <field name="rfc_empleado">RORH750016ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Hugo</field>
+  <field name="apellido_paterno">Rojas</field>
+  <field name="apellido_materno">Rodríguez</field>
+  <field name="correo">hugo16@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_017" model="sii.empleado">
+  <field name="rfc_empleado">MIBC750017ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Cynthia</field>
+  <field name="apellido_paterno">Miranda</field>
+  <field name="apellido_materno">Becerra</field>
+  <field name="correo">cynthia17@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_018" model="sii.empleado">
+  <field name="rfc_empleado">CACR750018ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Rodrigo</field>
+  <field name="apellido_paterno">Cabrera</field>
+  <field name="apellido_materno">Cantoral</field>
+  <field name="correo">rodrigo18@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_019" model="sii.empleado">
+  <field name="rfc_empleado">DZFA750019ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Ariadna</field>
+  <field name="apellido_paterno">Dzib</field>
+  <field name="apellido_materno">Flores</field>
+  <field name="correo">ariadna19@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_020" model="sii.empleado">
+  <field name="rfc_empleado">GUHK750020ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Kevin</field>
+  <field name="apellido_paterno">Guerrero</field>
+  <field name="apellido_materno">Herrera</field>
+  <field name="correo">kevin20@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_021" model="sii.empleado">
+  <field name="rfc_empleado">MICB750021ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Beatriz</field>
+  <field name="apellido_paterno">Mis</field>
+  <field name="apellido_materno">Cano</field>
+  <field name="correo">beatriz21@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_022" model="sii.empleado">
+  <field name="rfc_empleado">RALJ750022ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Juan Antonio</field>
+  <field name="apellido_paterno">Ramírez</field>
+  <field name="apellido_materno">Luna</field>
+  <field name="correo">juan22@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_023" model="sii.empleado">
+  <field name="rfc_empleado">SUTL750023ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Leticia</field>
+  <field name="apellido_paterno">Suárez</field>
+  <field name="apellido_materno">Torres</field>
+  <field name="correo">leticia23@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_024" model="sii.empleado">
+  <field name="rfc_empleado">QUGL750024ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Luis Alberto</field>
+  <field name="apellido_paterno">Qui</field>
+  <field name="apellido_materno">Galván</field>
+  <field name="correo">luis24@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_025" model="sii.empleado">
+  <field name="rfc_empleado">HECS750025ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Silvia</field>
+  <field name="apellido_paterno">Hernández</field>
+  <field name="apellido_materno">Castillo</field>
+  <field name="correo">silvia25@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_026" model="sii.empleado">
+  <field name="rfc_empleado">MAPJ750026ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">José Manuel</field>
+  <field name="apellido_paterno">Mass</field>
+  <field name="apellido_materno">Paredes</field>
+  <field name="correo">josé26@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_027" model="sii.empleado">
+  <field name="rfc_empleado">ORJY750027ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Yolanda</field>
+  <field name="apellido_paterno">Ortiz</field>
+  <field name="apellido_materno">Juárez</field>
+  <field name="correo">yolanda27@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_028" model="sii.empleado">
+  <field name="rfc_empleado">SÁRÓ750028ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Óscar</field>
+  <field name="apellido_paterno">Sánchez</field>
+  <field name="apellido_materno">Reyes</field>
+  <field name="correo">óscar28@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_029" model="sii.empleado">
+  <field name="rfc_empleado">DZPA750029ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Ariadna</field>
+  <field name="apellido_paterno">Dzib</field>
+  <field name="apellido_materno">Paredes</field>
+  <field name="correo">ariadna29@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_030" model="sii.empleado">
+  <field name="rfc_empleado">RÍCK750030ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Kevin</field>
+  <field name="apellido_paterno">Ríos</field>
+  <field name="apellido_materno">Chan</field>
+  <field name="correo">kevin30@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_031" model="sii.empleado">
+  <field name="rfc_empleado">MARG750031ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Gisela</field>
+  <field name="apellido_paterno">Martínez</field>
+  <field name="apellido_materno">Reyes</field>
+  <field name="correo">gisela31@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_032" model="sii.empleado">
+  <field name="rfc_empleado">NASA750032ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Andrés</field>
+  <field name="apellido_paterno">Nah</field>
+  <field name="apellido_materno">Sulub</field>
+  <field name="correo">andrés32@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_033" model="sii.empleado">
+  <field name="rfc_empleado">MOBM750033ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">María</field>
+  <field name="apellido_paterno">Moreno</field>
+  <field name="apellido_materno">Becerra</field>
+  <field name="correo">maría33@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_034" model="sii.empleado">
+  <field name="rfc_empleado">CAIP750034ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Pablo</field>
+  <field name="apellido_paterno">Castillo</field>
+  <field name="apellido_materno">Islas</field>
+  <field name="correo">pablo34@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_035" model="sii.empleado">
+  <field name="rfc_empleado">MIIA750035ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Ariadna</field>
+  <field name="apellido_paterno">Mis</field>
+  <field name="apellido_materno">Islas</field>
+  <field name="correo">ariadna35@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_036" model="sii.empleado">
+  <field name="rfc_empleado">CAHC750036ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Carlos</field>
+  <field name="apellido_paterno">Cabrera</field>
+  <field name="apellido_materno">Herrera</field>
+  <field name="correo">carlos36@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_037" model="sii.empleado">
+  <field name="rfc_empleado">LÓRL750037ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Lorena</field>
+  <field name="apellido_paterno">López</field>
+  <field name="apellido_materno">Reyes</field>
+  <field name="correo">lorena37@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_038" model="sii.empleado">
+  <field name="rfc_empleado">ÁVGR750038ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Roberto</field>
+  <field name="apellido_paterno">Ávila</field>
+  <field name="apellido_materno">Guerrero</field>
+  <field name="correo">roberto38@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_039" model="sii.empleado">
+  <field name="rfc_empleado">RIRJ750039ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Jessica</field>
+  <field name="apellido_paterno">Rivera</field>
+  <field name="apellido_materno">Rodríguez</field>
+  <field name="correo">jessica39@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_040" model="sii.empleado">
+  <field name="rfc_empleado">TOOD750040ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Diego</field>
+  <field name="apellido_paterno">Torres</field>
+  <field name="apellido_materno">Ocampo</field>
+  <field name="correo">diego40@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_041" model="sii.empleado">
+  <field name="rfc_empleado">CUCP750041ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Patricia</field>
+  <field name="apellido_paterno">Cupul</field>
+  <field name="apellido_materno">Cetina</field>
+  <field name="correo">patricia41@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_042" model="sii.empleado">
+  <field name="rfc_empleado">JAPR750042ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Raúl</field>
+  <field name="apellido_paterno">Jaloma</field>
+  <field name="apellido_materno">Paredes</field>
+  <field name="correo">raúl42@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_043" model="sii.empleado">
+  <field name="rfc_empleado">ÁVVF750043ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Fabiola</field>
+  <field name="apellido_paterno">Ávila</field>
+  <field name="apellido_materno">Valdez</field>
+  <field name="correo">fabiola43@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_044" model="sii.empleado">
+  <field name="rfc_empleado">KUAD750044ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">David</field>
+  <field name="apellido_paterno">Ku</field>
+  <field name="apellido_materno">Acevedo</field>
+  <field name="correo">david44@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_045" model="sii.empleado">
+  <field name="rfc_empleado">TOSA750045ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Ana Laura</field>
+  <field name="apellido_paterno">Torres</field>
+  <field name="apellido_materno">Sulub</field>
+  <field name="correo">ana45@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_046" model="sii.empleado">
+  <field name="rfc_empleado">AGHR750046ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Ricardo</field>
+  <field name="apellido_paterno">Aguilar</field>
+  <field name="apellido_materno">Hernández</field>
+  <field name="correo">ricardo46@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_047" model="sii.empleado">
+  <field name="rfc_empleado">TOGI750047ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Itzel</field>
+  <field name="apellido_paterno">Torres</field>
+  <field name="apellido_materno">González</field>
+  <field name="correo">itzel47@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_048" model="sii.empleado">
+  <field name="rfc_empleado">POGM750048ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Marco Antonio</field>
+  <field name="apellido_paterno">Pool</field>
+  <field name="apellido_materno">Guerrero</field>
+  <field name="correo">marco48@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_049" model="sii.empleado">
+  <field name="rfc_empleado">TZDJ750049ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Jessica</field>
+  <field name="apellido_paterno">Tzuc</field>
+  <field name="apellido_materno">Díaz</field>
+  <field name="correo">jessica49@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_050" model="sii.empleado">
+  <field name="rfc_empleado">CUZI750050ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Ignacio</field>
+  <field name="apellido_paterno">Cupul</field>
+  <field name="apellido_materno">Zamora</field>
+  <field name="correo">ignacio50@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_051" model="sii.empleado">
+  <field name="rfc_empleado">SOPS750051ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Sandra</field>
+  <field name="apellido_paterno">Sosa</field>
+  <field name="apellido_materno">Palma</field>
+  <field name="correo">sandra51@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_052" model="sii.empleado">
+  <field name="rfc_empleado">CAPD750052ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Daniel</field>
+  <field name="apellido_paterno">Canche</field>
+  <field name="apellido_materno">Pérez</field>
+  <field name="correo">daniel52@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_053" model="sii.empleado">
+  <field name="rfc_empleado">SACS750053ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Silvia</field>
+  <field name="apellido_paterno">Salinas</field>
+  <field name="apellido_materno">Cruz</field>
+  <field name="correo">silvia53@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_054" model="sii.empleado">
+  <field name="rfc_empleado">POAJ750054ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Jorge</field>
+  <field name="apellido_paterno">Poot</field>
+  <field name="apellido_materno">Acevedo</field>
+  <field name="correo">jorge54@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_055" model="sii.empleado">
+  <field name="rfc_empleado">MICS750055ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Silvia</field>
+  <field name="apellido_paterno">Miranda</field>
+  <field name="apellido_materno">Cortés</field>
+  <field name="correo">silvia55@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_056" model="sii.empleado">
+  <field name="rfc_empleado">YAMA750056ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Alejandro</field>
+  <field name="apellido_paterno">Yam</field>
+  <field name="apellido_materno">Morales</field>
+  <field name="correo">alejandro56@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_057" model="sii.empleado">
+  <field name="rfc_empleado">FUMD750057ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Diana</field>
+  <field name="apellido_paterno">Fuentes</field>
+  <field name="apellido_materno">Medina</field>
+  <field name="correo">diana57@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_058" model="sii.empleado">
+  <field name="rfc_empleado">MEVR750058ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Roberto</field>
+  <field name="apellido_paterno">Medina</field>
+  <field name="apellido_materno">Valdez</field>
+  <field name="correo">roberto58@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_059" model="sii.empleado">
+  <field name="rfc_empleado">GASR750059ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Rosa</field>
+  <field name="apellido_paterno">García</field>
+  <field name="apellido_materno">Sosa</field>
+  <field name="correo">rosa59@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_060" model="sii.empleado">
+  <field name="rfc_empleado">CHCJ750060ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Jesús</field>
+  <field name="apellido_paterno">Chan</field>
+  <field name="apellido_materno">Cano</field>
+  <field name="correo">jesús60@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_061" model="sii.empleado">
+  <field name="rfc_empleado">ROVS750061ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Sofía</field>
+  <field name="apellido_paterno">Rojas</field>
+  <field name="apellido_materno">Vargas</field>
+  <field name="correo">sofía61@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_062" model="sii.empleado">
+  <field name="rfc_empleado">NARA750062ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Alejandro</field>
+  <field name="apellido_paterno">Nava</field>
+  <field name="apellido_materno">Ramírez</field>
+  <field name="correo">alejandro62@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_063" model="sii.empleado">
+  <field name="rfc_empleado">CHHS750063ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Sofía</field>
+  <field name="apellido_paterno">Chi</field>
+  <field name="apellido_materno">Herrera</field>
+  <field name="correo">sofía63@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_064" model="sii.empleado">
+  <field name="rfc_empleado">JITF750064ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Fernando</field>
+  <field name="apellido_paterno">Jiménez</field>
+  <field name="apellido_materno">Torres</field>
+  <field name="correo">fernando64@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_065" model="sii.empleado">
+  <field name="rfc_empleado">RECS750065ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Silvia</field>
+  <field name="apellido_paterno">Reyes</field>
+  <field name="apellido_materno">Cab</field>
+  <field name="correo">silvia65@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_066" model="sii.empleado">
+  <field name="rfc_empleado">RIIA750066ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Adrián</field>
+  <field name="apellido_paterno">Rivera</field>
+  <field name="apellido_materno">Ibáñez</field>
+  <field name="correo">adrián66@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_067" model="sii.empleado">
+  <field name="rfc_empleado">CEMS750067ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Silvia</field>
+  <field name="apellido_paterno">Cetina</field>
+  <field name="apellido_materno">Matos</field>
+  <field name="correo">silvia67@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_068" model="sii.empleado">
+  <field name="rfc_empleado">GUCC750068ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Christopher</field>
+  <field name="apellido_paterno">Gutiérrez</field>
+  <field name="apellido_materno">Carmona</field>
+  <field name="correo">christopher68@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_069" model="sii.empleado">
+  <field name="rfc_empleado">FLLA750069ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Alicia</field>
+  <field name="apellido_paterno">Flores</field>
+  <field name="apellido_materno">López</field>
+  <field name="correo">alicia69@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_070" model="sii.empleado">
+  <field name="rfc_empleado">POVA750070ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Alan Rodrigo</field>
+  <field name="apellido_paterno">Poot</field>
+  <field name="apellido_materno">Vargas</field>
+  <field name="correo">alan70@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_071" model="sii.empleado">
+  <field name="rfc_empleado">VITE750071ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Evelyn</field>
+  <field name="apellido_paterno">Villanueva</field>
+  <field name="apellido_materno">Torres</field>
+  <field name="correo">evelyn71@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_072" model="sii.empleado">
+  <field name="rfc_empleado">CEHE750072ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Erik</field>
+  <field name="apellido_paterno">Cervantes</field>
+  <field name="apellido_materno">Herrera</field>
+  <field name="correo">erik72@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_073" model="sii.empleado">
+  <field name="rfc_empleado">QUNM750073ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">María</field>
+  <field name="apellido_paterno">Qui</field>
+  <field name="apellido_materno">Navarrete</field>
+  <field name="correo">maría73@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_074" model="sii.empleado">
+  <field name="rfc_empleado">CRCG750074ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Guillermo</field>
+  <field name="apellido_paterno">Cruz</field>
+  <field name="apellido_materno">Castillo</field>
+  <field name="correo">guillermo74@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_075" model="sii.empleado">
+  <field name="rfc_empleado">YARC750075ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Carmen</field>
+  <field name="apellido_paterno">Yam</field>
+  <field name="apellido_materno">Ruiz</field>
+  <field name="correo">carmen75@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_076" model="sii.empleado">
+  <field name="rfc_empleado">RUSR750076ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Rodrigo</field>
+  <field name="apellido_paterno">Ruiz</field>
+  <field name="apellido_materno">Sulub</field>
+  <field name="correo">rodrigo76@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_077" model="sii.empleado">
+  <field name="rfc_empleado">CEMD750077ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Daiana</field>
+  <field name="apellido_paterno">Cen</field>
+  <field name="apellido_materno">Moreno</field>
+  <field name="correo">daiana77@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_078" model="sii.empleado">
+  <field name="rfc_empleado">MIPM750078ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Marco Antonio</field>
+  <field name="apellido_paterno">Mis</field>
+  <field name="apellido_materno">Paredes</field>
+  <field name="correo">marco78@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_079" model="sii.empleado">
+  <field name="rfc_empleado">PADC750079ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Cynthia</field>
+  <field name="apellido_paterno">Pacheco</field>
+  <field name="apellido_materno">Díaz</field>
+  <field name="correo">cynthia79@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_080" model="sii.empleado">
+  <field name="rfc_empleado">COCJ750080ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">José Luis</field>
+  <field name="apellido_paterno">Cocom</field>
+  <field name="apellido_materno">Cetina</field>
+  <field name="correo">josé80@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_081" model="sii.empleado">
+  <field name="rfc_empleado">FLRM750081ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Miriam</field>
+  <field name="apellido_paterno">Flores</field>
+  <field name="apellido_materno">Ruiz</field>
+  <field name="correo">miriam81@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_082" model="sii.empleado">
+  <field name="rfc_empleado">CAPM750082ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Mario</field>
+  <field name="apellido_paterno">Cabrera</field>
+  <field name="apellido_materno">Pool</field>
+  <field name="correo">mario82@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_083" model="sii.empleado">
+  <field name="rfc_empleado">PÉFM750083ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Mariana</field>
+  <field name="apellido_paterno">Pérez</field>
+  <field name="apellido_materno">Fernández</field>
+  <field name="correo">mariana83@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_084" model="sii.empleado">
+  <field name="rfc_empleado">RURP750084ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Pablo</field>
+  <field name="apellido_paterno">Ruiz</field>
+  <field name="apellido_materno">Rojas</field>
+  <field name="correo">pablo84@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_085" model="sii.empleado">
+  <field name="rfc_empleado">PAZB750085ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Brenda</field>
+  <field name="apellido_paterno">Pat</field>
+  <field name="apellido_materno">Zamora</field>
+  <field name="correo">brenda85@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_086" model="sii.empleado">
+  <field name="rfc_empleado">MOMJ750086ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Juan Carlos</field>
+  <field name="apellido_paterno">Moreno</field>
+  <field name="apellido_materno">Mendoza</field>
+  <field name="correo">juan86@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_087" model="sii.empleado">
+  <field name="rfc_empleado">PAZA750087ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Ana Sofía</field>
+  <field name="apellido_paterno">Pacheco</field>
+  <field name="apellido_materno">Zamora</field>
+  <field name="correo">ana87@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_088" model="sii.empleado">
+  <field name="rfc_empleado">MOCD750088ABC</field>
+  <field name="id_departamento" ref="dep_dcea"/>
+  <field name="nombre">Damián</field>
+  <field name="apellido_paterno">Moreno</field>
+  <field name="apellido_materno">Cruz</field>
+  <field name="correo">damián88@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_089" model="sii.empleado">
+  <field name="rfc_empleado">CUDA750089ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Adriana</field>
+  <field name="apellido_paterno">Cupul</field>
+  <field name="apellido_materno">Delgado</field>
+  <field name="correo">adriana89@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_090" model="sii.empleado">
+  <field name="rfc_empleado">ÁVLV750090ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Víctor</field>
+  <field name="apellido_paterno">Ávila</field>
+  <field name="apellido_materno">Luna</field>
+  <field name="correo">víctor90@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_091" model="sii.empleado">
+  <field name="rfc_empleado">HEVV750091ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Verónica</field>
+  <field name="apellido_paterno">Herrera</field>
+  <field name="apellido_materno">Valdez</field>
+  <field name="correo">verónica91@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_092" model="sii.empleado">
+  <field name="rfc_empleado">TOEE750092ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Emilio</field>
+  <field name="apellido_paterno">Torres</field>
+  <field name="apellido_materno">Espinosa</field>
+  <field name="correo">emilio92@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_093" model="sii.empleado">
+  <field name="rfc_empleado">POHA750093ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Ana Laura</field>
+  <field name="apellido_paterno">Poot</field>
+  <field name="apellido_materno">Heredia</field>
+  <field name="correo">ana93@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_094" model="sii.empleado">
+  <field name="rfc_empleado">CAPG750094ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Guillermo</field>
+  <field name="apellido_paterno">Castillo</field>
+  <field name="apellido_materno">Pool</field>
+  <field name="correo">guillermo94@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_095" model="sii.empleado">
+  <field name="rfc_empleado">CAPS750095ABC</field>
+  <field name="id_departamento" ref="dep_dsic"/>
+  <field name="nombre">Sandra</field>
+  <field name="apellido_paterno">Cantoral</field>
+  <field name="apellido_materno">Palma</field>
+  <field name="correo">sandra95@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_096" model="sii.empleado">
+  <field name="rfc_empleado">JAJA750096ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Andrés</field>
+  <field name="apellido_paterno">Jaloma</field>
+  <field name="apellido_materno">Juárez</field>
+  <field name="correo">andrés96@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_097" model="sii.empleado">
+  <field name="rfc_empleado">HEMC750097ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Claudia</field>
+  <field name="apellido_paterno">Herrera</field>
+  <field name="apellido_materno">Moreno</field>
+  <field name="correo">claudia97@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_098" model="sii.empleado">
+  <field name="rfc_empleado">KUOG750098ABC</field>
+  <field name="id_departamento" ref="dep_dee"/>
+  <field name="nombre">Gerardo</field>
+  <field name="apellido_paterno">Ku</field>
+  <field name="apellido_materno">Ocampo</field>
+  <field name="correo">gerardo98@chetumal.tecnm.mx</field>
+</record>
+<record id="emp_099" model="sii.empleado">
+  <field name="rfc_empleado">TOHB750099ABC</field>
+  <field name="id_departamento" ref="dep_dii"/>
+  <field name="nombre">Brenda</field>
+  <field name="apellido_paterno">Torres</field>
+  <field name="apellido_materno">Heredia</field>
+  <field name="correo">brenda99@chetumal.tecnm.mx</field>
+</record>
+</data>
+</odoo>

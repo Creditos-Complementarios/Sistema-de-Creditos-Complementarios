@@ -25,7 +25,7 @@ class PropuestaActividadComplementaria(models.Model):
     )
     fecha = fields.Date(
         string='Fecha de Envío',
-        default=fields.Date.today,
+        default=lambda self: fields.Date.context_today(self),
         readonly=True,
     )
     fecha_limite_revision = fields.Date(
@@ -105,8 +105,10 @@ class PropuestaActividadComplementaria(models.Model):
         self.ensure_one()
         estado_aprobada = self.env.ref('actividades_complementarias.estado_solicitud_aprobada')
         estado_act_aprobada = self.env.ref('actividades_complementarias.estado_aprobada')
-        self.write({'estado_solicitud_id': estado_aprobada.id})
-        self.actividad_id.write({'estado_id': estado_act_aprobada.id})
+        self.sudo().write({'estado_solicitud_id': estado_aprobada.id})
+        self.actividad_id.sudo().with_context(bypass_edit_protection=True).write(
+            {'estado_id': estado_act_aprobada.id}
+        )
         self.message_post(body='Propuesta aprobada por el Comité Académico.')
 
     def action_rechazar(self):
@@ -115,8 +117,10 @@ class PropuestaActividadComplementaria(models.Model):
             raise ValidationError('Debe indicar el motivo de rechazo.')
         estado_rechazada = self.env.ref('actividades_complementarias.estado_solicitud_rechazada')
         estado_act_rechazada = self.env.ref('actividades_complementarias.estado_rechazada')
-        self.write({'estado_solicitud_id': estado_rechazada.id})
-        self.actividad_id.write({'estado_id': estado_act_rechazada.id})
+        self.sudo().write({'estado_solicitud_id': estado_rechazada.id})
+        self.actividad_id.sudo().with_context(bypass_edit_protection=True).write(
+            {'estado_id': estado_act_rechazada.id}
+        )
         self.message_post(body=f'Propuesta rechazada. Motivo: {self.motivo_rechazo}')
 
     def action_abrir_wizard_rechazo(self):
@@ -144,7 +148,28 @@ class PropuestaActividadComplementaria(models.Model):
         }
 
     def action_regresar_lista(self):
-        """Regresa a la lista de propuestas."""
+        """Regresa a la lista segun el contexto de origen."""
+        ctx = self.env.context
+        origen = ctx.get('origen_propuesta', 'todas')
+        if origen == 'pendientes':
+            action_ref = self.env.ref(
+                'actividades_complementarias.action_propuesta_pendiente',
+                raise_if_not_found=False,
+            )
+        elif origen == 'mis_propuestas':
+            action_ref = self.env.ref(
+                'actividades_complementarias.action_propuesta',
+                raise_if_not_found=False,
+            )
+        else:
+            action_ref = self.env.ref(
+                'actividades_complementarias.action_propuesta_todas',
+                raise_if_not_found=False,
+            )
+        if action_ref:
+            action = action_ref.sudo().read()[0]
+            action['target'] = 'current'
+            return action
         return {
             'type': 'ir.actions.act_window',
             'name': 'Propuestas',

@@ -20,7 +20,7 @@
                         <field name="actividad_predefinida"/>
                         <field name="periodo" placeholder="Ej: 2025-A"/>
                     </group>
-                    <group string="Responsable (solo actividades predefinidas)" invisible="not es_predefinida">
+                    <group string="Responsable y Creditos">
                         <field name="responsable_actividad_id"/>
                         <field name="creditos"/>
                     </group>
@@ -28,7 +28,9 @@
                         <field name="fecha_inicio"/>
                         <field name="fecha_fin"/>
                         <field name="cantidad_horas"/>
-                        <field name="horario" placeholder="Ej: Lunes 10:00-12:00"/>
+                        <field name="horario" string="Horario"
+                                placeholder="Ej: Lunes 10:00-12:00"
+                                help="Opcional - especifica si la actividad tiene días y horas fijas"/>
                     </group>
                     <group string="Cupos">
                         <field name="cupo_ilimitado"/>
@@ -46,12 +48,10 @@
                 <footer>
                     <button name="action_confirmar" string="Enviar al Catalogo"
                             type="object" class="btn-primary"
-                            invisible="not es_predefinida"
-                            confirm="Esta actividad es predefinida y se aprobara automaticamente. Confirma el registro?"/>
+                            invisible="not es_predefinida"/>
                     <button name="action_confirmar" string="Enviar al Comite Academico"
                             type="object" class="btn-warning"
-                            invisible="es_predefinida"
-                            confirm="Confirma el envio de esta actividad al Comite Academico para su revision?"/>
+                            invisible="es_predefinida"/>
                     <button name="action_cancelar" string="Cancelar"
                             type="object" class="btn-secondary"/>
                 </footer>
@@ -124,4 +124,86 @@
         <field name="target">new</field>
     </record>
 
+
+    <!-- Wizard: Asignar Responsable de Actividad -->
+    <record id="view_wizard_asignar_responsable_form" model="ir.ui.view">
+        <field name="name">actividad.wizard.asignar.responsable.form</field>
+        <field name="model">actividad.wizard.asignar.responsable</field>
+        <field name="arch" type="xml">
+            <form string="Asignar Responsable de Actividad">
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Atención:</strong> Una vez confirmado, el Responsable de Actividad
+                        <strong>no podrá cambiarse</strong>. Asegúrese de seleccionar al responsable correcto.
+                    </div>
+                    <group>
+                        <field name="actividad_id" invisible="1"/>
+                        <field name="nombre_actividad" string="Actividad" readonly="1"/>
+                        <field name="responsable_actual" string="Responsable Actual" readonly="1"
+                               invisible="not responsable_actual"/>
+                        <field name="dominio_responsable" invisible="1"/>
+                        <field name="responsable_nuevo_id"
+                               string="Responsable a Asignar"
+                               domain="dominio_responsable"
+                               options="{'no_create': True, 'no_quick_create': True}"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirmar_asignacion" string="Confirmar Asignación"
+                            type="object" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<!-- Wizard: Eliminar Alumnos -->
+    <record id="view_wizard_eliminar_alumnos_form" model="ir.ui.view">
+        <field name="name">actividad.wizard.eliminar.alumnos.form</field>
+        <field name="model">actividad.wizard.eliminar.alumnos</field>
+        <field name="arch" type="xml">
+            <form string="Eliminar Alumnos">
+                <sheet>
+                    <field name="actividad_id" invisible="1"/>
+                    <field name="linea_ids">
+                        <list editable="top" create="0" delete="0">
+                            <field name="a_eliminar" string="Eliminar"/>
+                            <field name="alumno_id" string="Nombre" readonly="1"/>
+                            <field name="login" string="Correo" readonly="1"/>
+                        </list>
+                    </field>
+                </sheet>
+                <footer>
+                    <button name="action_confirmar"
+                            string="Confirmar"
+                            type="object"
+                            class="btn-danger"/>
+                    <button string="Cancelar"
+                            class="btn-secondary"
+                            special="cancel"/>
+                            </footer>
+            </form>
+        </field>
+    </record>
+<!-- Wizard: Confirmar Envío con Resumen -->
+    <record id="view_wizard_confirmar_envio_form" model="ir.ui.view">
+        <field name="name">actividad.wizard.confirmar.envio.form</field>
+        <field name="model">actividad.wizard.confirmar.envio</field>
+        <field name="arch" type="xml">
+            <form string="Confirmar envío">
+                <sheet>
+                    <field name="actividad_id" invisible="1"/>
+                    <field name="tipo_envio" invisible="1"/>
+                    <group string="Resumen de la Actividad">
+                        <field name="resumen_html" nolabel="1" colspan="2" widget="html"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirmar" string="De acuerdo"
+                            type="object" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 </odoo>

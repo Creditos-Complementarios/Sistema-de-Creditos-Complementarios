@@ -1,0 +1,67 @@
+/* Personalizar tema login */
+
+.o_login_custom {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_login_logo {
+    max-width: 300px;
+    margin-bottom: 30px;
+}
+
+.o_login_form {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.o_login_form h1 {
+    color: #667eea;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.o_login_custom_footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.o_login_custom_footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.o_login_custom_footer a:hover {
+    text-decoration: underline;
+}
+
+/* Texto azul marino en el login */
+.o_database_list,
+.o_database_list label,
+.o_database_list a,
+.o_database_list p,
+.o_database_list span,
+.o_database_list input::placeholder,
+.o_database_list .form-label,
+.o_database_list .btn-link {
+    color: #1a2e5a !important;
+}
+
+/* Botón Iniciar sesión en azul marino */
+.o_database_list .btn-primary {
+    background-color: #1a2e5a !important;
+    border-color: #1a2e5a !important;
+    color: #ffffff !important;
+}
+
+.o_database_list .btn-primary:hover {
+    background-color: #F06702 !important;
+    border-color: #F06702 !important;
+}

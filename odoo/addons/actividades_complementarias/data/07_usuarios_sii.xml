@@ -1,0 +1,1090 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+
+<!-- ============================================================ -->
+<!-- USUARIOS res.users generados desde sii.empleado              -->
+<!-- Primer empleado de dep_dsic = Jefe de Departamento           -->
+<!-- Resto = Responsables de Actividad por departamento           -->
+<!-- ============================================================ -->
+
+    <record id="user_emp_000" model="res.users">
+        <field name="name">Francisco Mis Reyes</field>
+        <field name="login">francisco.mis@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_jefe_departamento'))]"/>
+    </record>
+    <record id="user_emp_001" model="res.users">
+        <field name="name">Víctor Miranda Rojas</field>
+        <field name="login">victor.miranda@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+    <record id="user_emp_002" model="res.users">
+        <field name="name">Sergio Ortiz Cruz</field>
+        <field name="login">sergio.ortiz@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+    <record id="user_emp_003" model="res.users">
+        <field name="name">Juan Antonio Matos Paredes</field>
+        <field name="login">juan.matos@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+    <record id="user_emp_004" model="res.users">
+        <field name="name">Leticia González Jiménez</field>
+        <field name="login">coord.isc@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+    <record id="user_emp_005" model="res.users">
+        <field name="name">Francisco Vega Islas</field>
+        <field name="login">coord.itc@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+    <record id="user_emp_006" model="res.users">
+        <field name="name">Ingrid Pat Fuentes</field>
+        <field name="login">coord.lae@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+    <record id="user_emp_007" model="res.users">
+        <field name="name">Carlos Alberto Qui Quiroz</field>
+        <field name="login">coord.iia@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+    <record id="user_emp_008" model="res.users">
+        <field name="name">Nadia Aguilar Acevedo</field>
+        <field name="login">coord.iee@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+    <record id="user_emp_009" model="res.users">
+        <field name="name">Hilda García Herrera</field>
+        <field name="login">hilda9@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+    <record id="user_emp_010" model="res.users">
+        <field name="name">Raúl Miranda Ruiz</field>
+        <field name="login">raul10@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+    </record>
+    <record id="user_emp_011" model="res.users">
+        <field name="name">Gabriela Gómez Núñez</field>
+        <field name="login">gabriela11@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_012" model="res.users">
+        <field name="name">Guillermo Villanueva May</field>
+        <field name="login">guillermo12@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_013" model="res.users">
+        <field name="name">Alejandra May Ocampo</field>
+        <field name="login">alejandra13@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_sistemas'))]"/>
+    </record>
+    <record id="user_emp_014" model="res.users">
+        <field name="name">Benito Yam Acosta</field>
+        <field name="login">benito14@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_electrica'))]"/>
+    </record>
+    <record id="user_emp_015" model="res.users">
+        <field name="name">Fabiola Torres Sánchez</field>
+        <field name="login">fabiola15@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_extraescolar'))]"/>
+    </record>
+    <record id="user_emp_016" model="res.users">
+        <field name="name">Hugo Rojas Rodríguez</field>
+        <field name="login">hugo16@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_extraescolar'))]"/>
+    </record>
+    <record id="user_emp_017" model="res.users">
+        <field name="name">Cynthia Miranda Becerra</field>
+        <field name="login">cynthia17@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_sistemas'))]"/>
+    </record>
+    <record id="user_emp_018" model="res.users">
+        <field name="name">Rodrigo Cabrera Cantoral</field>
+        <field name="login">rodrigo18@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_019" model="res.users">
+        <field name="name">Ariadna Dzib Flores</field>
+        <field name="login">ariadna19@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_020" model="res.users">
+        <field name="name">Kevin Guerrero Herrera</field>
+        <field name="login">kevin20@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_extraescolar'))]"/>
+    </record>
+    <record id="user_emp_021" model="res.users">
+        <field name="name">Beatriz Mis Cano</field>
+        <field name="login">beatriz21@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_electrica'))]"/>
+    </record>
+    <record id="user_emp_022" model="res.users">
+        <field name="name">Juan Antonio Ramírez Luna</field>
+        <field name="login">juan22@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_023" model="res.users">
+        <field name="name">Leticia Suárez Torres</field>
+        <field name="login">leticia23@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_024" model="res.users">
+        <field name="name">Luis Alberto Qui Galván</field>
+        <field name="login">luis24@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_025" model="res.users">
+        <field name="name">Silvia Hernández Castillo</field>
+        <field name="login">silvia25@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_electrica'))]"/>
+    </record>
+    <record id="user_emp_026" model="res.users">
+        <field name="name">José Manuel Mass Paredes</field>
+        <field name="login">jose26@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_027" model="res.users">
+        <field name="name">Yolanda Ortiz Juárez</field>
+        <field name="login">yolanda27@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_028" model="res.users">
+        <field name="name">Óscar Sánchez Reyes</field>
+        <field name="login">oscar28@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_sistemas'))]"/>
+    </record>
+    <record id="user_emp_029" model="res.users">
+        <field name="name">Ariadna Dzib Paredes</field>
+        <field name="login">ariadna29@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_extraescolar'))]"/>
+    </record>
+    <record id="user_emp_030" model="res.users">
+        <field name="name">Kevin Ríos Chan</field>
+        <field name="login">kevin30@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_sistemas'))]"/>
+    </record>
+    <record id="user_emp_031" model="res.users">
+        <field name="name">Gisela Martínez Reyes</field>
+        <field name="login">gisela31@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_032" model="res.users">
+        <field name="name">Andrés Nah Sulub</field>
+        <field name="login">andres32@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_033" model="res.users">
+        <field name="name">María Moreno Becerra</field>
+        <field name="login">maria33@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_034" model="res.users">
+        <field name="name">Pablo Castillo Islas</field>
+        <field name="login">pablo34@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_035" model="res.users">
+        <field name="name">Ariadna Mis Islas</field>
+        <field name="login">ariadna35@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_036" model="res.users">
+        <field name="name">Carlos Cabrera Herrera</field>
+        <field name="login">carlos36@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_extraescolar'))]"/>
+    </record>
+    <record id="user_emp_037" model="res.users">
+        <field name="name">Lorena López Reyes</field>
+        <field name="login">lorena37@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_038" model="res.users">
+        <field name="name">Roberto Ávila Guerrero</field>
+        <field name="login">roberto38@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_039" model="res.users">
+        <field name="name">Jessica Rivera Rodríguez</field>
+        <field name="login">jessica39@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_extraescolar'))]"/>
+    </record>
+    <record id="user_emp_040" model="res.users">
+        <field name="name">Diego Torres Ocampo</field>
+        <field name="login">diego40@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_electrica'))]"/>
+    </record>
+    <record id="user_emp_041" model="res.users">
+        <field name="name">Patricia Cupul Cetina</field>
+        <field name="login">patricia41@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_extraescolar'))]"/>
+    </record>
+    <record id="user_emp_042" model="res.users">
+        <field name="name">Raúl Jaloma Paredes</field>
+        <field name="login">raul42@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_043" model="res.users">
+        <field name="name">Fabiola Ávila Valdez</field>
+        <field name="login">fabiola43@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_extraescolar'))]"/>
+    </record>
+    <record id="user_emp_044" model="res.users">
+        <field name="name">David Ku Acevedo</field>
+        <field name="login">david44@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_045" model="res.users">
+        <field name="name">Ana Laura Torres Sulub</field>
+        <field name="login">ana45@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_extraescolar'))]"/>
+    </record>
+    <record id="user_emp_046" model="res.users">
+        <field name="name">Ricardo Aguilar Hernández</field>
+        <field name="login">ricardo46@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_extraescolar'))]"/>
+    </record>
+    <record id="user_emp_047" model="res.users">
+        <field name="name">Itzel Torres González</field>
+        <field name="login">itzel47@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_sistemas'))]"/>
+    </record>
+    <record id="user_emp_048" model="res.users">
+        <field name="name">Marco Antonio Pool Guerrero</field>
+        <field name="login">marco48@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+    </record>
+    <record id="user_emp_049" model="res.users">
+        <field name="name">Jessica Tzuc Díaz</field>
+        <field name="login">jessica49@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_personal_departamento_electrica'))]"/>
+    </record>
+
+    <record id="user_stu_21390001" model="res.users">
+        <field name="name">Grecia Amairani Santos Jiménez</field>
+        <field name="login">21390001@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390002" model="res.users">
+        <field name="name">Elider Rivera Solís</field>
+        <field name="login">21390002@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390003" model="res.users">
+        <field name="name">Jared Everardo Reyes Pérez</field>
+        <field name="login">21390003@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390004" model="res.users">
+        <field name="name">Gerson Isaac Balam Sulub</field>
+        <field name="login">21390004@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390005" model="res.users">
+        <field name="name">Neizer Ramírez Carmona</field>
+        <field name="login">21390005@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390006" model="res.users">
+        <field name="name">Raúl Iván González Mass</field>
+        <field name="login">21390006@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390007" model="res.users">
+        <field name="name">Dana Suzette Varguez Fernández</field>
+        <field name="login">21390007@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390008" model="res.users">
+        <field name="name">Nailea Emilia Pat Matos</field>
+        <field name="login">21390008@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390009" model="res.users">
+        <field name="name">Yovani Contreras Hernández</field>
+        <field name="login">21390009@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390010" model="res.users">
+        <field name="name">Jhoseline Saraí Nolasco Acosta</field>
+        <field name="login">21390010@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390011" model="res.users">
+        <field name="name">César Rodríguez Cantoral</field>
+        <field name="login">21390011@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390012" model="res.users">
+        <field name="name">Josafat Sinaí Dzul García</field>
+        <field name="login">21390012@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23390035" model="res.users">
+        <field name="name">Juan Adriano Yam González</field>
+        <field name="login">23390035@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22390014" model="res.users">
+        <field name="name">Kendrick Hernández Jaloma</field>
+        <field name="login">22390014@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22390015" model="res.users">
+        <field name="name">Alberto Isaí Peña Oliva</field>
+        <field name="login">22390015@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390016" model="res.users">
+        <field name="name">Luis Adrián Pérez Heredia</field>
+        <field name="login">21390016@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21390017" model="res.users">
+        <field name="name">Luis Gómez</field>
+        <field name="login">21390017@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000301" model="res.users">
+        <field name="name">Mauricio Cupul Cocom</field>
+        <field name="login">21000301@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000301" model="res.users">
+        <field name="name">Carlos Cruz Paredes</field>
+        <field name="login">23000301@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000301" model="res.users">
+        <field name="name">Christopher Ortiz Cortés</field>
+        <field name="login">20000301@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000301" model="res.users">
+        <field name="name">Axel Ucan Chávez</field>
+        <field name="login">24000301@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000302" model="res.users">
+        <field name="name">Jaime Fuentes Rivera</field>
+        <field name="login">21000302@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000303" model="res.users">
+        <field name="name">Raúl Torres Ibáñez</field>
+        <field name="login">21000303@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000302" model="res.users">
+        <field name="name">Damián Moo Hernández</field>
+        <field name="login">23000302@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000302" model="res.users">
+        <field name="name">Jesús Aguilar Rivera</field>
+        <field name="login">24000302@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000303" model="res.users">
+        <field name="name">Luis Alberto Matos Cab</field>
+        <field name="login">23000303@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000302" model="res.users">
+        <field name="name">Leticia May Oliva</field>
+        <field name="login">20000302@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000303" model="res.users">
+        <field name="name">Emilio Aguilar Torres</field>
+        <field name="login">20000303@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000303" model="res.users">
+        <field name="name">Axel Cetina Reyes</field>
+        <field name="login">24000303@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000304" model="res.users">
+        <field name="name">Héctor Ávila Cruz</field>
+        <field name="login">24000304@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_C21000304" model="res.users">
+        <field name="name">Pablo Tec Carmona</field>
+        <field name="login">C21000304@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000305" model="res.users">
+        <field name="name">Valeria Chuc Sulub</field>
+        <field name="login">24000305@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000301" model="res.users">
+        <field name="name">Ingrid Ramos Palma</field>
+        <field name="login">22000301@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000306" model="res.users">
+        <field name="name">Rebeca Matos Rivera</field>
+        <field name="login">24000306@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000304" model="res.users">
+        <field name="name">Dulce Caamal Núñez</field>
+        <field name="login">23000304@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000305" model="res.users">
+        <field name="name">Verónica Miranda Chan</field>
+        <field name="login">21000305@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000306" model="res.users">
+        <field name="name">Isela Fuentes Domínguez</field>
+        <field name="login">21000306@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000305" model="res.users">
+        <field name="name">Fabiola Mass Lara</field>
+        <field name="login">23000305@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000306" model="res.users">
+        <field name="name">Beatriz Reyes Aguilar</field>
+        <field name="login">23000306@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000307" model="res.users">
+        <field name="name">Jessica Matos Navarrete</field>
+        <field name="login">21000307@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000302" model="res.users">
+        <field name="name">Diego Miranda Sánchez</field>
+        <field name="login">22000302@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000304" model="res.users">
+        <field name="name">Norma Moo Estrada</field>
+        <field name="login">20000304@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000305" model="res.users">
+        <field name="name">Alejandro Ramos Ruiz</field>
+        <field name="login">20000305@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000307" model="res.users">
+        <field name="name">Damián Ucan Estrada</field>
+        <field name="login">24000307@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_C24000308" model="res.users">
+        <field name="name">Rodrigo Koh Vargas</field>
+        <field name="login">C24000308@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000306" model="res.users">
+        <field name="name">Teresa Cohuo Chan</field>
+        <field name="login">20000306@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000307" model="res.users">
+        <field name="name">María Fernanda Koh Pech</field>
+        <field name="login">20000307@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_C21000308" model="res.users">
+        <field name="name">Tomás Cantoral Cab</field>
+        <field name="login">C21000308@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000303" model="res.users">
+        <field name="name">Teresa Rivera Chan</field>
+        <field name="login">22000303@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000308" model="res.users">
+        <field name="name">Felipe Sulub Sánchez</field>
+        <field name="login">20000308@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000309" model="res.users">
+        <field name="name">Fernanda Cupul Mass</field>
+        <field name="login">24000309@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000307" model="res.users">
+        <field name="name">Fabiola Dzul Cetina</field>
+        <field name="login">23000307@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000308" model="res.users">
+        <field name="name">Kevin Pech Pérez</field>
+        <field name="login">23000308@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000309" model="res.users">
+        <field name="name">Jaime Cocom Figueroa</field>
+        <field name="login">20000309@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000304" model="res.users">
+        <field name="name">Fernanda Aguilar Reyes</field>
+        <field name="login">22000304@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000305" model="res.users">
+        <field name="name">Diana Moo Domínguez</field>
+        <field name="login">22000305@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000310" model="res.users">
+        <field name="name">Fernando Miranda Ibáñez</field>
+        <field name="login">24000310@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000306" model="res.users">
+        <field name="name">Itzel Ramos Acevedo</field>
+        <field name="login">22000306@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000307" model="res.users">
+        <field name="name">Efraín Vega Zamora</field>
+        <field name="login">22000307@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000309" model="res.users">
+        <field name="name">Diego Chuc Pech</field>
+        <field name="login">21000309@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000311" model="res.users">
+        <field name="name">Mario Pech Ruiz</field>
+        <field name="login">24000311@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000309" model="res.users">
+        <field name="name">Karla Sofía Cab Ocampo</field>
+        <field name="login">23000309@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000310" model="res.users">
+        <field name="name">Jaime Vega Jiménez</field>
+        <field name="login">20000310@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000310" model="res.users">
+        <field name="name">Antonio Espinosa Ramírez</field>
+        <field name="login">21000310@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000310" model="res.users">
+        <field name="name">Arturo Castillo Rodríguez</field>
+        <field name="login">23000310@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000311" model="res.users">
+        <field name="name">Rosa Cetina López</field>
+        <field name="login">23000311@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000312" model="res.users">
+        <field name="name">Cynthia Chan Moreno</field>
+        <field name="login">23000312@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000311" model="res.users">
+        <field name="name">Dulce Rojas Acosta</field>
+        <field name="login">20000311@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000312" model="res.users">
+        <field name="name">Sergio Iván Cervantes Luna</field>
+        <field name="login">24000312@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000312" model="res.users">
+        <field name="name">Tomás Cocom González</field>
+        <field name="login">20000312@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000313" model="res.users">
+        <field name="name">Benito Chi Islas</field>
+        <field name="login">23000313@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000308" model="res.users">
+        <field name="name">Valeria Chávez Delgado</field>
+        <field name="login">22000308@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_C23000314" model="res.users">
+        <field name="name">Christopher Cabrera Chávez</field>
+        <field name="login">C23000314@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_C23000315" model="res.users">
+        <field name="name">Pamela Caamal Delgado</field>
+        <field name="login">C23000315@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_20000313" model="res.users">
+        <field name="name">Gabriel Cauich Reyes</field>
+        <field name="login">20000313@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000309" model="res.users">
+        <field name="name">Nadia Ramos Ibáñez</field>
+        <field name="login">22000309@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000310" model="res.users">
+        <field name="name">Silvia Montes Morales</field>
+        <field name="login">22000310@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000316" model="res.users">
+        <field name="name">Christopher Gómez Vargas</field>
+        <field name="login">23000316@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_C21000311" model="res.users">
+        <field name="name">Raúl Vega Heredia</field>
+        <field name="login">C21000311@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000312" model="res.users">
+        <field name="name">Andrés Sosa Martínez</field>
+        <field name="login">21000312@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_C22000311" model="res.users">
+        <field name="name">Sofía Gutiérrez Ibáñez</field>
+        <field name="login">C22000311@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000313" model="res.users">
+        <field name="name">Antonio Sosa Macías</field>
+        <field name="login">24000313@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_23000317" model="res.users">
+        <field name="name">Jesús Puc Estrada</field>
+        <field name="login">23000317@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000313" model="res.users">
+        <field name="name">Ximena Cantoral Navarrete</field>
+        <field name="login">21000313@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000314" model="res.users">
+        <field name="name">Miguel Ángel Ucan Luna</field>
+        <field name="login">24000314@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000312" model="res.users">
+        <field name="name">Mariana Ramos Domínguez</field>
+        <field name="login">22000312@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000313" model="res.users">
+        <field name="name">Samuel Cetina Gutiérrez</field>
+        <field name="login">22000313@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000314" model="res.users">
+        <field name="name">Gabriela Sulub Islas</field>
+        <field name="login">22000314@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000315" model="res.users">
+        <field name="name">Dulce Aguilar Paredes</field>
+        <field name="login">24000315@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000314" model="res.users">
+        <field name="name">Pamela Salinas Mass</field>
+        <field name="login">21000314@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000315" model="res.users">
+        <field name="name">Sergio Chi Vargas</field>
+        <field name="login">21000315@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000315" model="res.users">
+        <field name="name">Alejandro Ramos Herrera</field>
+        <field name="login">22000315@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000316" model="res.users">
+        <field name="name">Leticia Pool Reyes</field>
+        <field name="login">24000316@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_C22000316" model="res.users">
+        <field name="name">Ariadna Ramírez Hernández</field>
+        <field name="login">C22000316@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000317" model="res.users">
+        <field name="name">Sergio Iván Ek Mendoza</field>
+        <field name="login">22000317@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_C22000318" model="res.users">
+        <field name="name">Miguel Ángel López Becerra</field>
+        <field name="login">C22000318@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_22000319" model="res.users">
+        <field name="name">Ángel Vargas Becerra</field>
+        <field name="login">22000319@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000317" model="res.users">
+        <field name="name">Luis Alberto Ávila Sulub</field>
+        <field name="login">24000317@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_24000318" model="res.users">
+        <field name="name">Sandra Nah Vega</field>
+        <field name="login">24000318@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+    <record id="user_stu_21000316" model="res.users">
+        <field name="name">Ernesto Koh Galván</field>
+        <field name="login">21000316@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_alumno'))]"/>
+    </record>
+
+
+<!-- ============================================================ -->
+<!-- USUARIO ADMINISTRADOR del módulo                             -->
+<!-- ============================================================ -->
+
+    <record id="user_admin_actividades" model="res.users">
+        <field name="name">Administrador Actividades</field>
+        <field name="login">admin.actividades@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_admin_actividades'))]"/>
+    </record>
+
+<!-- ============================================================ -->
+<!-- USUARIO MIEMBRO DEL COMITÉ ACADÉMICO                        -->
+<!-- ============================================================ -->
+
+    <record id="user_comite_001" model="res.users">
+        <field name="name">Ana Patricia Ek Sánchez</field>
+        <field name="login">ana.ek@chetumal.tecnm.mx</field>
+        <field name="password">Admin1234!</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="group_ids" eval="[(4, ref('actividades_complementarias.group_comite_academico'))]"/>
+    </record>
+
+
+</data>
+</odoo>

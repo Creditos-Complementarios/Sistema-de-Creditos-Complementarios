@@ -2,6 +2,8 @@
 <odoo>
 <data noupdate="1">
 
+
+
     <!-- ================================================================== -->
     <!--  USUARIOS DE PRUEBA  (contraseña: Admin1234!)                      -->
     <!--                                                                    -->
@@ -243,14 +245,15 @@
         <field name="name">Fútbol Representativo</field>
         <field name="descripcion">Equipo representativo de fútbol del instituto. Entrenos semanales y participación en torneos regionales del TecNM.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_deportiva"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="periodo" ref="actividades_complementarias.per_2025A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
         <field name="responsable_actividad_id" ref="user_responsable_1"/>
-        <field name="fecha_inicio">2026-04-01</field>
+        <field name="fecha_inicio">2026-06-09</field>
         <field name="fecha_fin">2026-07-01</field>
         <field name="cantidad_horas">60</field>
         <field name="creditos">0.5</field>
-        <field name="horario">Martes y Jueves 16:00-18:00</field>
+        <field name="horario">Martes 16:00-18:00
+Jueves 16:00-18:00</field>
         <field name="cupo_min">10</field>
         <field name="cupo_max">22</field>
         <field name="estado_id" ref="actividades_complementarias.estado_aprobada"/>
@@ -260,14 +263,15 @@
         <field name="name">Club de Robótica</field>
         <field name="descripcion">Diseño y construcción de robots para competencias nacionales e internacionales. Se trabaja con Arduino, ROS y visión artificial.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_academica"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="periodo" ref="actividades_complementarias.per_2025A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
         <field name="responsable_actividad_id" ref="user_responsable_1"/>
-        <field name="fecha_inicio">2026-04-05</field>
+        <field name="fecha_inicio">2026-07-14</field>
         <field name="fecha_fin">2026-08-05</field>
         <field name="cantidad_horas">80</field>
         <field name="creditos">1.0</field>
-        <field name="horario">Lunes y Miércoles 15:00-17:00</field>
+        <field name="horario">Lunes 15:00-17:00
+Miércoles 15:00-17:00</field>
         <field name="cupo_min">5</field>
         <field name="cupo_max">15</field>
         <field name="estado_id" ref="actividades_complementarias.estado_pendiente_inicio"/>
@@ -279,10 +283,10 @@
         <field name="name">Python para Ingeniería (MOOC)</field>
         <field name="descripcion">Curso en línea de Python orientado a aplicaciones de ingeniería. Módulos de análisis de datos, automatización y certificado al terminar.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_academica"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="periodo" ref="actividades_complementarias.per_2025A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
         <field name="responsable_actividad_id" ref="user_responsable_2"/>
-        <field name="fecha_inicio">2026-04-14</field>
+        <field name="fecha_inicio">2026-06-01</field>
         <field name="fecha_fin">2026-06-30</field>
         <field name="cantidad_horas">40</field>
         <field name="creditos">1.0</field>
@@ -296,10 +300,10 @@
         <field name="name">Taller de Fotografía Científica</field>
         <field name="descripcion">Técnicas de fotografía aplicadas a la documentación de proyectos científicos e ingeniería. Uso de DSLR, iluminación y edición básica.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_cultural"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="periodo" ref="actividades_complementarias.per_2025A"/>
         <field name="jefe_departamento_id" ref="user_jefe_biologia"/>
         <field name="responsable_actividad_id" ref="user_responsable_3"/>
-        <field name="fecha_inicio">2026-04-20</field>
+        <field name="fecha_inicio">2026-05-20</field>
         <field name="fecha_fin">2026-06-20</field>
         <field name="cantidad_horas">30</field>
         <field name="creditos">0.5</field>
@@ -314,7 +318,7 @@
         <field name="name">Teatro y Expresión Oral</field>
         <field name="descripcion">Taller de expresión oral y corporal orientado al desarrollo de habilidades de comunicación profesional y presentaciones en público.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_cultural"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="periodo" ref="actividades_complementarias.per_2025A"/>
         <field name="jefe_departamento_id" ref="user_jefe_electronica"/>
         <field name="responsable_actividad_id" ref="user_responsable_2"/>
         <field name="fecha_inicio">2026-05-01</field>
@@ -332,14 +336,15 @@
         <field name="name">Danza Folclórica Regional</field>
         <field name="descripcion">Conjunto representativo de danza folclórica. Participación en eventos institucionales y competencias culturales del TecNM.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_cultural"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="periodo" ref="actividades_complementarias.per_2025A"/>
         <field name="jefe_departamento_id" ref="user_jefe_biologia"/>
         <field name="responsable_actividad_id" ref="user_responsable_3"/>
         <field name="fecha_inicio">2026-05-15</field>
         <field name="fecha_fin">2026-07-15</field>
         <field name="cantidad_horas">50</field>
         <field name="creditos">0.5</field>
-        <field name="horario">Lunes y Jueves 18:00-20:00</field>
+        <field name="horario">Lunes 18:00-20:00
+Jueves 18:00-20:00</field>
         <field name="cupo_min">10</field>
         <field name="cupo_max">30</field>
         <field name="estado_id" ref="actividades_complementarias.estado_en_curso"/>
@@ -351,7 +356,7 @@
         <field name="name">Curso de Inglés Técnico</field>
         <field name="descripcion">Curso intensivo de inglés enfocado en vocabulario técnico para ingeniería. Preparación para TOEFL básico.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_academica"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_B"/>
+        <field name="periodo" ref="actividades_complementarias.per_2025B"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
         <field name="responsable_actividad_id" ref="user_responsable_1"/>
         <field name="fecha_inicio">2026-08-01</field>
@@ -371,7 +376,7 @@
         <field name="name">Servicio Social Comunitario</field>
         <field name="descripcion">Programa de servicio social en comunidades rurales de Quintana Roo. Talleres de alfabetización digital y mantenimiento de equipos de cómputo.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_servicio_social"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_B"/>
+        <field name="periodo" ref="actividades_complementarias.per_2025B"/>
         <field name="jefe_departamento_id" ref="user_jefe_electronica"/>
         <field name="responsable_actividad_id" ref="user_responsable_2"/>
         <field name="fecha_inicio">2026-08-10</field>
@@ -390,11 +395,13 @@
         <field name="name">Hackathon Institucional de IA</field>
         <field name="descripcion">Competencia de 48 horas para desarrollar soluciones con inteligencia artificial aplicada a problemáticas sociales reales del estado de Quintana Roo.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_nueva"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="periodo" ref="actividades_complementarias.per_2026A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
+        <field name="responsable_actividad_id" ref="user_responsable_1"/>
         <field name="fecha_inicio">2026-05-10</field>
         <field name="fecha_fin">2026-05-12</field>
-        <field name="cantidad_horas">48</field>
+        <field name="cantidad_horas">12</field>
+        <field name="creditos">1.0</field>
         <field name="cupo_ilimitado">True</field>
         <field name="estado_id" ref="actividades_complementarias.estado_en_revision"/>
     </record>
@@ -403,11 +410,13 @@
         <field name="name">Torneo de Ajedrez Interinstitucional</field>
         <field name="descripcion">Torneo de ajedrez con participación de varios institutos de la región sureste del TecNM.</field>
         <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_deportiva"/>
-        <field name="periodo" ref="actividades_complementarias.periodo_2025_A"/>
+        <field name="periodo" ref="actividades_complementarias.per_2026A"/>
         <field name="jefe_departamento_id" ref="user_jefe_electronica"/>
+        <field name="responsable_actividad_id" ref="user_responsable_2"/>
         <field name="fecha_inicio">2026-05-20</field>
         <field name="fecha_fin">2026-05-21</field>
         <field name="cantidad_horas">8</field>
+        <field name="creditos">0.5</field>
         <field name="cupo_min">4</field>
         <field name="cupo_max">16</field>
         <field name="estado_id" ref="actividades_complementarias.estado_rechazada"/>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+<record id="dep_dsic" model="sii.departamento">
+  <field name="nombre_departamento">Sistemas y Computación</field>
+</record>
+<record id="dep_dcea" model="sii.departamento">
+  <field name="nombre_departamento">Ciencias Económico Administrativas</field>
+</record>
+<record id="dep_dii" model="sii.departamento">
+  <field name="nombre_departamento">Ingeniería Industrial</field>
+</record>
+<record id="dep_dee" model="sii.departamento">
+  <field name="nombre_departamento">Eléctrica y Electrónica</field>
+</record>
+</data>
+</odoo>
