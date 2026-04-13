@@ -524,22 +524,55 @@ class Actividad(models.Model):
 
     @api.depends('jefe_departamento_id')
     def _compute_departamento(self):
-        """Asigna automáticamente el departamento del JD buscando en actividad.departamento."""
+        """Asigna automáticamente el departamento del JD.
+        Orden de búsqueda:
+        1. actividad.departamento donde jefe_id = usuario (datos demo/manual).
+        2. actividad.empleado.permiso del usuario.
+        3. sii.empleado por correo del usuario -> sii.departamento ->
+           busca o crea el actividad.departamento equivalente (usuarios SII).
+        """
         for rec in self:
             if not rec.jefe_departamento_id:
                 rec.departamento_id = False
                 continue
-            # Primero buscar en el catálogo de departamentos (jefe_id)
+            
+            # 1. Buscar en catálogo interno por jefe_id
             depto = self.env['actividad.departamento'].search(
-                [('jefe_id', '=', rec.jefe_departamento_id.id)], limit=1
+                [(' jefe_id', '=', rec.jefe_departamento_id.id)], limit=1
             )
             if depto:
                 rec.departamento_id = depto
-            else:
-                emp = self.env['actividad.empleado.permiso'].search(
-                    [('user_id', '=', rec.jefe_departamento_id.id)], limit=1
+            # 2. Buscar en permisos de personal delegado
+            emp_permiso = self.env['actividad.empleado.permiso'].search(
+                [('user_id', '=', rec.jefe_departamento_id.id)], limit=1
+            )
+            if emp_permiso and emp_permiso.departamento_id:
+                rec.departamento_id = emp_permiso.departamento_id
+                continue
+
+            # 3. Fallback SII: buscar sii.empleado por correo del usuario
+            login = rec.jefe_departamento_id.login or ''
+            sii_emp = self.env['sii.empleado'].sudo().search(
+                [('correo', '=', login)], limit=1
+            )
+            if sii_emp and sii_emp.id_departamento:
+                nombre_sii = sii_emp.id_departamento.nombre_departamento
+                # Buscar o crear el actividad.departamento con ese nombre
+                depto = self.env['actividad.departamento'].sudo().search(
+                    [('name', '=ilike', nombre_sii)], limit=1
                 )
-                rec.departamento_id = emp.departamento_id if emp else False
+                if not depto:
+                    depto = self.env['actividad.departamento'].sudo().create({
+                        'name': nombre_sii,
+                        'jefe_id': rec.jefe_departamento_id.id,
+                    })
+                else:
+                    # Asignar el jefe si aún no tiene uno
+                    if not depto.jefe_id:
+                        depto.sudo().write({'jefe_id': rec.jefe_departamento_id.id})
+                rec.departamento_id = depto
+            else:
+                rec.departamento_id = False
 
     @api.depends('jd_firmo', 'responsable_firmo')
     def _compute_constancias_firmadas(self):
@@ -860,7 +893,7 @@ class Actividad(models.Model):
             ]
             if self.search_count(domain):
                 raise ValidationError(
-                    f'Ya existe una actividad activa con el nombre "{rec.name}" en el periodo {rec.periodo.name}.'
+                    f'Ya existe una actividad activa con el nombre "{rec.name}" en el periodo {rec.periodo.clave_periodo}.'
                 )
 
     @api.constrains('cupo_min', 'cupo_max', 'cupo_ilimitado')
