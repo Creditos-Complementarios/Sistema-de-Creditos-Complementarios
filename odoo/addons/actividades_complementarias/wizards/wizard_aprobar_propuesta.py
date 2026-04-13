@@ -31,8 +31,10 @@ class WizardAprobarPropuesta(models.TransientModel):
         if not self.creditos:
             raise ValidationError('Debe asignar los creditos a la actividad.')
         # bypass_edit_protection: el Comité asigna créditos como acción de negocio
-        self.propuesta_id.actividad_id.with_context(bypass_edit_protection=True).write(
-            {'creditos': self.creditos}
-        )
+        self.propuesta_id.actividad_id.sudo().with_context(
+            bypass_edit_protection=True
+        ).write({
+            'creditos': self.creditos
+        })
         self.propuesta_id.action_aprobar()
         return {'type': 'ir.actions.act_window_close'}
