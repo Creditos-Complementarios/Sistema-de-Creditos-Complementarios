@@ -538,7 +538,7 @@ class Actividad(models.Model):
             
             # 1. Buscar en catálogo interno por jefe_id
             depto = self.env['actividad.departamento'].search(
-                [(' jefe_id', '=', rec.jefe_departamento_id.id)], limit=1
+                [('jefe_id', '=', rec.jefe_departamento_id.id)], limit=1
             )
             if depto:
                 rec.departamento_id = depto

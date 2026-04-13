@@ -29,7 +29,6 @@
         'data/tipo_actividad_data.xml',
         'data/estado_actividad_data.xml',
         'data/estado_solicitud_data.xml',
-        'data/periodo_data.xml',
         'data/cron_data.xml',
         # 5. Vistas
         'views/tipo_actividad_views.xml',
