@@ -1081,20 +1081,21 @@ class Actividad(models.Model):
 
     def _generar_pdf_constancia(self, alumno, fecha_firma, nombre_jd):
         """Genera el PDF de constancia para un alumno. Devuelve bytes del PDF."""
-        # Obtener datos del estudiante vinculado al usuario
-        estudiante = self.env['sii.estudiante'].sudo().search(
-            [('no_control', '=', alumno.login)], limit=1
-        )
-        if estudiante:
-            nombre_alumno = ' '.join(filter(None, [
-                estudiante.nombre,
-                estudiante.apellido_paterno,
-                estudiante.apellido_materno,
-            ]))
-            no_control = estudiante.no_control
-        else:
-            nombre_alumno = alumno.name
-            no_control = alumno.login
+        # Intentar obtener datos desde sii.estudiante si el módulo está disponible
+        nombre_alumno = alumno.name
+        no_control = alumno.login
+
+        if 'sii.estudiante' in self.env:
+            estudiante = self.env['sii.estudiante'].sudo().search(
+                [('no_control', '=', alumno.login)], limit=1
+            )
+            if estudiante:
+                nombre_alumno = ' '.join(filter(None, [
+                    estudiante.nombre,
+                    estudiante.apellido_paterno,
+                    estudiante.apellido_materno,
+                ]))
+                no_control = estudiante.no_control
 
         # Datos de la actividad
         nombre_actividad = self.name
@@ -1268,20 +1269,20 @@ class Actividad(models.Model):
         with zipfile.ZipFile(zip_buf, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
             for alumno in self.alumno_ids:
                 pdf_bytes = self._generar_pdf_constancia(alumno, fecha_firma, nombre_jd)
-                # Nombre de archivo: nombre_alumno - no_control.pdf (sanitizado)
-                estudiante = self.env['sii.estudiante'].sudo().search(
-                    [('no_control', '=', alumno.login)], limit=1
-                )
-                if estudiante:
-                    nombre_archivo = ' '.join(filter(None, [
-                        estudiante.nombre,
-                        estudiante.apellido_paterno,
-                        estudiante.apellido_materno,
-                    ]))
-                    nc = estudiante.no_control
-                else:
-                    nombre_archivo = alumno.name
-                    nc = alumno.login
+                # Nombre de archivo usando datos de sii.estudiante si está disponible
+                nombre_archivo = alumno.name
+                nc = alumno.login
+                if 'sii.estudiante' in self.env:
+                    estudiante = self.env['sii.estudiante'].sudo().search(
+                        [('no_control', '=', alumno.login)], limit=1
+                    )
+                    if estudiante:
+                        nombre_archivo = ' '.join(filter(None, [
+                            estudiante.nombre,
+                            estudiante.apellido_paterno,
+                            estudiante.apellido_materno,
+                        ]))
+                        nc = estudiante.no_control
                 # Sanitizar nombre de archivo
                 safe_name = ''.join(c if c.isalnum() or c in ' _-' else '_' for c in nombre_archivo)
                 filename = f'{safe_name} - {nc}.pdf'
@@ -1342,29 +1343,50 @@ class Actividad(models.Model):
             )
 
     def _actualizar_estado_por_fecha(self):
-        """Cron: actualiza estados según fechas."""
+        """Cron diario: transiciona estados según fechas.
+
+        pendiente_inicio / aprobada  →  en_curso   cuando fecha_inicio <= hoy
+        en_curso                     →  finalizada cuando fecha_fin    <  hoy
+        """
+        import logging
+        _log = logging.getLogger(__name__)
         hoy = date.today()
-        estado_en_curso = self.env.ref('actividades_complementarias.estado_en_curso', raise_if_not_found=False)
+
+        estado_en_curso   = self.env.ref('actividades_complementarias.estado_en_curso',   raise_if_not_found=False)
         estado_finalizada = self.env.ref('actividades_complementarias.estado_finalizada', raise_if_not_found=False)
 
+        # ── Iniciar actividades cuya fecha de inicio ya llegó ─────────────
         if estado_en_curso:
-            pendientes = self.search([
-                ('estado_code', '=', 'pendiente_inicio'),
+            por_iniciar = self.search([
+                ('estado_code', 'in', ['pendiente_inicio', 'aprobada']),
                 ('fecha_inicio', '<=', hoy),
             ])
-            pendientes.with_context(bypass_edit_protection=True).write(
-                {'estado_id': estado_en_curso.id}
-            )
+            if por_iniciar:
+                por_iniciar.with_context(bypass_edit_protection=True).write(
+                    {'estado_id': estado_en_curso.id}
+                )
+                _log.info(
+                    'Cron estados: %d actividad(es) pasaron a En Curso (%s)',
+                    len(por_iniciar),
+                    ', '.join(por_iniciar.mapped('name')),
+                )
 
+        # ── Finalizar actividades cuya fecha de fin ya pasó ───────────────
         if estado_finalizada:
-            en_curso = self.search([
+            por_finalizar = self.search([
                 ('estado_code', '=', 'en_curso'),
-                ('fecha_fin', '<=', hoy),
+                ('fecha_fin', '<', hoy),
             ])
-            en_curso.with_context(bypass_edit_protection=True).write({
-                'estado_id': estado_finalizada.id,
-                'en_catalogo': False,
-            })
+            if por_finalizar:
+                por_finalizar.with_context(bypass_edit_protection=True).write({
+                    'estado_id': estado_finalizada.id,
+                    'en_catalogo': False,
+                })
+                _log.info(
+                    'Cron estados: %d actividad(es) pasaron a Finalizada (%s)',
+                    len(por_finalizar),
+                    ', '.join(por_finalizar.mapped('name')),
+                )
 
 
 class ActividadDepartamento(models.Model):
