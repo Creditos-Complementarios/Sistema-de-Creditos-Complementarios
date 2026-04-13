@@ -43,7 +43,7 @@ class WizardConfirmarEnvio(models.TransientModel):
             rows = ''.join([
                 row('Nombre', a.name),
                 row('Tipo de Actividad', a.tipo_actividad_id.name if a.tipo_actividad_id else ''),
-                row('Periodo Escolar', a.periodo.name if a.periodo else ''),
+                row('Periodo Escolar', a.periodo.clave_periodo if a.periodo else ''),
                 row('Jefe de Departamento', a.jefe_departamento_id.name if a.jefe_departamento_id else ''),
                 row('Responsable', a.responsable_actividad_id.name if a.responsable_actividad_id else ''),
                 row('Créditos', creditos_labels.get(a.creditos, '') if a.creditos else ''),

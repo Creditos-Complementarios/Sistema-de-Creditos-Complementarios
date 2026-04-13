@@ -44,7 +44,7 @@ class TestActividad(TransactionCase):
         cls.estado_pendiente = cls.env.ref('actividades_complementarias.estado_pendiente_inicio')
 
         # Periodo — definido en periodo_data.xml (Many2one, no Char)
-        cls.periodo = cls.env.ref('actividades_complementarias.periodo_2025_A')
+        cls.periodo = cls.env.ref('actividades_complementarias.per_2025A')
 
         # tipo_actividad no tiene XMLs de datos predefinidos — se crea aquí
         cls.tipo = cls.env['actividad.tipo'].create({'name': 'Conferencia Test'})
@@ -200,7 +200,7 @@ class TestActividad(TransactionCase):
 
     def test_nombre_duplicado_diferente_periodo_ok(self):
         """El mismo nombre en diferente periodo sí es válido."""
-        periodo_b = self.env.ref('actividades_complementarias.periodo_2025_B')
+        periodo_b = self.env.ref('actividades_complementarias.per_2025B')
         self._make_actividad(name='Actividad Repetida', periodo=self.periodo.id)
         actividad2 = self._make_actividad(name='Actividad Repetida', periodo=periodo_b.id)
         self.assertTrue(actividad2.id)

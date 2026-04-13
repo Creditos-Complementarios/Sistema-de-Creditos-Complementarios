@@ -35,7 +35,7 @@ class TestPropuestaActividad(TransactionCase):
         cls.estado_rechazada = cls.env.ref('actividades_complementarias.estado_rechazada')
 
         # Periodo — Many2one, definido en periodo_data.xml
-        cls.periodo = cls.env.ref('actividades_complementarias.periodo_2025_A')
+        cls.periodo = cls.env.ref('actividades_complementarias.per_2025A')
 
         cls.tipo = cls.env['actividad.tipo'].create({'name': 'Taller Test'})
 
