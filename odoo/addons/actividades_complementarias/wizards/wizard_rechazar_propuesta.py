@@ -15,6 +15,6 @@ class WizardRechazarPropuesta(models.TransientModel):
         self.ensure_one()
         if not self.motivo_rechazo or not self.motivo_rechazo.strip():
             raise ValidationError('El motivo de rechazo es obligatorio.')
-        self.propuesta_id.write({'motivo_rechazo': self.motivo_rechazo})
+        self.propuesta_id.sudo().write({'motivo_rechazo': self.motivo_rechazo})
         self.propuesta_id.action_rechazar()
         return {'type': 'ir.actions.act_window_close'}

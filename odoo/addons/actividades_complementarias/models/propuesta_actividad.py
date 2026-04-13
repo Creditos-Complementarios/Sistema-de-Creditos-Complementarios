@@ -105,8 +105,8 @@ class PropuestaActividadComplementaria(models.Model):
         self.ensure_one()
         estado_aprobada = self.env.ref('actividades_complementarias.estado_solicitud_aprobada')
         estado_act_aprobada = self.env.ref('actividades_complementarias.estado_aprobada')
-        self.write({'estado_solicitud_id': estado_aprobada.id})
-        self.actividad_id.with_context(bypass_edit_protection=True).write(
+        self.sudo().write({'estado_solicitud_id': estado_aprobada.id})
+        self.actividad_id.sudo().with_context(bypass_edit_protection=True).write(
             {'estado_id': estado_act_aprobada.id}
         )
         self.message_post(body='Propuesta aprobada por el Comité Académico.')
@@ -117,8 +117,8 @@ class PropuestaActividadComplementaria(models.Model):
             raise ValidationError('Debe indicar el motivo de rechazo.')
         estado_rechazada = self.env.ref('actividades_complementarias.estado_solicitud_rechazada')
         estado_act_rechazada = self.env.ref('actividades_complementarias.estado_rechazada')
-        self.write({'estado_solicitud_id': estado_rechazada.id})
-        self.actividad_id.with_context(bypass_edit_protection=True).write(
+        self.sudo().write({'estado_solicitud_id': estado_rechazada.id})
+        self.actividad_id.sudo().with_context(bypass_edit_protection=True).write(
             {'estado_id': estado_act_rechazada.id}
         )
         self.message_post(body=f'Propuesta rechazada. Motivo: {self.motivo_rechazo}')
