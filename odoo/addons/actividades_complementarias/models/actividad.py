@@ -70,14 +70,14 @@ class Actividad(models.Model):
         size=2000,
     )
     tipo_actividad_id = fields.Many2one(
-        'sii.periodo',
+        'actividad.tipo',
         string='Tipo de Actividad',
         required=True,
         ondelete='restrict',
         tracking=True,
     )
     periodo = fields.Many2one(
-        'actividad.periodo',
+        'sii.periodo',
         string='Periodo Escolar',
         required=True,
     )
