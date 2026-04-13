@@ -105,6 +105,22 @@
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
+
+    <!--
+    Comité Académico: puede VER todas las actividades pero NO modificarlas.
+    Solo el Jefe de Departamento tiene permiso de escritura sobre actividades.
+    -->
+    <record id="rule_actividad_comite_academico" model="ir.rule">
+        <field name="name">Comité Académico: solo lectura de actividades</field>
+        <field name="model_id" ref="model_actividad_complementaria"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_comite_academico'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
     <record id="rule_actividad_jefe_departamento" model="ir.rule">
         <field name="name">Jefe de Departamento: solo actividades de su departamento</field>
         <field name="model_id" ref="model_actividad_complementaria"/>

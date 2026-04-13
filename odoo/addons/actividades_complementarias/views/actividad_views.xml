@@ -78,7 +78,7 @@
                         groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
                     <!-- Botón para actividades predefinidas (sin pasar por el Comité) -->
                     <button name="action_abrir_confirmacion_catalogo" string="Enviar al Catálogo"
-                        type="object" class="btn-success"
+                        type="object" class="btn-warning"
                         invisible="not actividad_predefinida or en_catalogo or estado_code in ['rechazada','finalizada']"
                         groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
                     <!-- Statusbar: solo En Revisión -->
