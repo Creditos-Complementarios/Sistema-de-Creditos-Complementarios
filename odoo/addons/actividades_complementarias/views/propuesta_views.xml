@@ -157,7 +157,7 @@
             <p>Aún no se han enviado propuestas al Comité Académico.</p>
         </field>
     </record>
-
+    
     <!-- Acción para cambiar el texto de catalogo de actividades -->
     <record id="action_catalogo_comite" model="ir.actions.act_window">
         <field name="name">Catálogo de Actividades Aprobadas</field>

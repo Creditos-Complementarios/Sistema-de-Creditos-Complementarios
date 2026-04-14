@@ -274,35 +274,6 @@ class Actividad(models.Model):
         )
 
     # ────────────────────────────────────────────────────────────────────────
-    # ORM override: _search() -- filtrado automatico para Personal
-    # ────────────────────────────────────────────────────────────────────────
-
-    @api.model
-    def _search(self, domain, offset=0, limit=None, order=None, **kwargs):
-        """Restringe la busqueda del Personal al departamento propio + catalogo."""
-        is_admin = self.env.user.has_group(
-            'actividades_complementarias.group_admin_actividades'
-        )
-        is_jd = self.env.user.has_group(
-            'actividades_complementarias.group_jefe_departamento'
-        )
-        if not is_admin and not is_jd and self._es_personal():
-            permiso = self._get_permiso_personal()
-            if permiso and permiso.departamento_id:
-                dept_id = permiso.departamento_id.id
-                dept_domain = [
-                    '|',
-                    ('departamento_id', '=', dept_id),
-                    ('en_catalogo', '=', True),
-                ]
-            else:
-                dept_domain = [('en_catalogo', '=', True)]
-            domain = dept_domain + list(domain)
-        return super()._search(
-            domain, offset=offset, limit=limit, order=order, **kwargs
-        )
-
-    # ────────────────────────────────────────────────────────────────────────
     # Computes
     # ────────────────────────────────────────────────────────────────────────
 

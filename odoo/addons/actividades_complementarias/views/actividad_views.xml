@@ -51,16 +51,15 @@
                 <field name="fecha_inicio" string="Fecha Inicio" width="100px"/>
                 <field name="fecha_fin" string="Fecha Fin" width="100px"/>
                 <field name="estado_id" widget="badge"
-                         decoration-warning="estado_code == 'en_revision'"
-                         decoration-success="estado_code in ['aprobada', 'en_curso']"
-                         decoration-info="estado_code == 'pendiente_inicio'"
-                         decoration-danger="estado_code == 'rechazada'"
-                         decoration-muted="estado_code == 'finalizada'"/>
+                    decoration-warning="estado_code == 'en_revision'"
+                    decoration-success="estado_code in ['aprobada', 'en_curso']"
+                    decoration-info="estado_code == 'pendiente_inicio'"
+                    decoration-danger="estado_code == 'rechazada'"
+                    decoration-muted="estado_code == 'finalizada'"/>
                 <field name="en_catalogo" widget="boolean" readonly="1"
                     column_invisible="context.get('hide_catalogo', False)"/>
                 <field name="alumno_count" string="Alumnos"/>
                 <field name="estado_code" column_invisible="1"/>
-
             </list>
         </field>
     </record>
@@ -112,7 +111,7 @@
                     <field name="tipo_es_nueva" invisible="1"/>
                     <field name="dominio_responsable" invisible="1"/>
                     <field name="dominio_alumnos" invisible="1"/>
-                     <!-- Flags de permisos de edición (calculados por rol y estado) -->
+                    <!-- Flags de permisos de edición (calculados por rol y estado) -->
                     <field name="permisos_actividad_finalizada" invisible="1"/>
                     <field name="permisos_actividad_en_curso" invisible="1"/>
 
@@ -293,16 +292,21 @@
     </record>
 
     <!-- ── Actions ──────────────────────────────────────────────────────── -->
+    <!--
+        Mis Actividades (JD / Admin): el domain filtra por jefe_departamento_id
+        en la UI. La record rule de JD es write-only (perm_read=False), por lo
+        que no interfiere con el Catálogo ni con lecturas de otras vistas.
+    -->
     <record id="action_actividad_complementaria" model="ir.actions.act_window">
         <field name="name">Mis Actividades</field>
         <field name="res_model">actividad.complementaria</field>
         <field name="view_mode">list,kanban,form</field>
-        <field name="domain">[]</field>
+        <field name="domain">[('jefe_departamento_id', '=', uid)]</field>
         <field name="search_view_id" ref="view_actividad_search"/>
         <field name="views" eval="[(ref('view_actividad_list_jefe'), 'list'), (ref('view_actividad_kanban'), 'kanban'), (ref('view_actividad_form'), 'form')]"/>
     </record>
 
-    <!-- Acción para admin: ve todas las actividades sin filtro -->
+    <!-- Admin: ve todas las actividades sin filtro -->
     <record id="action_actividad_todas" model="ir.actions.act_window">
         <field name="name">Todas las Actividades</field>
         <field name="res_model">actividad.complementaria</field>
@@ -310,16 +314,47 @@
         <field name="search_view_id" ref="view_actividad_search"/>
     </record>
 
-    <!-- Catalogo global: todas las actividades en catalogo.
-         El filtrado adicional para JD y Personal se aplica en Actividad._search(). -->
+    <!--
+        Mis Actividades para Personal de Departamento — una acción por departamento.
+        El domain aplica el mismo filtro que la record rule de escritura pero para
+        lectura en la UI, permitiendo que el Catálogo (sin domain de depto) funcione
+        correctamente para todos los actores.
+    -->
+    <record id="action_actividad_personal_sistemas" model="ir.actions.act_window">
+        <field name="name">Mis Actividades</field>
+        <field name="res_model">actividad.complementaria</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('departamento_id.name', 'ilike', 'sistem')]</field>
+        <field name="search_view_id" ref="view_actividad_search"/>
+        <field name="views" eval="[(ref('view_actividad_list'), 'list'), (ref('view_actividad_kanban'), 'kanban'), (ref('view_actividad_form'), 'form')]"/>
+    </record>
+
+    <record id="action_actividad_personal_electrica" model="ir.actions.act_window">
+        <field name="name">Mis Actividades</field>
+        <field name="res_model">actividad.complementaria</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('departamento_id.name', 'ilike', 'electr')]</field>
+        <field name="search_view_id" ref="view_actividad_search"/>
+        <field name="views" eval="[(ref('view_actividad_list'), 'list'), (ref('view_actividad_kanban'), 'kanban'), (ref('view_actividad_form'), 'form')]"/>
+    </record>
+
+    <record id="action_actividad_personal_biologia" model="ir.actions.act_window">
+        <field name="name">Mis Actividades</field>
+        <field name="res_model">actividad.complementaria</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('departamento_id.name', 'ilike', 'biol')]</field>
+        <field name="search_view_id" ref="view_actividad_search"/>
+        <field name="views" eval="[(ref('view_actividad_list'), 'list'), (ref('view_actividad_kanban'), 'kanban'), (ref('view_actividad_form'), 'form')]"/>
+    </record>
+
+    <!-- Catálogo global: todas las actividades con en_catalogo=True -->
     <record id="action_actividad_catalogo" model="ir.actions.act_window">
         <field name="name">Catálogo General de Actividades</field>
         <field name="res_model">actividad.complementaria</field>
         <field name="view_mode">list,kanban,form</field>
-        <field name="domain">[('en_catalogo', '=', True), ('jefe_departamento_id', '=', uid)]</field>
+        <field name="domain">[('en_catalogo', '=', True)]</field>
         <field name="search_view_id" ref="view_actividad_Catalogo_search"/>
         <field name="context">{'hide_catalogo': True}</field>
     </record>
-
 
 </odoo>

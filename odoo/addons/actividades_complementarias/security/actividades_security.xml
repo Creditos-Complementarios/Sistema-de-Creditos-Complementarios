@@ -105,73 +105,23 @@
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
-
+    <!--
+        JD: la restricción de lectura se delega al domain de la acción
+        ('action_actividad_complementaria' usa domain jefe_departamento_id=uid).
+        Aquí solo se protegen escrituras/creaciones a nivel ORM como respaldo
+        al guard de write() en Python.
+    -->
     <record id="rule_actividad_jefe_departamento" model="ir.rule">
-        <field name="name">Jefe de Departamento: solo actividades de su departamento</field>
+        <field name="name">Jefe de Departamento: escritura solo en su departamento</field>
         <field name="model_id" ref="model_actividad_complementaria"/>
         <field name="domain_force">[('jefe_departamento_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('actividades_complementarias.group_jefe_departamento'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
+        <field name="perm_read"   eval="False"/>
+        <field name="perm_write"  eval="True"/>
         <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="False"/>
     </record>
 
-    <!--
-        Personal de Departamento:
-        - En "Mis Actividades": solo ve actividades de su departamento (+ catalogo).
-          El filtrado fino se aplica en Actividad._search(); aqui solo garantizamos
-          que no puedan escribir actividades de otros departamentos a nivel ORM.
-        - Pueden leer actividades en catalogo de cualquier departamento.
-        - Solo pueden escribir (con permisos delegados) en las de su departamento.
-    -->
-    <record id="rule_actividad_personal_sistemas" model="ir.rule">
-        <field name="name">Personal Sistemas: departamento propio y catalogo</field>
-        <field name="model_id" ref="model_actividad_complementaria"/>
-        <field name="domain_force">
-            ['|',
-                ('departamento_id.name', 'ilike', 'sistem'),
-                ('en_catalogo', '=', True)
-            ]
-        </field>
-        <field name="groups" eval="[(4, ref('actividades_complementarias.group_personal_departamento_sistemas'))]"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_create" eval="False"/>
-        <field name="perm_unlink" eval="False"/>
-    </record>
-
-    <record id="rule_actividad_personal_electrica" model="ir.rule">
-        <field name="name">Personal Electrica: departamento propio y catalogo</field>
-        <field name="model_id" ref="model_actividad_complementaria"/>
-        <field name="domain_force">
-            ['|',
-                ('departamento_id.name', 'ilike', 'electr'),
-                ('en_catalogo', '=', True)
-            ]
-        </field>
-        <field name="groups" eval="[(4, ref('actividades_complementarias.group_personal_departamento_electrica'))]"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_create" eval="False"/>
-        <field name="perm_unlink" eval="False"/>
-    </record>
-
-    <record id="rule_actividad_personal_biologia" model="ir.rule">
-        <field name="name">Personal Biologia: departamento propio y catalogo</field>
-        <field name="model_id" ref="model_actividad_complementaria"/>
-        <field name="domain_force">
-            ['|',
-                ('departamento_id.name', 'ilike', 'biol'),
-                ('en_catalogo', '=', True)
-            ]
-        </field>
-        <field name="groups" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_create" eval="False"/>
-        <field name="perm_unlink" eval="False"/>
-    </record>
 
     <!--
         EmpleadoPermiso:
@@ -185,9 +135,48 @@
         <field name="model_id" ref="model_actividad_empleado_permiso"/>
         <field name="domain_force">[('departamento_id.jefe_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('actividades_complementarias.group_jefe_departamento'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
         <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!--
+        Personal de Departamento: el filtro de lectura por departamento se
+        delega al domain de las acciones de menú (una por departamento).
+        Aquí solo se protegen escrituras a nivel ORM como respaldo al guard
+        de write() en Python.
+    -->
+    <record id="rule_actividad_personal_sistemas" model="ir.rule">
+        <field name="name">Personal Sistemas: escritura solo en su departamento</field>
+        <field name="model_id" ref="model_actividad_complementaria"/>
+        <field name="domain_force">[('departamento_id.name', 'ilike', 'sistem')]</field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_personal_departamento_sistemas'))]"/>
+        <field name="perm_read"   eval="False"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_actividad_personal_electrica" model="ir.rule">
+        <field name="name">Personal Electrica: escritura solo en su departamento</field>
+        <field name="model_id" ref="model_actividad_complementaria"/>
+        <field name="domain_force">[('departamento_id.name', 'ilike', 'electr')]</field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_personal_departamento_electrica'))]"/>
+        <field name="perm_read"   eval="False"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_actividad_personal_biologia" model="ir.rule">
+        <field name="name">Personal Biologia: escritura solo en su departamento</field>
+        <field name="model_id" ref="model_actividad_complementaria"/>
+        <field name="domain_force">[('departamento_id.name', 'ilike', 'biol')]</field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
+        <field name="perm_read"   eval="False"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
 

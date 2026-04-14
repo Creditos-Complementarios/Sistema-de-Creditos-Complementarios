@@ -50,12 +50,40 @@
               sequence="30"
               groups="actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades"/>
 
-    <menuitem id="menu_personal_mis_actividades"
+    <!--
+        Cada grupo de Personal tiene su propia acción con el domain del
+        departamento correspondiente. Así "Mis Actividades" muestra solo las
+        actividades de ese departamento, mientras que "Catálogo de Actividades"
+        (acción compartida con domain en_catalogo=True) muestra todo el catálogo.
+    -->
+    <menuitem id="menu_personal_mis_actividades_sistemas"
+              name="Mis Actividades"
+              parent="menu_personal_depto"
+              action="action_actividad_personal_sistemas"
+              sequence="10"
+              groups="actividades_complementarias.group_personal_departamento_sistemas"/>
+
+    <menuitem id="menu_personal_mis_actividades_electrica"
+              name="Mis Actividades"
+              parent="menu_personal_depto"
+              action="action_actividad_personal_electrica"
+              sequence="11"
+              groups="actividades_complementarias.group_personal_departamento_electrica"/>
+
+    <menuitem id="menu_personal_mis_actividades_biologia"
+              name="Mis Actividades"
+              parent="menu_personal_depto"
+              action="action_actividad_personal_biologia"
+              sequence="12"
+              groups="actividades_complementarias.group_personal_departamento_biologia"/>
+
+    <!-- Admin también puede acceder desde el menú de Personal -->
+    <menuitem id="menu_personal_mis_actividades_admin"
               name="Mis Actividades"
               parent="menu_personal_depto"
               action="action_actividad_complementaria"
-              sequence="10"
-              groups="actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades"/>
+              sequence="13"
+              groups="actividades_complementarias.group_admin_actividades"/>
 
     <menuitem id="menu_personal_catalogo"
               name="Catálogo de Actividades"
@@ -88,7 +116,7 @@
     <menuitem id="menu_catalogo_comite"
               name="Catálogo de Actividades"
               parent="menu_comite"
-              action="action_catalogo_comite"
+              action="action_actividad_catalogo"
               sequence="30"
               groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades"/>
 
