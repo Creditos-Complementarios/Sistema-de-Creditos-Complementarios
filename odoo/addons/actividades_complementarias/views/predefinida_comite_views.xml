@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vista lista de Actividades Predefinidas por Comité -->
+    <record id="view_predefinida_comite_list" model="ir.ui.view">
+        <field name="name">actividad.predefinida.comite.list</field>
+        <field name="model">actividad.predefinida.comite</field>
+        <field name="arch" type="xml">
+            <list string="Actividades Predefinidas por Comité">
+                <field name="name" string="Nombre de la Actividad"/>
+                <field name="tipo_actividad_id" string="Tipo de Actividad"/>
+                <field name="actividad_origen_id" string="Actividad de Origen" optional="show"/>
+                <field name="active" string="Activo" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista formulario de Actividades Predefinidas por Comité -->
+    <record id="view_predefinida_comite_form" model="ir.ui.view">
+        <field name="name">actividad.predefinida.comite.form</field>
+        <field name="model">actividad.predefinida.comite</field>
+        <field name="arch" type="xml">
+            <form string="Actividad Predefinida por Comité">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Este catálogo se alimenta automáticamente cuando el Comité Académico
+                        aprueba una propuesta. Las actividades aquí registradas pueden
+                        seleccionarse como <strong>Actividad Predefinida</strong> al crear
+                        una nueva actividad, autocompletando el Tipo de Actividad.
+                    </div>
+                    <group>
+                        <field name="name" string="Nombre de la Actividad"/>
+                        <field name="tipo_actividad_id" string="Tipo de Actividad"/>
+                        <field name="actividad_origen_id" string="Actividad de Origen" readonly="1"/>
+                        <field name="active" string="Activo"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción de ventana -->
+    <record id="action_predefinida_comite" model="ir.actions.act_window">
+        <field name="name">Actividades Predefinidas por Comité</field>
+        <field name="res_model">actividad.predefinida.comite</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+</odoo>

@@ -32,6 +32,7 @@
         'data/cron_data.xml',
         # 5. Vistas
         'views/tipo_actividad_views.xml',
+        'views/predefinida_comite_views.xml',
         'views/periodo_views.xml',
         'views/actividad_views.xml',
         'views/propuesta_views.xml',

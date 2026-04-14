@@ -109,7 +109,20 @@ class PropuestaActividadComplementaria(models.Model):
         self.actividad_id.sudo().with_context(bypass_edit_protection=True).write(
             {'estado_id': estado_act_aprobada.id}
         )
-        self.message_post(body='Propuesta aprobada por el Comité Académico.')
+        # Registrar en el catálogo de predefinidas por comité.
+        # Solo aplica al flujo comité (esta propuesta es la prueba), nunca a rechazos
+        # ni a actividades predefinidas directas al catálogo.
+        actividad = self.actividad_id
+        if actividad and actividad.tipo_actividad_id:
+            PredefinidaComite = self.env["actividad.predefinida.comite"].sudo()
+            existente = PredefinidaComite.search([("name", "=", actividad.name)], limit=1)
+            if not existente:
+                PredefinidaComite.create({
+                    "name": actividad.name,
+                    "tipo_actividad_id": actividad.tipo_actividad_id.id,
+                    "actividad_origen_id": actividad.id,
+                })
+        self.message_post(body="Propuesta aprobada por el Comité Académico.")
 
     def action_rechazar(self):
         self.ensure_one()

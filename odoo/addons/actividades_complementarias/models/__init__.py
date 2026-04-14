@@ -12,4 +12,5 @@ from . import estado_actividad
 from . import estado_solicitud
 from . import actividad
 from . import propuesta_actividad
+from . import actividad_predefinida_comite
 from . import empleado_permiso

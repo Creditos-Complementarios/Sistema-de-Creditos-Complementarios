@@ -55,6 +55,12 @@ class WizardNuevaActividad(models.TransientModel):
        help='Seleccione si la actividad corresponde a un tipo predefinido. '
             'Estas no requieren aprobación del Comité Académico.'
     )
+    actividad_predefinida_comite_id = fields.Many2one(
+        'actividad.predefinida.comite',
+        string='Actividad Predefinida (Comité)',
+        help='Seleccione una actividad previamente aprobada por el Comité Académico. '
+             'Al seleccionarla, el Tipo de Actividad se completará automáticamente.',
+    )
     responsable_actividad_id = fields.Many2one(
         'res.users', string='Responsable de Actividad'
     )
@@ -73,6 +79,14 @@ class WizardNuevaActividad(models.TransientModel):
                 bool(rec.actividad_predefinida) or
                 (rec.tipo_actividad_id.es_predefinida if rec.tipo_actividad_id else False)
             )
+
+    @api.onchange('actividad_predefinida_comite_id')
+    def _onchange_actividad_predefinida_comite(self):
+        """Al seleccionar una actividad predefinida por comité, autocompleta
+        el nombre y el tipo de actividad correspondiente."""
+        if self.actividad_predefinida_comite_id:
+            self.name = self.actividad_predefinida_comite_id.name
+            self.tipo_actividad_id = self.actividad_predefinida_comite_id.tipo_actividad_id
 
     # ────────────────────────────────────────────────────────────────────────
     # Constraints
