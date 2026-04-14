@@ -14,13 +14,12 @@
                         para su revision.
                     </div>
                     <group string="Informacion General">
-                        <field name="actividad_predefinida_comite_id"
+                        <field name="actividad_predefinida"
                                options="{'no_create': True, 'no_quick_create': True}"
-                               placeholder="Buscar actividad aprobada por Comité..."/>
+                               placeholder="Buscar actividad predefinida o aprobada por Comité..."/>
                         <field name="name" placeholder="Nombre de la actividad (max. 200 caracteres)"/>
                         <field name="tipo_actividad_id"/>
                         <field name="es_predefinida" invisible="1"/>
-                        <field name="actividad_predefinida"/>
                         <field name="periodo" placeholder="Ej: 2025-A"/>
                     </group>
                     <group string="Responsable y Creditos">

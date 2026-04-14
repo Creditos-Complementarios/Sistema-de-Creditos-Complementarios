@@ -48,18 +48,13 @@ class WizardNuevaActividad(models.TransientModel):
         compute='_compute_es_predefinida',
         store=False,
     )
-    actividad_predefinida = fields.Selection([
-        ('curso_mooc', 'Curso MOOC'),
-        ('extraescolar', 'Extraescolar'),
-    ], string='Actividades Predefinidas',
-       help='Seleccione si la actividad corresponde a un tipo predefinido. '
-            'Estas no requieren aprobación del Comité Académico.'
-    )
-    actividad_predefinida_comite_id = fields.Many2one(
-        'actividad.predefinida.comite',
-        string='Actividad Predefinida (Comité)',
-        help='Seleccione una actividad previamente aprobada por el Comité Académico. '
-             'Al seleccionarla, el Tipo de Actividad se completará automáticamente.',
+    actividad_predefinida = fields.Many2one(
+        'actividad.tipo.predefinida',
+        string='Actividades Predefinidas',
+        ondelete='set null',
+        help='Seleccione si la actividad corresponde a un tipo predefinido (incluyendo '
+             'las aprobadas por el Comité Académico). Al seleccionarla, el Tipo de '
+             'Actividad se completará automáticamente.',
     )
     responsable_actividad_id = fields.Many2one(
         'res.users', string='Responsable de Actividad'
@@ -80,13 +75,15 @@ class WizardNuevaActividad(models.TransientModel):
                 (rec.tipo_actividad_id.es_predefinida if rec.tipo_actividad_id else False)
             )
 
-    @api.onchange('actividad_predefinida_comite_id')
-    def _onchange_actividad_predefinida_comite(self):
-        """Al seleccionar una actividad predefinida por comité, autocompleta
-        el nombre y el tipo de actividad correspondiente."""
-        if self.actividad_predefinida_comite_id:
-            self.name = self.actividad_predefinida_comite_id.name
-            self.tipo_actividad_id = self.actividad_predefinida_comite_id.tipo_actividad_id
+    @api.onchange('actividad_predefinida')
+    def _onchange_actividad_predefinida(self):
+        """Al seleccionar un predefinido, autocompleta el Tipo de Actividad.
+        Si el predefinido fue aprobado por Comité, también rellena el nombre."""
+        if self.actividad_predefinida:
+            if self.actividad_predefinida.tipo_actividad_id:
+                self.tipo_actividad_id = self.actividad_predefinida.tipo_actividad_id
+            if self.actividad_predefinida.is_comite:
+                self.name = self.actividad_predefinida.name
 
     # ────────────────────────────────────────────────────────────────────────
     # Constraints
@@ -237,9 +234,10 @@ class WizardNuevaActividad(models.TransientModel):
                      'Se aprobará automáticamente si no hay respuesta en 5 días.'
             )
         else:
-            tipo_label = dict(self._fields['actividad_predefinida'].selection).get(
-                self.actividad_predefinida, self.tipo_actividad_id.name
-            ) if self.actividad_predefinida else self.tipo_actividad_id.name
+            tipo_label = (
+                self.actividad_predefinida.name if self.actividad_predefinida
+                else self.tipo_actividad_id.name
+            )
             actividad.message_post(
                 body=f'Actividad predefinida ({tipo_label}) registrada y aprobada automáticamente. '
                      f'Lista para enviar al catálogo.'

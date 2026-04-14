@@ -233,13 +233,13 @@ class Actividad(models.Model):
         string='Tipo es Nueva Propuesta',
         store=False,
     )
-    actividad_predefinida = fields.Selection([
-        ('curso_mooc', 'Curso MOOC'),
-        ('extraescolar', 'Extraescolar'),
-    ], string='Actividades Predefinidas',
-       tracking=True,
-       help='Si la actividad es de tipo predefinido se aprueba automáticamente '
-            'sin pasar por el Comité Académico. Puede dejarse en blanco para quitarlo.',
+    actividad_predefinida = fields.Many2one(
+        'actividad.tipo.predefinida',
+        string='Actividades Predefinidas',
+        tracking=True,
+        ondelete='set null',
+        help='Si la actividad es de tipo predefinido se aprueba automáticamente '
+             'sin pasar por el Comité Académico. Puede dejarse en blanco para quitarlo.',
     )
     # ── Flags de permisos de edición (por estado) ─
     permisos_actividad_pendiente_inicio = fields.Boolean(
@@ -453,9 +453,11 @@ class Actividad(models.Model):
             self.responsable_actividad_id = False
 
     @api.onchange('actividad_predefinida')
-    def _onchange_actividad_predefinida_limpiar_responsable(self):
-        """Borra el responsable cuando se quita la selección de actividad predefinida.
-        El campo responsable solo aplica a actividades predefinidas en creación."""
+    def _onchange_actividad_predefinida_tipo(self):
+        """Autocompletael Tipo de Actividad al seleccionar un predefinido,
+        y limpia el responsable si se quita la selección."""
+        if self.actividad_predefinida and self.actividad_predefinida.tipo_actividad_id:
+            self.tipo_actividad_id = self.actividad_predefinida.tipo_actividad_id
         if not self.actividad_predefinida and not self.estado_code:
             self.responsable_actividad_id = False
 
@@ -1063,7 +1065,7 @@ class Actividad(models.Model):
             estado_pendiente = self.env.ref('actividades_complementarias.estado_pendiente_inicio')
             self.with_context(bypass_edit_protection=True).write({'estado_id': estado_pendiente.id})
             self.message_post(
-                body='Actividad predefinida (%s) aprobada automáticamente.' % self.actividad_predefinida
+                body='Actividad predefinida (%s) aprobada automáticamente.' % (self.actividad_predefinida.name if self.actividad_predefinida else '')
             )
         elif self.estado_code == 'aprobada':
             estado_pendiente = self.env.ref('actividades_complementarias.estado_pendiente_inicio')

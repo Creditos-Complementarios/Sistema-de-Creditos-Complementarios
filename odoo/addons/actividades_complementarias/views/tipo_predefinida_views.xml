@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_tipo_predefinida_list" model="ir.ui.view">
+        <field name="name">actividad.tipo.predefinida.list</field>
+        <field name="model">actividad.tipo.predefinida</field>
+        <field name="arch" type="xml">
+            <list string="Actividades Predefinidas">
+                <field name="name" string="Nombre"/>
+                <field name="tipo_actividad_id" string="Tipo de Actividad"/>
+                <field name="is_comite" string="Aprobado por Comité" widget="boolean_toggle"/>
+                <field name="actividad_origen_id" string="Actividad de Origen" optional="show"/>
+                <field name="active" string="Activo" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tipo_predefinida_form" model="ir.ui.view">
+        <field name="name">actividad.tipo.predefinida.form</field>
+        <field name="model">actividad.tipo.predefinida</field>
+        <field name="arch" type="xml">
+            <form string="Actividad Predefinida">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Los registros marcados como <strong>Aprobado por Comité</strong>
+                        se generan automáticamente cuando el Comité Académico aprueba una
+                        propuesta. Al seleccionarlos en el formulario de creación de actividades,
+                        el <strong>Tipo de Actividad</strong> se completará automáticamente.
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="tipo_actividad_id"
+                               options="{'no_create': True, 'no_quick_create': True}"/>
+                        <field name="is_comite" readonly="1"/>
+                        <field name="actividad_origen_id" readonly="1"
+                               invisible="not is_comite"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tipo_predefinida" model="ir.actions.act_window">
+        <field name="name">Actividades Predefinidas</field>
+        <field name="res_model">actividad.tipo.predefinida</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+</odoo>

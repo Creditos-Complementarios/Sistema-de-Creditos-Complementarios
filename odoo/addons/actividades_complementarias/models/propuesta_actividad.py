@@ -109,20 +109,22 @@ class PropuestaActividadComplementaria(models.Model):
         self.actividad_id.sudo().with_context(bypass_edit_protection=True).write(
             {'estado_id': estado_act_aprobada.id}
         )
-        # Registrar en el catálogo de predefinidas por comité.
-        # Solo aplica al flujo comité (esta propuesta es la prueba), nunca a rechazos
-        # ni a actividades predefinidas directas al catálogo.
+        # ── Registrar en el catálogo de predefinidas por Comité ──────────────
+        # Solo se ejecuta desde este flujo (propuesta enviada al comité y aprobada).
+        # Rechazos nunca llegan aquí. Actividades predefinidas directas al catálogo
+        # nunca generan una propuesta, por lo que tampoco llegan aquí.
         actividad = self.actividad_id
         if actividad and actividad.tipo_actividad_id:
-            PredefinidaComite = self.env["actividad.predefinida.comite"].sudo()
-            existente = PredefinidaComite.search([("name", "=", actividad.name)], limit=1)
+            Predefinida = self.env['actividad.tipo.predefinida'].sudo()
+            existente = Predefinida.search([('name', '=', actividad.name), ('is_comite', '=', True)], limit=1)
             if not existente:
-                PredefinidaComite.create({
-                    "name": actividad.name,
-                    "tipo_actividad_id": actividad.tipo_actividad_id.id,
-                    "actividad_origen_id": actividad.id,
+                Predefinida.create({
+                    'name': actividad.name,
+                    'tipo_actividad_id': actividad.tipo_actividad_id.id,
+                    'is_comite': True,
+                    'actividad_origen_id': actividad.id,
                 })
-        self.message_post(body="Propuesta aprobada por el Comité Académico.")
+        self.message_post(body='Propuesta aprobada por el Comité Académico.')
 
     def action_rechazar(self):
         self.ensure_one()

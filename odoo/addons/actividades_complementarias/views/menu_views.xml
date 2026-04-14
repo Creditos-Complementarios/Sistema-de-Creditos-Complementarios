@@ -149,12 +149,12 @@
               sequence="5"
               groups="actividades_complementarias.group_admin_actividades"/>
 
-    <!-- ── Admin/Comité: catálogo de predefinidas aprobadas por comité ───── -->
-    <menuitem id="menu_predefinidas_comite"
-              name="Predefinidas por Comité"
+    <!-- ── Admin/Comité: catálogo unificado de predefinidas ─────────────── -->
+    <menuitem id="menu_tipo_predefinida"
+              name="Actividades Predefinidas"
               parent="menu_configuracion"
-              action="actividades_complementarias.action_predefinida_comite"
-              sequence="15"
+              action="actividades_complementarias.action_tipo_predefinida"
+              sequence="12"
               groups="actividades_complementarias.group_admin_actividades,actividades_complementarias.group_comite_academico"/>
 
 </odoo>

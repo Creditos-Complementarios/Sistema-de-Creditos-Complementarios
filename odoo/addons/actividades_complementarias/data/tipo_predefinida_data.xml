@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Tipos de actividad predefinidos fijos.
+             noupdate=1 garantiza que no se sobreescriben si el admin los edita. -->
+        <record id="predefinida_curso_mooc" model="actividad.tipo.predefinida">
+            <field name="name">Curso MOOC</field>
+            <field name="key">curso_mooc</field>
+            <field name="tipo_actividad_id" ref="tipo_academica"/>
+            <field name="is_comite">False</field>
+        </record>
+        <record id="predefinida_extraescolar" model="actividad.tipo.predefinida">
+            <field name="name">Extraescolar</field>
+            <field name="key">extraescolar</field>
+            <field name="tipo_actividad_id" ref="tipo_cultural"/>
+            <field name="is_comite">False</field>
+        </record>
+    </data>
+</odoo>

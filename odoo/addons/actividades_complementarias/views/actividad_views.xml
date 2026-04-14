@@ -159,7 +159,8 @@
                             <field name="actividad_predefinida"
                                    invisible="tipo_es_nueva"
                                    readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"
-                                   help="Seleccione si la actividad es predefinida (aprobación automática). Deje en blanco para quitar la selección."/>
+                                   options="{'no_create': True, 'no_quick_create': True}"
+                                   help="Seleccione si la actividad es predefinida (aprobación automática). Las actividades aprobadas por el Comité también aparecen aquí."/>
                             <field name="periodo"
                                    readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
                             <field name="jefe_departamento_id" readonly="1"/>

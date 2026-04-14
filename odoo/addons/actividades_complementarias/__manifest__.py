@@ -27,12 +27,13 @@
         'data/07_usuarios_sii.xml',
         # 4. Datos del módulo
         'data/tipo_actividad_data.xml',
+        'data/tipo_predefinida_data.xml',
         'data/estado_actividad_data.xml',
         'data/estado_solicitud_data.xml',
         'data/cron_data.xml',
         # 5. Vistas
         'views/tipo_actividad_views.xml',
-        'views/predefinida_comite_views.xml',
+        'views/tipo_predefinida_views.xml',
         'views/periodo_views.xml',
         'views/actividad_views.xml',
         'views/propuesta_views.xml',
