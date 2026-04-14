@@ -44,6 +44,8 @@
     'assets': {
         'web.assets_backend': [
             'actividades_complementarias/static/src/scss/style.scss',
+            'actividades_complementarias/static/src/xml/dark_mode_switch.xml',
+            'actividades_complementarias/static/src/js/dark_mode_switch.js',
 
         ],
     },
