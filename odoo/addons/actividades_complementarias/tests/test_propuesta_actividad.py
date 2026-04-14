@@ -99,3 +99,72 @@ class TestPropuestaActividad(TransactionCase):
         propuesta.action_rechazar()
         self.assertEqual(propuesta.estado_solicitud_id, self.estado_sol_rechazada)
         self.assertEqual(propuesta.actividad_id.estado_id, self.estado_rechazada)
+
+    # ── Predefinidas por Comité ───────────────────────────────────────────────
+
+    def test_aprobar_crea_predefinida_comite(self):
+        """Al aprobar una propuesta se debe crear un registro en
+        actividad.tipo.predefinida con is_comite=True."""
+        propuesta = self._make_propuesta()
+        propuesta.action_aprobar()
+
+        predefinida = self.env['actividad.tipo.predefinida'].search([
+            ('name', '=', self.actividad.name),
+            ('is_comite', '=', True),
+        ])
+        self.assertEqual(len(predefinida), 1)
+        self.assertEqual(
+            predefinida.tipo_actividad_id,
+            self.actividad.tipo_actividad_id,
+        )
+        self.assertEqual(predefinida.actividad_origen_id, self.actividad)
+
+    def test_aprobar_no_duplica_predefinida(self):
+        """Aprobar dos propuestas con el mismo nombre de actividad no debe
+        crear registros duplicados en actividad.tipo.predefinida."""
+        import datetime
+        hoy = datetime.date.today()
+
+        actividad2 = self.env['actividad.complementaria'].with_context(
+            skip_fecha_check=True
+        ).create({
+            'name': self.actividad.name,   # mismo nombre
+            'tipo_actividad_id': self.tipo.id,
+            'periodo': self.env.ref(
+                'actividades_complementarias.per_2025B'
+            ).id,
+            'fecha_inicio': hoy + datetime.timedelta(days=1),
+            'fecha_fin': hoy + datetime.timedelta(days=2),
+            'cantidad_horas': 4.0,
+            'creditos': '1.0',
+        })
+
+        propuesta1 = self._make_propuesta()
+        propuesta1.action_aprobar()
+
+        propuesta2 = self.env['actividad.propuesta'].create({
+            'actividad_id': actividad2.id,
+            'estado_solicitud_id': self.estado_sol_en_revision.id,
+        })
+        propuesta2.action_aprobar()
+
+        count = self.env['actividad.tipo.predefinida'].search_count([
+            ('name', '=', self.actividad.name),
+            ('is_comite', '=', True),
+        ])
+        self.assertEqual(count, 1, 'No debe haber registros duplicados.')
+
+    def test_rechazar_no_crea_predefinida(self):
+        """Rechazar una propuesta NO debe crear ningún registro en
+        actividad.tipo.predefinida."""
+        antes = self.env['actividad.tipo.predefinida'].search_count([
+            ('is_comite', '=', True),
+        ])
+        propuesta = self._make_propuesta()
+        propuesta.write({'motivo_rechazo': 'Rechazado en test.'})
+        propuesta.action_rechazar()
+
+        despues = self.env['actividad.tipo.predefinida'].search_count([
+            ('is_comite', '=', True),
+        ])
+        self.assertEqual(antes, despues, 'El rechazo no debe crear predefinidas.')

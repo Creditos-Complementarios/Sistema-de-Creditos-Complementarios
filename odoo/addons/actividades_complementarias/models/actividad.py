@@ -1065,7 +1065,11 @@ class Actividad(models.Model):
             estado_pendiente = self.env.ref('actividades_complementarias.estado_pendiente_inicio')
             self.with_context(bypass_edit_protection=True).write({'estado_id': estado_pendiente.id})
             self.message_post(
-                body='Actividad predefinida (%s) aprobada automáticamente.' % (self.actividad_predefinida.name if self.actividad_predefinida else '')
+                body=(
+                    'Actividad predefinida (%s) aprobada automáticamente.'
+                    % (self.actividad_predefinida.name
+                       if self.actividad_predefinida else '')
+                )
             )
         elif self.estado_code == 'aprobada':
             estado_pendiente = self.env.ref('actividades_complementarias.estado_pendiente_inicio')

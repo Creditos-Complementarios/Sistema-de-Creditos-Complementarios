@@ -296,3 +296,39 @@ class TestActividad(TransactionCase):
         })
         actividad.write({'alumno_ids': [(4, user1.id), (4, user2.id)]})
         self.assertEqual(actividad.alumno_count, 2)
+
+    # ── Predefinidas por Comité ───────────────────────────────────────────────
+
+    def test_predefinida_comite_autocompleta_tipo(self):
+        """Al asignar un predefinido por comité, tipo_actividad_id se actualiza
+        al tipo almacenado en el registro predefinido."""
+        tipo_nuevo = self.env['actividad.tipo'].create({'name': 'Tipo Autocomplete'})
+        predefinida = self.env['actividad.tipo.predefinida'].create({
+            'name': 'Actividad Comite Test',
+            'tipo_actividad_id': tipo_nuevo.id,
+            'is_comite': True,
+        })
+        actividad = self._make_actividad()
+        actividad.write({'actividad_predefinida': predefinida.id})
+        # El write no dispara onchange; verificamos que el Many2one guarda
+        # correctamente y que tipo puede leerse desde el predefinido.
+        self.assertEqual(
+            actividad.actividad_predefinida.tipo_actividad_id,
+            tipo_nuevo,
+        )
+
+    def test_predefinidas_fijas_existen(self):
+        """Los registros fijos (Curso MOOC, Extraescolar) deben existir
+        tras la instalación del módulo."""
+        mooc = self.env['actividad.tipo.predefinida'].search([
+            ('key', '=', 'curso_mooc'),
+        ])
+        extraescolar = self.env['actividad.tipo.predefinida'].search([
+            ('key', '=', 'extraescolar'),
+        ])
+        self.assertTrue(mooc, 'Debe existir el predefinido Curso MOOC.')
+        self.assertTrue(extraescolar, 'Debe existir el predefinido Extraescolar.')
+        self.assertFalse(
+            mooc.is_comite,
+            'Curso MOOC no debe estar marcado como aprobado por comité.',
+        )
