@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    actividad_inscripcion_views.xml
+    ================================
+    Vistas para el modelo actividad.inscripcion cuando se accede de forma
+    independiente (ej. desde un smart button o menú de gestión).
+-->
+<odoo>
+    <!-- ================================================================ -->
+    <!-- VISTA LISTA                                                       -->
+    <!-- ================================================================ -->
+    <record id="view_actividad_inscripcion_list" model="ir.ui.view">
+        <field name="name">actividad.inscripcion.list</field>
+        <field name="model">actividad.inscripcion</field>
+        <field name="arch" type="xml">
+            <list
+                string="Estudiantes Inscritos"
+                decoration-success="certificate_generated"
+                decoration-muted="performance_level == '0'"
+            >
+                <field name="actividad_id"/>
+                <field name="partner_id" string="Estudiante"/>
+                <field name="performance_level" widget="badge"
+                    decoration-danger="performance_level == '0'"
+                    decoration-warning="performance_level == '1'"
+                    decoration-info="performance_level == '2'"
+                    decoration-success="performance_level in ('3','4')"
+                />
+                <field name="performance_label" string="Desempeño"/>
+                <field name="certificate_generated"/>
+                <field name="certificate_signed"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- VISTA FORMULARIO                                                  -->
+    <!-- ================================================================ -->
+    <record id="view_actividad_inscripcion_form" model="ir.ui.view">
+        <field name="name">actividad.inscripcion.form</field>
+        <field name="model">actividad.inscripcion</field>
+        <field name="arch" type="xml">
+            <form string="Inscripción">
+                <sheet>
+                    <group>
+                        <group string="Datos de la Inscripción">
+                            <field name="actividad_id"/>
+                            <field name="partner_id" string="Estudiante"/>
+                        </group>
+                        <group string="Evaluación">
+                            <field
+                                name="performance_level"
+                                readonly="estado_id != 'done'"
+                            />
+                            <field name="certificate_generated" readonly="True"/>
+                            <field name="certificate_signed" readonly="True"/>
+                        </group>
+                    </group>
+                    <group string="Observaciones">
+                        <field
+                            name="observations"
+                            nolabel="1"
+                            placeholder="Observaciones del responsable…"
+                            readonly="estado_id != 'done'"
+                        />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- ACCIÓN                                                           -->
+    <!-- ================================================================ -->
+    <record id="action_actividad_inscripcion" model="ir.actions.act_window">
+        <field name="name">Estudiantes Inscritos</field>
+        <field name="res_model">actividad.inscripcion</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

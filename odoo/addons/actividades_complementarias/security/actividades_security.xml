@@ -16,20 +16,34 @@
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
     </record>
 
+    <record id="group_responsable_actividad" model="res.groups">
+        <field name="name">Responsable de Actividad</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
     <!-- Personal de Departamento dividido por rama -->
     <record id="group_personal_departamento_sistemas" model="res.groups">
         <field name="name">Personal de Departamento de Sistemas</field>
-        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="implied_ids" eval="[
+            (4, ref('base.group_user')),
+            (4, ref('actividades_complementarias.group_responsable_actividad'))
+        ]"/>
     </record>
 
     <record id="group_personal_departamento_electrica" model="res.groups">
         <field name="name">Personal de Departamento de Eléctrica</field>
-        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="implied_ids" eval="[
+            (4, ref('base.group_user')),
+            (4, ref('actividades_complementarias.group_responsable_actividad'))
+        ]"/>
     </record>
 
     <record id="group_personal_departamento_biologia" model="res.groups">
         <field name="name">Personal de Departamento de Biología</field>
-        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="implied_ids" eval="[
+            (4, ref('base.group_user')),
+            (4, ref('actividades_complementarias.group_responsable_actividad'))
+        ]"/>
     </record>
 
     <!--
@@ -38,7 +52,10 @@
     -->
     <record id="group_personal_departamento_extraescolar" model="res.groups">
         <field name="name">Personal de Departamento Extraescolar</field>
-        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="implied_ids" eval="[
+            (4, ref('base.group_user')),
+            (4, ref('actividades_complementarias.group_responsable_actividad'))
+        ]"/>
     </record>
 
     <record id="group_alumno" model="res.groups">
@@ -46,9 +63,20 @@
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
     </record>
 
-    <record id="group_responsable_actividad" model="res.groups">
-        <field name="name">Responsable de Actividad</field>
+    <!--
+        Responsable de Actividad Extraescolar (RAE-01SC).
+        Grupo distinto al RA: no hereda sus permisos.
+        Solo gestiona (sin crear ni eliminar) actividades que le son asignadas
+        explícitamente mediante el campo responsable_extraescolar_id.
+    -->
+    <record id="group_responsable_actividad_extraescolar" model="res.groups">
+        <field name="name">Responsable de Actividad Extraescolar</field>
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">
+            Puede gestionar asistencia, evidencias y evaluaciones de las
+            actividades donde está asignado como responsable extraescolar.
+            No puede crear, aprobar ni eliminar actividades.
+        </field>
     </record>
 
     <!--
@@ -70,13 +98,16 @@
     </record>
 
     <!-- ════════════════════════════════════════════════════════════════════
-         Record rules
+         Record rules — actividad.complementaria
+         ════════════════════════════════════════════════════════════════════
+
          Alumno     — solo ve actividades en catálogo (en_catalogo = True).
-         Responsable — solo ve actividades donde está asignado como responsable.
+         Responsable — ve sus actividades asignadas y todo el catálogo.
+         RAE        — ve solo las actividades donde está asignado como responsable
+                      extraescolar (campo responsable_extraescolar_id).
          JD y Comité — el filtrado por departamento se gestiona en Python
-                       (_search override); no requieren record rules adicionales
-                       a menos que se necesite aislamiento multi-empresa.
-    ════════════════════════════════════════════════════════════════════ -->
+                       (_search override); aquí solo se protegen escrituras ORM.
+    -->
 
     <record id="rule_actividad_alumno" model="ir.rule">
         <field name="name">Alumno: solo actividades en catálogo</field>
@@ -89,7 +120,7 @@
         <field name="perm_unlink" eval="False"/>
     </record>
 
-    <!-- Responsable de Actividad: sus actividades asignadas Y todo el catálogo -->
+    <!-- RA: sus actividades asignadas Y todo el catálogo -->
     <record id="rule_actividad_responsable" model="ir.rule">
         <field name="name">Responsable: sus actividades asignadas y catálogo</field>
         <field name="model_id" ref="model_actividad_complementaria"/>
@@ -105,29 +136,43 @@
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
+
     <!--
-        JD: la restricción de lectura se delega al domain de la acción
-        ('action_actividad_complementaria' usa domain jefe_departamento_id=uid).
-        Aquí solo se protegen escrituras/creaciones a nivel ORM como respaldo
-        al guard de write() en Python.
+        RAE: solo ve actividades donde está asignado como responsable_extraescolar_id.
+        No tiene acceso al catálogo general (a diferencia del RA).
+    -->
+    <record id="rule_actividad_responsable_extraescolar" model="ir.rule">
+        <field name="name">RAE: solo actividades asignadas como responsable extraescolar</field>
+        <field name="model_id" ref="model_actividad_complementaria"/>
+        <field name="domain_force">
+            [('responsable_extraescolar_id', '=', user.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_responsable_actividad_extraescolar'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!--
+        JD: la restricción de lectura se delega al domain de la acción.
+        Aquí solo se protegen escrituras a nivel ORM como respaldo al guard
+        de write() en Python.
     -->
     <record id="rule_actividad_jefe_departamento" model="ir.rule">
         <field name="name">Jefe de Departamento: escritura solo en su departamento</field>
         <field name="model_id" ref="model_actividad_complementaria"/>
         <field name="domain_force">[('jefe_departamento_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('actividades_complementarias.group_jefe_departamento'))]"/>
-        <field name="perm_read"   eval="False"/>
-        <field name="perm_write"  eval="True"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
         <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="False"/>
     </record>
 
-
     <!--
         EmpleadoPermiso:
         - JD solo ve y gestiona el personal de su propio departamento.
-          El filtrado en _search() de EmpleadoPermiso ya lo restringe;
-          esta regla agrega el candado a nivel ORM para write/unlink.
         - Admin: sin record rule adicional (ve todo).
     -->
     <record id="rule_empleado_permiso_jefe" model="ir.rule">
@@ -135,25 +180,20 @@
         <field name="model_id" ref="model_actividad_empleado_permiso"/>
         <field name="domain_force">[('departamento_id.jefe_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('actividades_complementarias.group_jefe_departamento'))]"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
         <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="True"/>
     </record>
 
-    <!--
-        Personal de Departamento: el filtro de lectura por departamento se
-        delega al domain de las acciones de menú (una por departamento).
-        Aquí solo se protegen escrituras a nivel ORM como respaldo al guard
-        de write() en Python.
-    -->
+    <!-- Personal por departamento — solo protege escrituras ORM -->
     <record id="rule_actividad_personal_sistemas" model="ir.rule">
         <field name="name">Personal Sistemas: escritura solo en su departamento</field>
         <field name="model_id" ref="model_actividad_complementaria"/>
         <field name="domain_force">[('departamento_id.name', 'ilike', 'sistem')]</field>
         <field name="groups" eval="[(4, ref('actividades_complementarias.group_personal_departamento_sistemas'))]"/>
-        <field name="perm_read"   eval="False"/>
-        <field name="perm_write"  eval="True"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
@@ -163,8 +203,8 @@
         <field name="model_id" ref="model_actividad_complementaria"/>
         <field name="domain_force">[('departamento_id.name', 'ilike', 'electr')]</field>
         <field name="groups" eval="[(4, ref('actividades_complementarias.group_personal_departamento_electrica'))]"/>
-        <field name="perm_read"   eval="False"/>
-        <field name="perm_write"  eval="True"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
@@ -174,9 +214,72 @@
         <field name="model_id" ref="model_actividad_complementaria"/>
         <field name="domain_force">[('departamento_id.name', 'ilike', 'biol')]</field>
         <field name="groups" eval="[(4, ref('actividades_complementarias.group_personal_departamento_biologia'))]"/>
-        <field name="perm_read"   eval="False"/>
-        <field name="perm_write"  eval="True"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
         <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         Record rules — actividad.inscripcion
+         RA  : sus actividades asignadas (responsable_actividad_id).
+         RAE : sus actividades asignadas (responsable_extraescolar_id).
+         JD/Admin: sin record rule — ven todo (control por CSV y acciones).
+    ════════════════════════════════════════════════════════════════════ -->
+
+    <record id="rule_inscripcion_responsable" model="ir.rule">
+        <field name="name">RA: inscripciones de sus actividades asignadas</field>
+        <field name="model_id" ref="model_actividad_inscripcion"/>
+        <field name="domain_force">
+            [('actividad_id.responsable_actividad_id', '=', user.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_inscripcion_responsable_extraescolar" model="ir.rule">
+        <field name="name">RAE: inscripciones de sus actividades asignadas</field>
+        <field name="model_id" ref="model_actividad_inscripcion"/>
+        <field name="domain_force">
+            [('actividad_id.responsable_extraescolar_id', '=', user.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_responsable_actividad_extraescolar'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         Record rules — actividad.asistencia
+    ════════════════════════════════════════════════════════════════════ -->
+
+    <record id="rule_asistencia_responsable" model="ir.rule">
+        <field name="name">RA: asistencia de sus actividades asignadas</field>
+        <field name="model_id" ref="model_actividad_asistencia"/>
+        <field name="domain_force">
+            [('actividad_id.responsable_actividad_id', '=', user.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_responsable_actividad'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_asistencia_responsable_extraescolar" model="ir.rule">
+        <field name="name">RAE: asistencia de sus actividades asignadas</field>
+        <field name="model_id" ref="model_actividad_asistencia"/>
+        <field name="domain_force">
+            [('actividad_id.responsable_extraescolar_id', '=', user.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('actividades_complementarias.group_responsable_actividad_extraescolar'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="False"/>
     </record>
 

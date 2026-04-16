@@ -24,7 +24,7 @@
         </field>
     </record>
 
-        <!-- ── Search ───────────────────────────────────────────────────────── -->
+    <!-- ── Search (catálogo) ─────────────────────────────────────────────── -->
     <record id="view_actividad_Catalogo_search" model="ir.ui.view">
         <field name="name">actividad.complementaria.search</field>
         <field name="model">actividad.complementaria</field>
@@ -90,7 +90,6 @@
                         statusbar_visible="rechazada"
                         invisible="estado_code != 'rechazada'"
                         readonly="1"/>
-
                     <!-- Statusbar: flujo Aprobada → Finalizada -->
                     <field name="estado_barra" widget="statusbar"
                         statusbar_visible="aprobada,pendiente_inicio,en_curso,finalizada"
@@ -120,7 +119,7 @@
                         Aparece cuando el formulario está bloqueado para el usuario actual.
                     -->
                     <div class="alert alert-warning mb-2"
-                         invisible="not permisos_actividad_finalizada and not permisos_actividad_pendiente_inicio 
+                         invisible="not permisos_actividad_finalizada and not permisos_actividad_pendiente_inicio
                          and not permisos_actividad_en_curso"
                          role="alert">
                         <span invisible="estado_code == 'finalizada'">
@@ -129,7 +128,7 @@
                                 Esta actividad no puede modificarse en su estado actual.
                             </b>
                             <b invisible="not permisos_actividad_pendiente_inicio">
-                                Solo puede modificar los campos <i>Responsable de Actividad</i>, <i>Fecha de Inicio</i>, <i>Fecha de Finalización</i>, <i>Alumnos</i> y 
+                                Solo puede modificar los campos <i>Responsable de Actividad</i>, <i>Fecha de Inicio</i>, <i>Fecha de Finalización</i>, <i>Alumnos</i> y
                                 <i>Horario por Día</i> en este estado.
                             </b>
                             <b invisible="not permisos_actividad_en_curso">
@@ -165,8 +164,6 @@
                                    readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
                             <field name="jefe_departamento_id" readonly="1"/>
                             <field name="departamento_id" readonly="1"/>
-                            <!-- Responsable: visible cuando hay actividad predefinida seleccionada (creación)
-                                 o cuando la actividad ya está aprobada/en curso -->
                             <field name="responsable_actividad_id"
                                    domain="dominio_responsable"
                                    options="{'no_create': True, 'no_quick_create': True}"
@@ -206,7 +203,7 @@
                                    help="Versión normalizada del horario ingresado."/>
                         </group>
                     </group>
-                    <!-- Cupos: editables en aprobada/pendiente, readonly el resto -->
+                    <!-- Cupos -->
                     <group string="Cupos">
                         <field name="cupo_ilimitado"
                                readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
@@ -220,15 +217,15 @@
                                placeholder="Descripción de la actividad (máximo 2000 caracteres)..."
                                readonly="estado_code in ['aprobada','en_curso','finalizada','en_revision']"/>
                     </group>
-                    <!-- Alumnos: visible cuando la actividad está aprobada o más avanzada -->
+                    <!-- Pestaña de alumnos: visible cuando aprobada o más avanzada -->
                     <notebook invisible="estado_code not in ['aprobada','pendiente_inicio','en_curso','finalizada'] and not en_catalogo">
                         <page string="Alumnos Asignados" name="alumnos">
-                        <button name="action_abrir_wizard_eliminar_alumnos"
-                            string="Eliminar alumnos"
-                            type="object"
-                            class="btn btn-danger btn-sm mb-2"
-                            invisible="estado_code in ['finalizada'] or not alumno_ids"
-                            groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
+                            <button name="action_abrir_wizard_eliminar_alumnos"
+                                string="Eliminar alumnos"
+                                type="object"
+                                class="btn btn-danger btn-sm mb-2"
+                                invisible="estado_code in ['finalizada'] or not alumno_ids"
+                                groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_admin_actividades"/>
                             <field name="alumno_ids"
                                    domain="dominio_alumnos"
                                    readonly="estado_code in ['finalizada']"
@@ -292,11 +289,154 @@
         </field>
     </record>
 
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Vista heredada — secciones exclusivas de RA y RAE
+         Añade al formulario base:
+           · Botones de gestión operativa (evidencias, constancias, firma RA)
+           · Pestaña "Evaluación de Estudiantes" con inscripcion_ids
+           · Pestaña "Pase de Lista" con asistencia_ids
+         Visible para RA y RAE; el JD/Admin ve las mismas pestañas pero
+         vacías si no gestionan inscripciones directamente.
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_actividad_form_ra_rae" model="ir.ui.view">
+        <field name="name">actividad.complementaria.form.ra_rae</field>
+        <field name="model">actividad.complementaria</field>
+        <field name="inherit_id" ref="view_actividad_form"/>
+        <field name="arch" type="xml">
+
+            <!-- ── Botones de gestión operativa en header ─────────────── -->
+            <!--
+                Se insertan después del último botón existente (action_firmar_constancias)
+                para respetar el orden visual de la barra de estado.
+            -->
+            <xpath expr="//header/button[@name='action_firmar_constancias']" position="after">
+
+                <!--
+                    RA-02SC / RAE-01SC: habilitar / deshabilitar evidencias.
+                    Visible para RA y RAE mientras la actividad esté activa.
+                -->
+                <button name="action_toggle_evidence"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="estado_code not in ['pendiente_inicio','en_curso']"
+                        groups="actividades_complementarias.group_responsable_actividad,
+                                actividades_complementarias.group_responsable_actividad_extraescolar">
+                    <span invisible="evidence_enabled">Habilitar Evidencias</span>
+                    <span invisible="not evidence_enabled">Deshabilitar Evidencias</span>
+                </button>
+
+                <!--
+                    RA-02SC / RAE-01SC pasos 9-10: generar constancias.
+                    Solo cuando la actividad está finalizada y aún no se generaron.
+                -->
+                <button name="action_generate_certificates"
+                        string="Generar Constancias"
+                        type="object"
+                        class="btn-primary"
+                        invisible="estado_code != 'finalizada' or certificates_generated"
+                        groups="actividades_complementarias.group_responsable_actividad,
+                                actividades_complementarias.group_responsable_actividad_extraescolar"/>
+
+                <!--
+                    RA-02SC paso 13: firmar constancias (solo RA, no RAE).
+                    Permanece desactivado (invisible) hasta que se generan las constancias.
+                -->
+                <button name="action_firmar_constancias_responsable"
+                        string="Firmar Constancias (Responsable)"
+                        type="object"
+                        class="btn-success"
+                        invisible="not certificates_generated or responsable_firmo"
+                        groups="actividades_complementarias.group_responsable_actividad"/>
+
+            </xpath>
+
+            <!-- ── Campo de control de evidencias (invisible, usado en botón) -->
+            <xpath expr="//field[@name='responsable_bloqueado']" position="after">
+                <field name="evidence_enabled" invisible="1"/>
+                <field name="certificates_generated" invisible="1"/>
+                <field name="responsable_firmo" invisible="1"/>
+            </xpath>
+
+            <!-- ── Pestañas de evaluación y asistencia ────────────────── -->
+            <!--
+                Se agregan dentro del notebook existente.
+                Solo visibles cuando la actividad está en un estado operativo.
+            -->
+            <xpath expr="//notebook" position="inside">
+
+                <!--
+                    Pestaña de evaluación: lista de inscripciones con nivel de
+                    desempeño por alumno (RA-02SC pasos 4-9 / RAE-01SC pasos 4-9).
+                -->
+                <page string="Evaluación de Estudiantes"
+                      name="inscripciones"
+                      invisible="estado_code not in ['pendiente_inicio','en_curso','finalizada']"
+                      groups="actividades_complementarias.group_responsable_actividad,
+                              actividades_complementarias.group_responsable_actividad_extraescolar,
+                              actividades_complementarias.group_jefe_departamento,
+                              actividades_complementarias.group_admin_actividades">
+                    <field name="inscripcion_ids">
+                        <list editable="bottom"
+                              decoration-success="certificate_generated"
+                              decoration-muted="performance_level == '0'">
+                            <field name="partner_id" string="Estudiante"/>
+                            <field name="performance_level"
+                                   widget="badge"
+                                   readonly="estado_id != 'finalizada'"
+                                   decoration-danger="performance_level == '0'"
+                                   decoration-warning="performance_level == '1'"
+                                   decoration-info="performance_level == '2'"
+                                   decoration-success="performance_level in ('3','4')"/>
+                            <field name="observations"
+                                   readonly="estado_id != 'finalizada'"
+                                   optional="show"/>
+                            <field name="certificate_generated" readonly="1" optional="show"/>
+                            <field name="certificate_signed" readonly="1" optional="show"/>
+                            <!--
+                                Campo auxiliar para el readonly condicional de performance_level.
+                                Se expone como invisible para que el ORM lo incluya en el contexto.
+                            -->
+                            <field name="estado_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+
+                <!--
+                    Pestaña de pase de lista: asistencia por fecha
+                    (RA-02SC pasos 6-8 / RAE-01SC pasos 6-8).
+                    Solo disponible mientras la actividad está en curso.
+                -->
+                <page string="Pase de Lista"
+                      name="asistencia"
+                      invisible="estado_code not in ['en_curso','finalizada']"
+                      groups="actividades_complementarias.group_responsable_actividad,
+                              actividades_complementarias.group_responsable_actividad_extraescolar,
+                              actividades_complementarias.group_jefe_departamento,
+                              actividades_complementarias.group_admin_actividades">
+                    <field name="asistencia_ids"
+                           readonly="estado_code == 'finalizada'">
+                        <list editable="bottom"
+                              decoration-success="presente"
+                              decoration-muted="not presente">
+                            <field name="fecha"/>
+                            <field name="inscripcion_id" string="Inscripción"/>
+                            <field name="partner_id" string="Estudiante" readonly="1"/>
+                            <field name="presente" widget="boolean_toggle"/>
+                        </list>
+                    </field>
+                </page>
+
+            </xpath>
+
+        </field>
+    </record>
+
     <!-- ── Actions ──────────────────────────────────────────────────────── -->
+
     <!--
-        Mis Actividades (JD / Admin): el domain filtra por jefe_departamento_id
-        en la UI. La record rule de JD es write-only (perm_read=False), por lo
-        que no interfiere con el Catálogo ni con lecturas de otras vistas.
+        Mis Actividades (JD / Admin): domain filtra por jefe_departamento_id.
+        La record rule de JD es write-only (perm_read=False) y no interfiere
+        con la lectura del Catálogo ni con otras vistas.
     -->
     <record id="action_actividad_complementaria" model="ir.actions.act_window">
         <field name="name">Mis Actividades</field>
@@ -315,12 +455,7 @@
         <field name="search_view_id" ref="view_actividad_search"/>
     </record>
 
-    <!--
-        Mis Actividades para Personal de Departamento — una acción por departamento.
-        El domain aplica el mismo filtro que la record rule de escritura pero para
-        lectura en la UI, permitiendo que el Catálogo (sin domain de depto) funcione
-        correctamente para todos los actores.
-    -->
+    <!-- Personal de Departamento — una acción por departamento -->
     <record id="action_actividad_personal_sistemas" model="ir.actions.act_window">
         <field name="name">Mis Actividades</field>
         <field name="res_model">actividad.complementaria</field>
@@ -348,7 +483,7 @@
         <field name="views" eval="[(ref('view_actividad_list'), 'list'), (ref('view_actividad_kanban'), 'kanban'), (ref('view_actividad_form'), 'form')]"/>
     </record>
 
-    <!-- Catálogo global: todas las actividades con en_catalogo=True -->
+    <!-- Catálogo global -->
     <record id="action_actividad_catalogo" model="ir.actions.act_window">
         <field name="name">Catálogo General de Actividades</field>
         <field name="res_model">actividad.complementaria</field>
@@ -356,6 +491,34 @@
         <field name="domain">[('en_catalogo', '=', True)]</field>
         <field name="search_view_id" ref="view_actividad_Catalogo_search"/>
         <field name="context">{'hide_catalogo': True}</field>
+    </record>
+
+    <!--
+        RA-02SC: Mis Actividades Asignadas (Responsable de Actividad).
+        Filtra por responsable_actividad_id = usuario actual.
+        La record rule complementa el filtro bloqueando el acceso ORM a otras actividades.
+    -->
+    <record id="action_actividad_responsable" model="ir.actions.act_window">
+        <field name="name">Mis Actividades Asignadas</field>
+        <field name="res_model">actividad.complementaria</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('responsable_actividad_id', '=', uid)]</field>
+        <field name="search_view_id" ref="view_actividad_search"/>
+        <field name="context">{'search_default_filter_pendiente': 0}</field>
+    </record>
+
+    <!--
+        RAE-01SC: Mis Actividades Asignadas (Responsable de Actividad Extraescolar).
+        Filtra por responsable_extraescolar_id = usuario actual.
+        La record rule impide lectura de cualquier otra actividad a nivel ORM.
+    -->
+    <record id="action_actividad_extraescolar" model="ir.actions.act_window">
+        <field name="name">Mis Actividades Asignadas</field>
+        <field name="res_model">actividad.complementaria</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('responsable_extraescolar_id', '=', uid)]</field>
+        <field name="search_view_id" ref="view_actividad_search"/>
+        <field name="context">{'search_default_filter_pendiente': 0}</field>
     </record>
 
 </odoo>

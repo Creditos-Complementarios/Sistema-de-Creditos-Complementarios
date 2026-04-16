@@ -2,10 +2,14 @@
 <odoo>
 
     <!-- ── Menú raíz ─────────────────────────────────────────────────────── -->
+    <!--
+        Se agregaron group_responsable_actividad y group_responsable_actividad_extraescolar
+        para que ambos actores vean la aplicación en su menú de inicio.
+    -->
     <menuitem id="menu_actividades_root"
               name="Actividades Complementarias"
               sequence="50"
-              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_comite_academico,actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades"
+              groups="actividades_complementarias.group_jefe_departamento,actividades_complementarias.group_comite_academico,actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades,actividades_complementarias.group_responsable_actividad,actividades_complementarias.group_responsable_actividad_extraescolar"
               web_icon="actividades_complementarias,static/description/icon.png"/>
 
     <!-- ── Jefe de Departamento ──────────────────────────────────────────── -->
@@ -50,12 +54,6 @@
               sequence="30"
               groups="actividades_complementarias.group_personal_departamento_sistemas,actividades_complementarias.group_personal_departamento_electrica,actividades_complementarias.group_personal_departamento_biologia,actividades_complementarias.group_admin_actividades"/>
 
-    <!--
-        Cada grupo de Personal tiene su propia acción con el domain del
-        departamento correspondiente. Así "Mis Actividades" muestra solo las
-        actividades de ese departamento, mientras que "Catálogo de Actividades"
-        (acción compartida con domain en_catalogo=True) muestra todo el catálogo.
-    -->
     <menuitem id="menu_personal_mis_actividades_sistemas"
               name="Mis Actividades"
               parent="menu_personal_depto"
@@ -120,6 +118,51 @@
               sequence="30"
               groups="actividades_complementarias.group_comite_academico,actividades_complementarias.group_admin_actividades"/>
 
+    <!-- ── Responsable de Actividad (RA) ─────────────────────────────────── -->
+    <!--
+        RA-02SC: el RA gestiona las actividades donde fue asignado como
+        responsable_actividad_id. Puede consultar el catálogo general.
+        No puede crear ni enviar actividades al comité (eso es función del JD).
+    -->
+    <menuitem id="menu_responsable_actividad"
+              name="Responsable de Actividad"
+              parent="menu_actividades_root"
+              sequence="40"
+              groups="actividades_complementarias.group_responsable_actividad,actividades_complementarias.group_admin_actividades"/>
+
+    <menuitem id="menu_ra_mis_actividades"
+              name="Mis Actividades Asignadas"
+              parent="menu_responsable_actividad"
+              action="action_actividad_responsable"
+              sequence="10"
+              groups="actividades_complementarias.group_responsable_actividad,actividades_complementarias.group_admin_actividades"/>
+
+    <menuitem id="menu_ra_catalogo"
+              name="Catálogo de Actividades"
+              parent="menu_responsable_actividad"
+              action="action_actividad_catalogo"
+              sequence="20"
+              groups="actividades_complementarias.group_responsable_actividad,actividades_complementarias.group_admin_actividades"/>
+
+    <!-- ── Responsable de Actividad Extraescolar (RAE) ───────────────────── -->
+    <!--
+        RAE-01SC: el RAE gestiona únicamente las actividades donde fue asignado
+        como responsable_extraescolar_id. No accede al catálogo general ni
+        puede crear actividades.
+    -->
+    <menuitem id="menu_responsable_extraescolar"
+              name="Responsable Extraescolar"
+              parent="menu_actividades_root"
+              sequence="45"
+              groups="actividades_complementarias.group_responsable_actividad_extraescolar,actividades_complementarias.group_admin_actividades"/>
+
+    <menuitem id="menu_rae_mis_actividades"
+              name="Mis Actividades Asignadas"
+              parent="menu_responsable_extraescolar"
+              action="action_actividad_extraescolar"
+              sequence="10"
+              groups="actividades_complementarias.group_responsable_actividad_extraescolar,actividades_complementarias.group_admin_actividades"/>
+
     <!-- ── Configuración ─────────────────────────────────────────────────── -->
     <menuitem id="menu_configuracion"
               name="Configuración"
@@ -141,7 +184,7 @@
               sequence="20"
               groups="actividades_complementarias.group_admin_actividades,actividades_complementarias.group_jefe_departamento"/>
 
-    <!-- ── Admin: todas las actividades sin filtro ───────────────────────── -->
+    <!-- Admin: todas las actividades sin filtro -->
     <menuitem id="menu_admin_todas_actividades"
               name="Todas las Actividades"
               parent="menu_configuracion"
@@ -149,7 +192,7 @@
               sequence="5"
               groups="actividades_complementarias.group_admin_actividades"/>
 
-    <!-- ── Admin/Comité: catálogo unificado de predefinidas ─────────────── -->
+    <!-- Admin/Comité: catálogo unificado de predefinidas -->
     <menuitem id="menu_tipo_predefinida"
               name="Actividades Predefinidas"
               parent="menu_configuracion"
