@@ -394,7 +394,7 @@ Jueves 18:00-20:00</field>
     <record id="act_hackathon" model="actividad.complementaria">
         <field name="name">Hackathon Institucional de IA</field>
         <field name="descripcion">Competencia de 48 horas para desarrollar soluciones con inteligencia artificial aplicada a problemáticas sociales reales del estado de Quintana Roo.</field>
-        <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_nueva"/>
+        <field name="tipo_actividad_id" ref="actividades_complementarias.tipo_academica"/>
         <field name="periodo" ref="actividades_complementarias.per_2026A"/>
         <field name="jefe_departamento_id" ref="user_jefe_sistemas"/>
         <field name="responsable_actividad_id" ref="user_responsable_1"/>

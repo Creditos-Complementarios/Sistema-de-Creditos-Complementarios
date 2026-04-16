@@ -258,7 +258,7 @@ body:has(.o_menu_brand[data-menu-xmlid^="actividades_complementarias"]) sup.d-pr
     cursor: pointer !important;
 }
 
-/* Remarcar campos editables en formularios */
+// Remarcar campos editables en formularios
 .o_field_widget .o_input,
 .o_field_many2one .o_input,
 .o_field_many2one_selection .o_input,

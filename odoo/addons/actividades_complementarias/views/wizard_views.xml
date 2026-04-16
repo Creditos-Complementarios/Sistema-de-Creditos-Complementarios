@@ -18,7 +18,7 @@
                                options="{'no_create': True, 'no_quick_create': True}"
                                placeholder="Buscar actividad predefinida o aprobada por Comité..."/>
                         <field name="name" placeholder="Nombre de la actividad (max. 200 caracteres)"/>
-                        <field name="tipo_actividad_id"/>
+                        <field name="tipo_actividad_id" domain="[('name', '!=', 'Nueva (Propuesta)')]"/>
                         <field name="es_predefinida" invisible="1"/>
                         <field name="periodo" placeholder="Ej: 2025-A"/>
                     </group>

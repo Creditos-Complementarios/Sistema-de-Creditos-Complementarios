@@ -6,7 +6,7 @@ import { Component, onMounted, useRef } from "@odoo/owl";
 const STORAGE_KEY = "ac_dark_mode";
 const MODULE_PREFIX = "actividades_complementarias";
 
-class DarkModeSwitch  extends Component {
+class DarkModeToggle extends Component {
     setup() {
         this.checkboxRef = useRef("checkbox");
 
@@ -51,9 +51,9 @@ class DarkModeSwitch  extends Component {
     }
 }
 
-DarkModeSwitch.template = "actividades_complementarias.DarkModeSwitch";
+DarkModeToggle.template = "actividades_complementarias.DarkModeToggle";
 
 registry.category("systray").add("actividades_dark_mode", {
-    Component: DarkModeSwitch,
+    Component: DarkModeToggle,
     sequence: 100,
 });

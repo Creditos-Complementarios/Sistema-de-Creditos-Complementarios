@@ -1,5 +1,5 @@
 <templates xml:space="preserve">
-    <t t-name="actividades_complementarias.DarkModeSwitch" owl="1">
+    <t t-name="actividades_complementarias.DarkModeToggle" owl="1">
         <div class="o_systray_item">
             <label class="dark-switch">
                 <input type="checkbox" t-ref="checkbox" t-on-change="toggleDarkMode"/>

@@ -155,6 +155,7 @@
                     <group col="1">
                         <group string="Información General">
                             <field name="tipo_actividad_id"
+                                   domain="[('name', '!=', 'Nueva (Propuesta)')]"
                                    readonly="estado_code in ['aprobada','pendiente_inicio','en_curso','finalizada','en_revision']"/>
                             <field name="actividad_predefinida"
                                    invisible="tipo_es_nueva"
